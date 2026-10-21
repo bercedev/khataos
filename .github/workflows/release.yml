@@ -1,0 +1,457 @@
+name: release
+
+# Builds the KhataOS installers and attaches them to a DRAFT GitHub release.
+# Nothing is published until a maintainer reviews the draft and clicks Publish.
+# How to cut a release: CONTRIBUTING.md, "Cutting a release".
+#
+# Triggers:
+#   - pushing a tag such as v0.1.0 or v0.1.0-alpha.1;
+#   - Actions → release → Run workflow, with the tag to build. Run it from the
+#     tag itself, or from a branch when the tag doesn't exist yet (the draft then
+#     points at that commit, and GitHub creates the tag when you publish).
+#
+# Jobs:
+#   prepare    ubuntu-latest   checks the version, creates (or reuses) the draft
+#   desktop    windows-latest  NSIS .exe and .msi (x64)
+#              macos-latest    one universal .dmg (Apple silicon and Intel)
+#              ubuntu-22.04    .AppImage, .deb and .rpm (x64)
+#   android    ubuntu-latest   universal release .apk (arm64, armv7, x86_64)
+#   checksums  ubuntu-latest   SHA256SUMS.txt for every file on the draft
+# iOS is not built here: it needs an Apple Developer account (docs/mobile.md).
+#
+# Signing is optional. Each platform is signed only when its secrets exist;
+# otherwise the build is unsigned and the release notes say so.
+#   macOS (Developer ID and notarisation, read by the Tauri CLI):
+#     APPLE_CERTIFICATE (base64 .p12), APPLE_CERTIFICATE_PASSWORD,
+#     APPLE_SIGNING_IDENTITY (optional), and for notarisation either
+#     APPLE_ID + APPLE_PASSWORD (app-specific password) + APPLE_TEAM_ID,
+#     or APPLE_API_ISSUER + APPLE_API_KEY + APPLE_API_PRIVATE_KEY (the .p8 text).
+#     Without APPLE_CERTIFICATE the app is ad hoc signed ("-"), which macOS
+#     lets users open through Privacy & Security → Open Anyway.
+#   Windows (Authenticode): WINDOWS_CERTIFICATE (base64 .pfx) and
+#     WINDOWS_CERTIFICATE_PASSWORD. A certificate whose key lives in a hardware
+#     token or cloud HSM can't be used this way: use bundle.windows.signCommand.
+#   Android: ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
+#     ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (passed to the gradle signing
+#     config as the KHATAOS_ANDROID_* variables, see docs/mobile.md).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release, for example v0.1.0-alpha.1"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  INSTALL_GUIDE: https://github.com/khataos/khataos/blob/main/docs/guide/install.md
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      label: ${{ steps.version.outputs.label }}
+      release_id: ${{ steps.release.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check the tag against the app version
+        id: version
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$TAG' is not like v1.2.3 or v1.2.3-alpha.1"
+            exit 1
+          fi
+          base="${BASH_REMATCH[1]}"
+
+          # tauri.conf.json is the version the installers and the Android
+          # versionCode use. Keep it plain X.Y.Z: the Windows .msi refuses
+          # text prerelease labels. The label lives only in the tag.
+          tauri=$(jq -r .version apps/desktop/src-tauri/tauri.conf.json)
+          npm=$(jq -r .version apps/desktop/package.json)
+          cargo=$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml","rb"))["workspace"]["package"]["version"])')
+          echo "tauri.conf.json $tauri, package.json $npm, Cargo.toml $cargo, tag $TAG"
+          if ! [[ "$tauri" == "$npm" && "$tauri" == "$cargo" ]]; then
+            echo "::error::Versions differ: tauri.conf.json $tauri, apps/desktop/package.json $npm, Cargo.toml [workspace.package] $cargo. Set all three to the same X.Y.Z."
+            exit 1
+          fi
+          if [[ "$tauri" != "$base" ]]; then
+            echo "::error::Tag $TAG doesn't match the app version $tauri. Bump the version (CONTRIBUTING.md, Cutting a release) or fix the tag."
+            exit 1
+          fi
+
+          # A manual run must build the commit the tag points to.
+          if tagged=$(git rev-parse -q --verify "refs/tags/$TAG^{commit}"); then
+            if [[ "$tagged" != "$GITHUB_SHA" ]]; then
+              echo "::error::Tag $TAG points to $tagged, but this run is on $GITHUB_SHA. Run the workflow from the tag."
+              exit 1
+            fi
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "label=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Create the draft release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          LABEL: ${{ steps.version.outputs.label }}
+          SIGNED_MACOS: ${{ secrets.APPLE_CERTIFICATE != '' }}
+          SIGNED_WINDOWS: ${{ secrets.WINDOWS_CERTIFICATE != '' }}
+          SIGNED_ANDROID: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: |
+          set -euo pipefail
+          # Re-running the workflow reuses the draft, but never touches a
+          # release that is already published.
+          existing=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+            --jq ".[] | select(.tag_name == \"$TAG\") | \"\(.id) \(.draft)\"")
+          existing=${existing%%$'\n'*}
+          if [[ -n "$existing" ]]; then
+            read -r id draft <<< "$existing"
+            if [[ "$draft" != "true" ]]; then
+              echo "::error::Release $TAG is already published. Make a new tag instead."
+              exit 1
+            fi
+            echo "Reusing draft release $id"
+            echo "id=$id" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          notes="$RUNNER_TEMP/notes.md"
+          {
+            echo "**How to install:** see the [install guide]($INSTALL_GUIDE)."
+            echo
+            echo "| Your system | Download |"
+            echo "|---|---|"
+            echo "| Windows 10 or 11 (64-bit) | \`KhataOS_${LABEL}_x64-setup.exe\` (or the \`.msi\`) |"
+            echo "| macOS (Apple silicon and Intel) | \`KhataOS_${LABEL}_universal.dmg\` |"
+            echo "| Linux (64-bit) | \`.AppImage\`, \`.deb\` (Debian, Ubuntu) or \`.rpm\` (Fedora) |"
+            if [[ "$SIGNED_ANDROID" == "true" ]]; then
+              echo "| Android 7.0 or later | \`KhataOS_${LABEL}_android_universal.apk\` |"
+            else
+              echo "| Android 7.0 or later | Not installable yet: see below. |"
+            fi
+            echo "| iPhone and iPad | Not available yet. [Build from source](https://github.com/khataos/khataos/blob/main/docs/mobile.md). |"
+            echo
+            echo "\`SHA256SUMS.txt\` lists the SHA-256 checksum of every file, so you can check your download."
+            echo
+            echo "KhataOS is in alpha. [Back up your company files](https://github.com/khataos/khataos/blob/main/docs/guide/backup.md) before you update."
+            echo
+            if [[ "$SIGNED_MACOS" != "true" || "$SIGNED_WINDOWS" != "true" || "$SIGNED_ANDROID" != "true" ]]; then
+              echo "### Unsigned builds"
+              echo
+              echo "Some files in this release are not signed yet. The [install guide]($INSTALL_GUIDE) shows each step."
+              echo
+              if [[ "$SIGNED_WINDOWS" != "true" ]]; then
+                echo "- **Windows:** SmartScreen says \"Windows protected your PC\". Click **More info**, then **Run anyway**."
+              fi
+              if [[ "$SIGNED_MACOS" != "true" ]]; then
+                echo "- **macOS:** the app is not notarised by Apple, so macOS won't open it the first time. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**."
+              fi
+              if [[ "$SIGNED_ANDROID" != "true" ]]; then
+                echo "- **Android:** \`KhataOS_${LABEL}_android_universal-unsigned.apk\` is **unsigned**, and Android won't install an unsigned APK. It is here for people who sign it themselves with \`apksigner\`. A signed APK comes in a later release."
+              fi
+            fi
+          } > "$notes"
+
+          args=(--draft --title "KhataOS $TAG" --notes-file "$notes" --target "$GITHUB_SHA")
+          if [[ "$TAG" == *-* ]]; then args+=(--prerelease); fi
+          gh release create "$TAG" "${args[@]}"
+          id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+            --jq ".[] | select(.tag_name == \"$TAG\" and .draft) | .id")
+          id=${id%%$'\n'*}
+          echo "Created draft release $id"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+
+  desktop:
+    needs: prepare
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows
+            runner: windows-latest
+            args: ""
+            rust_targets: ""
+          - name: macos
+            runner: macos-latest
+            args: --target universal-apple-darwin
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+          # 22.04, not latest: an AppImage only runs on systems whose glibc is
+          # at least as new as the one it was built on.
+          - name: linux
+            runner: ubuntu-22.04
+            args: ""
+            rust_targets: ""
+    runs-on: ${{ matrix.runner }}
+    env:
+      HAS_WINDOWS_CERT: ${{ secrets.WINDOWS_CERTIFICATE != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux deps for Tauri
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.20.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_targets }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.name }}
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: apps/desktop
+
+      # The Tauri CLI signs when APPLE_CERTIFICATE is set and notarises when
+      # the notarisation variables are set. An empty variable still counts as
+      # set, so only the secrets that exist are passed on.
+      - name: macOS signing
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          put() {  # put NAME VALUE: pass a variable on to the later steps
+            local eof="EOF_$RANDOM$RANDOM"
+            { echo "$1<<$eof"; echo "$2"; echo "$eof"; } >> "$GITHUB_ENV"
+          }
+          if [[ -z "$APPLE_CERTIFICATE" ]]; then
+            # Ad hoc signature: no Apple account needed. Without it the bundle
+            # is unsealed and macOS calls the downloaded app "damaged".
+            echo "No APPLE_CERTIFICATE: ad hoc signing, not notarised."
+            put APPLE_SIGNING_IDENTITY "-"
+            exit 0
+          fi
+          put APPLE_CERTIFICATE "$APPLE_CERTIFICATE"
+          put APPLE_CERTIFICATE_PASSWORD "$APPLE_CERTIFICATE_PASSWORD"
+          if [[ -n "$APPLE_SIGNING_IDENTITY" ]]; then put APPLE_SIGNING_IDENTITY "$APPLE_SIGNING_IDENTITY"; fi
+          if [[ -n "$APPLE_ID" && -n "$APPLE_PASSWORD" && -n "$APPLE_TEAM_ID" ]]; then
+            echo "Signing with Developer ID; notarising with an Apple ID."
+            put APPLE_ID "$APPLE_ID"
+            put APPLE_PASSWORD "$APPLE_PASSWORD"
+            put APPLE_TEAM_ID "$APPLE_TEAM_ID"
+          elif [[ -n "$APPLE_API_ISSUER" && -n "$APPLE_API_KEY" && -n "$APPLE_API_PRIVATE_KEY" ]]; then
+            echo "Signing with Developer ID; notarising with an App Store Connect API key."
+            key="$RUNNER_TEMP/AuthKey_$APPLE_API_KEY.p8"
+            printf '%s\n' "$APPLE_API_PRIVATE_KEY" > "$key"
+            put APPLE_API_ISSUER "$APPLE_API_ISSUER"
+            put APPLE_API_KEY "$APPLE_API_KEY"
+            put APPLE_API_KEY_PATH "$key"
+          else
+            echo "::warning::Signing with Developer ID, but no notarisation secrets: macOS will still warn users."
+          fi
+
+      - name: Windows signing
+        id: winsign
+        if: runner.os == 'Windows' && env.HAS_WINDOWS_CERT == 'true'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'khataos.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $password = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $password
+          Remove-Item $pfx
+          # Merged over tauri.conf.json for this build only (tauri build --config).
+          $config = @{ bundle = @{ windows = @{
+            certificateThumbprint = $cert.Thumbprint
+            digestAlgorithm = 'sha256'
+            timestampUrl = 'http://timestamp.digicert.com'
+          } } } | ConvertTo-Json -Depth 5
+          $path = (Join-Path $env:RUNNER_TEMP 'tauri.signing.json') -replace '\\', '/'
+          Set-Content -Path $path -Value $config
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "args=--config $path"
+
+      - uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tauriScript: pnpm tauri
+          args: ${{ matrix.args }} ${{ steps.winsign.outputs.args }}
+          releaseId: ${{ needs.prepare.outputs.release_id }}
+          # KhataOS_0.1.0-alpha.1_x64-setup.exe, …_universal.dmg, …_amd64.deb
+          releaseAssetNamePattern: KhataOS_${{ needs.prepare.outputs.label }}_[arch][setup][ext]
+          uploadUpdaterJson: false
+          retryAttempts: 1
+
+  android:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      NDK_VERSION: 28.2.13676358
+      BUILD_TOOLS_VERSION: 37.0.0
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v4
+        with:
+          # Keep in step with NDK_VERSION and BUILD_TOOLS_VERSION above, and with
+          # compileSdk in gen/android/app/build.gradle.kts.
+          packages: platform-tools platforms;android-37.0 build-tools;37.0.0 ndk;28.2.13676358
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.20.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-android
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: apps/desktop
+
+      # gen/android/app/build.gradle.kts signs the release build only when
+      # KHATAOS_ANDROID_KEYSTORE is set (docs/mobile.md, "Android: Google Play").
+      - name: Android signing key
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          keystore="$RUNNER_TEMP/khataos-upload.jks"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          {
+            echo "KHATAOS_ANDROID_KEYSTORE=$keystore"
+            echo "KHATAOS_ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "KHATAOS_ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "KHATAOS_ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Build the APK
+        working-directory: apps/desktop
+        run: |
+          set -euo pipefail
+          export NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
+          # One APK for every phone (arm64 and armv7) and x86_64 (Chromebooks,
+          # emulators). Smaller per-ABI APKs: add --split-per-abi.
+          pnpm tauri android build --apk --ci --target aarch64 armv7 x86_64
+
+      - name: Upload the APK to the draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_ID: ${{ needs.prepare.outputs.release_id }}
+          LABEL: ${{ needs.prepare.outputs.label }}
+        run: |
+          set -euo pipefail
+          out=apps/desktop/src-tauri/gen/android/app/build/outputs/apk/universal/release
+          ls -l "$out"
+          if [[ "$HAS_KEYSTORE" == "true" ]]; then
+            apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_universal.apk"
+            cp "$out/app-universal-release.apk" "$apk"
+            "$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner" verify --print-certs "$apk"
+          else
+            apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_universal-unsigned.apk"
+            cp "$out/app-universal-release-unsigned.apk" "$apk"
+          fi
+          name=$(basename "$apk")
+          old=$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets" --paginate \
+            --jq ".[] | select(.name == \"$name\") | .id")
+          if [[ -n "$old" ]]; then gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old"; fi
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/vnd.android.package-archive" \
+            --data-binary @"$apk" \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$name" > /dev/null
+          echo "Uploaded $name ($(du -h "$apk" | cut -f1))"
+
+  # Runs even when one platform failed, so the draft's checksums always match
+  # what is on it. Re-running the failed jobs re-runs this one too.
+  checksums:
+    needs: [prepare, desktop, android]
+    if: ${{ !cancelled() && needs.prepare.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Write SHA256SUMS.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_ID: ${{ needs.prepare.outputs.release_id }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/assets"
+          mkdir -p "$dir"
+          cd "$dir"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets" --paginate \
+            --jq '.[] | "\(.id) \(.name)"' > "$RUNNER_TEMP/assets.txt"
+          while read -r id name; do
+            if [[ "$name" == "SHA256SUMS.txt" ]]; then
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$id"
+              continue
+            fi
+            curl --fail -sSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/octet-stream" \
+              -o "$name" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/assets/$id"
+          done < "$RUNNER_TEMP/assets.txt"
+          sha256sum -- * | sort -k2 > "$RUNNER_TEMP/SHA256SUMS.txt"
+          cat "$RUNNER_TEMP/SHA256SUMS.txt"
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: text/plain" \
+            --data-binary @"$RUNNER_TEMP/SHA256SUMS.txt" \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=SHA256SUMS.txt" > /dev/null
+          {
+            echo "### Draft release $TAG"
+            echo
+            echo "Review the files and notes, then publish: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/SHA256SUMS.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

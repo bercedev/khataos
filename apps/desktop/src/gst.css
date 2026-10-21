@@ -1,0 +1,43 @@
+/* GST returns: warnings above the GSTR-1 / GSTR-3B tables, notes below,
+   and the stacked GSTR-3B tables. */
+
+.gst-warnings {
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent);
+  background: color-mix(in srgb, var(--warn) 8%, var(--surface));
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  max-height: 160px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.gst-warn-title {
+  color: var(--warn);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.gst-warnings ul {
+  margin: 0;
+  padding-inline-start: 18px;
+}
+
+.gst-warnings li {
+  margin: 2px 0;
+}
+
+.gst-note {
+  color: var(--muted);
+  margin: 2px 2px 0;
+  max-width: 900px;
+}
+
+.gst-3b {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rtable td.num.gst-credit {
+  color: var(--ok);
+}

@@ -1,0 +1,37 @@
+/* Crash report review (src/crash.ts): the exact issue text, scrollable and selectable. */
+.dialog.crash-review {
+  width: min(44em, calc(100vw - 32px));
+  max-width: 44em;
+}
+
+.crash-preview {
+  max-height: 46vh;
+  overflow: auto;
+  margin: 8px 0 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg, transparent);
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  text-align: left;
+  unicode-bidi: plaintext;
+}
+
+.crash-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+}
+
+.crash-buttons button:focus-visible,
+.crash-buttons button:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: 1px;
+}
+
+.crash-open {
+  font-weight: 600;
+}

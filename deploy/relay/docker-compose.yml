@@ -1,0 +1,23 @@
+# KhataOS relay with Docker Compose (optional; see docs/deploy-relay.md, part C).
+# Put KHATA_ADMIN_KEY=<64 random hex characters> in a file named .env next to
+# this one (chmod 600 .env), then:  docker compose up -d --build
+# HTTPS comes from Caddy or Cloudflare Tunnel on the host, forwarding to 127.0.0.1:8787.
+services:
+  relay:
+    build:
+      context: ../..
+      dockerfile: deploy/relay/Dockerfile
+    restart: unless-stopped
+    environment:
+      KHATA_ADMIN_KEY: ${KHATA_ADMIN_KEY:?set KHATA_ADMIN_KEY in .env}
+      KHATA_OPEN_RELAY: "0"
+      KHATA_TRUST_PROXY: "1"
+      KHATA_RELAY_MAX_NEW_PER_IP_DAY: "20"
+      KHATA_RELAY_MAX_BYTES: "1073741824"
+    volumes:
+      - khata-data:/data
+    # Only this machine (its reverse proxy) can connect.
+    ports:
+      - "127.0.0.1:8787:8787"
+volumes:
+  khata-data:

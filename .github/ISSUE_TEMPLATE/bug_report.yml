@@ -1,0 +1,103 @@
+name: Bug report
+description: Something in KhataOS doesn't work as it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug.
+
+        > [!WARNING]
+        > **Never attach a real company file (`.khata`, `.khatapkg`), a real Tally export, or customer, supplier or employee data.** Issues are public. Reproduce the bug in a new test company with made-up names, GSTINs/VAT numbers and amounts, and attach that instead.
+
+        A security problem? Don't file it here: [report it privately](https://github.com/khataos/khataos/security/advisories/new).
+        A wrong tax rule or rate? Use the **Tax rule** form instead.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The release version, or the commit you built from (`git rev-parse --short HEAD`).
+      placeholder: "0.1.0 / a1b2c3d"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      placeholder: "Windows 11 24H2, macOS 26, Ubuntu 24.04, Android 15…"
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country pack
+      description: The country the test company was created for.
+      options:
+        - India
+        - United Arab Emirates
+        - Saudi Arabia
+        - Singapore
+        - United Kingdom
+        - Germany
+        - France
+        - Netherlands
+        - Spain
+        - United States
+        - Mexico
+        - Not country-specific
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Interface language
+      options:
+        - English
+        - Arabic
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Start from a new company if you can. Include the keys you pressed.
+      placeholder: |
+        1. Create a new company, country India.
+        2. On the home menu, V (Vouchers), then F8 Sales.
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead. Paste any error message as text.
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Screenshots of a test company are welcome. Blur or crop out anything real.
+  - type: checkboxes
+    id: no-real-data
+    attributes:
+      label: Data check
+      options:
+        - label: This report contains no real company files, customer data, credentials or tax IDs.
+          required: true

@@ -1,0 +1,43 @@
+/* e-Invoice and e-way bill export: the details form (a wider dialog with
+   hints) and the problems list. Builds on style.css (.dialog, .fstack). */
+
+.dialog.edialog {
+  width: min(600px, calc(100vw - 32px));
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  top: 45%;
+}
+
+.edialog-note {
+  margin: -2px 0 12px;
+  color: var(--muted);
+  font-size: max(var(--text-min), 12.5px);
+}
+
+.edialog-row {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 7px;
+}
+
+.edialog-row[hidden] {
+  display: none;
+}
+
+.edialog-row .flabel {
+  padding-top: 5px;
+}
+
+@media (max-width: 560px) {
+  .edialog-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+.rtable.eproblems td:first-child {
+  white-space: nowrap;
+  vertical-align: top;
+}

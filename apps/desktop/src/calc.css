@@ -1,0 +1,423 @@
+/* Calculator panel (calcpanel.ts, Ctrl+N). Docked at the inline end of the
+   work area: the screen narrows beside it rather than being covered, so the
+   voucher being typed stays readable. Logical properties put it on the left
+   in Arabic, next to the F-key panel. Phones: a bottom sheet with a keypad. */
+
+.shell {
+  --calc-w: 300px;
+}
+
+.shell.calc-open .work > .screen {
+  inset-inline-end: var(--calc-w);
+}
+
+/* Messages and form prompts move clear of the panel. */
+html:not(.mobile) .shell.calc-open .toasts,
+html:not(.mobile) .shell.calc-open .prompt.corner {
+  inset-inline-end: calc(180px + var(--calc-w));
+}
+
+.calc {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 6;
+  width: var(--calc-w);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-inline-start: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.calc[hidden] {
+  display: none;
+}
+
+.calc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-block: 6px;
+  padding-inline: 12px 8px;
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 600;
+}
+
+.calc-close {
+  padding: 1px 8px;
+  border: 1px solid color-mix(in srgb, var(--brand-ink) 35%, transparent);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font-size: max(var(--text-min), 12px);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.calc-close .key {
+  color: var(--topbar-key);
+}
+
+/* The tape: oldest at the top, the newest just above the box. */
+.calc-tape {
+  flex: 1 1 auto;
+  min-height: 64px;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  overflow-y: auto;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.calc-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 10px;
+  padding: 3px 12px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.calc-row:hover {
+  background: color-mix(in srgb, var(--sel) 50%, transparent);
+}
+
+.calc-row.cur {
+  background: var(--sel);
+  color: var(--sel-ink);
+  box-shadow: inset var(--edge) 0 0 var(--accent);
+}
+
+.calc-row-expr,
+.calc-row-val,
+.calc-expr,
+.calc-result,
+.calc-split dd {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.calc-row-expr {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  text-align: start;
+}
+
+.calc-row-val {
+  font-weight: 600;
+  text-align: right;
+}
+
+.calc-row-note {
+  grid-column: 1 / -1;
+  color: var(--accent-text);
+  font-size: max(var(--text-min), 11.5px);
+}
+
+.calc-row.cur .calc-row-note {
+  color: var(--sel-accent-text);
+}
+
+.calc-empty {
+  padding: 8px 12px;
+  color: var(--muted);
+  font-size: max(var(--text-min), 12.5px);
+  font-style: var(--italic);
+}
+
+.calc-now {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 6px;
+}
+
+.calc-expr.field {
+  height: 34px;
+  font-size: 15px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-expr.flash {
+  animation: calc-flash 0.45s;
+}
+
+@keyframes calc-flash {
+  0%,
+  60% {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 30%, transparent);
+  }
+}
+
+.calc-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 26px;
+  font-weight: 700;
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.calc-eq {
+  color: var(--accent-text);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* The last good answer, faded, while the expression is unfinished. */
+.calc-result.stale .calc-value {
+  opacity: 0.45;
+}
+
+.calc-result.blank .calc-value {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.calc-exact {
+  min-height: 1.2em;
+  color: var(--muted);
+  font-size: max(var(--text-min), 12px);
+  text-align: end;
+}
+
+.calc-msg {
+  min-height: 1.3em;
+  color: var(--warn);
+  font-size: max(var(--text-min), 12.5px);
+}
+
+.calc-tax {
+  margin: 0 12px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.calc-tax[hidden] {
+  display: none;
+}
+
+.calc-tax-head {
+  margin-bottom: 6px;
+  font-size: max(var(--text-min), 12.5px);
+  font-weight: 600;
+}
+
+.calc-rates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.calc-rate {
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: max(var(--text-min), 12px);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  cursor: pointer;
+}
+
+.calc-rate.cur {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 600;
+}
+
+.calc-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  margin: 0;
+  font-size: max(var(--text-min), 13px);
+}
+
+.calc-split dt {
+  color: var(--muted);
+}
+
+.calc-split dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-split .sub {
+  padding-inline-start: 12px;
+  font-size: max(var(--text-min), 12px);
+}
+
+.calc-split .ans {
+  padding-top: 3px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.calc-split dd.ans {
+  color: var(--brand);
+}
+
+.calc-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.calc-keys .bkey {
+  padding: 2px 7px;
+  font-size: max(var(--text-min), 11.5px);
+}
+
+.calc-hint {
+  align-self: center;
+  padding-inline: 4px;
+  color: var(--muted);
+  font-size: max(var(--text-min), 11.5px);
+}
+
+.calc-hint .key {
+  color: var(--brand);
+}
+
+.calc-keypad {
+  display: none;
+}
+
+/* -------------------------------------------------------------- phones */
+
+/* The title strip's calculator button (platform.ts), beside F1–F12. */
+html.mobile .m-calc {
+  flex: none;
+  min-width: 44px;
+  min-height: 40px;
+  padding-inline: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--brand);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html.mobile .m-calc[aria-pressed="true"] {
+  background: var(--sel);
+}
+
+html.mobile .calc {
+  position: fixed;
+  inset-block: auto 0;
+  inset-inline: 0;
+  z-index: 36; /* over a list's bottom sheet, under the F-key drawer */
+  width: auto;
+  max-height: 82dvh;
+  border-inline-start: 0;
+  border-top: 1px solid var(--line);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+html.mobile .calc-head {
+  border-radius: calc(var(--radius-sheet) - 1px) calc(var(--radius-sheet) - 1px) 0 0;
+}
+
+html.mobile .calc-tape {
+  flex: 0 1 auto;
+  max-height: 16dvh;
+  min-height: 0;
+}
+
+html.mobile .calc-expr.field {
+  height: 44px;
+  font-size: 18px;
+}
+
+html.mobile .calc-close {
+  min-height: 36px;
+  padding-inline: 12px;
+}
+
+html.mobile .calc-keypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 4px 12px 10px;
+}
+
+html.mobile .calc-pad {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+html.mobile .calc-pad.fn {
+  background: var(--surface-2);
+  font-size: 16px;
+}
+
+html.mobile .calc-pad.op {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+html.mobile .calc-pad.eq {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 700;
+}
+
+html.mobile .calc-pad.use {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+html.mobile .calc-pad:active {
+  filter: brightness(0.92);
+}
+
+/* With no hardware keyboard the keypad is the way in; the chord hints go. */
+html.mobile.touch:not(.hwkeys) .calc-keys,
+html.mobile.touch:not(.hwkeys) .calc-close .key {
+  display: none;
+}
+
+/* The screen scrolls clear of the sheet; messages move above it. */
+html.mobile .shell.calc-open .work > .screen {
+  inset-inline-end: 0;
+  padding-bottom: 72dvh;
+}
+
+html.mobile .shell.calc-open .toasts {
+  top: calc(104px + env(safe-area-inset-top));
+  bottom: auto;
+}

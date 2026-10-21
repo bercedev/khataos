@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Main and print windows: core defaults, the title bar following the theme's light or dark mode (set-theme), and file dialogs (open Tally XML, save CSV). App commands are allowed by default.",
+  "windows": ["main", "print"],
+  "permissions": ["core:default", "core:window:allow-set-theme", "dialog:allow-open", "dialog:allow-save"]
+}

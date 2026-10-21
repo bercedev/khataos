@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written sample in the shape of a TallyPrime "List of Accounts > All Masters > XML (Data Interchange)" export
+     of a small trading company with inventory. Fictional data. -->
+<ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Kiran Hardware</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <!-- Ledgers. Opening stock (8,050.00) balances the ledger openings, as in Tally. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Cash" RESERVEDNAME="">
+      <PARENT>Cash-in-Hand</PARENT>
+      <OPENINGBALANCE>-50000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Capital A/c" RESERVEDNAME="">
+      <PARENT>Capital Account</PARENT>
+      <OPENINGBALANCE>58050.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Nikhil Stores" RESERVEDNAME="">
+      <PARENT>Sundry Debtors</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Ganesh Metals" RESERVEDNAME="">
+      <PARENT>Sundry Creditors</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Sales" RESERVEDNAME="">
+      <PARENT>Sales Accounts</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Purchase" RESERVEDNAME="">
+      <PARENT>Purchase Accounts</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Output GST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Input GST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- A custom voucher type under Stock Journal. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Factory Transfer" RESERVEDNAME="">
+      <PARENT>Stock Journal</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+
+    <!-- Units: decimals given, decimals left to the data (mtr), and a compound unit. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="Nos" RESERVEDNAME="">
+      <NAME>Nos</NAME>
+      <ORIGINALNAME>Numbers</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+      <DECIMALPLACES> 0</DECIMALPLACES>
+     </UNIT>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="kg" RESERVEDNAME="">
+      <NAME>kg</NAME>
+      <ORIGINALNAME>Kilograms</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+      <DECIMALPLACES> 3</DECIMALPLACES>
+     </UNIT>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="mtr" RESERVEDNAME="">
+      <NAME>mtr</NAME>
+      <ORIGINALNAME>Metres</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+     </UNIT>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="Box" RESERVEDNAME="">
+      <NAME>Box</NAME>
+      <ORIGINALNAME>Boxes</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+      <DECIMALPLACES> 0</DECIMALPLACES>
+     </UNIT>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="Box of 10 Nos" RESERVEDNAME="">
+      <NAME>Box of 10 Nos</NAME>
+      <BASEUNITS>Box</BASEUNITS>
+      <ADDITIONALUNITS>Nos</ADDITIONALUNITS>
+      <CONVERSION> 10</CONVERSION>
+      <ISSIMPLEUNIT>No</ISSIMPLEUNIT>
+     </UNIT>
+    </TALLYMESSAGE>
+
+    <!-- Stock groups: children listed before parents, and a loop. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP NAME="Screws" RESERVEDNAME="">
+      <PARENT>Fasteners</PARENT>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP NAME="Fasteners" RESERVEDNAME="">
+      <PARENT>Hardware</PARENT>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP NAME="Hardware" RESERVEDNAME="">
+      <PARENT/>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP RESERVEDNAME="">
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>Paint</NAME>
+        <NAME>Paints</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+      <PARENT>&#4; Primary</PARENT>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP NAME="Loop A" RESERVEDNAME="">
+      <PARENT>Loop B</PARENT>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKGROUP NAME="Loop B" RESERVEDNAME="">
+      <PARENT>Loop A</PARENT>
+     </STOCKGROUP>
+    </TALLYMESSAGE>
+
+    <!-- Godowns: Tally's own Main Location is where stock without a godown sits. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GODOWN NAME="Main Location" RESERVEDNAME="Main Location">
+      <PARENT/>
+     </GODOWN>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GODOWN NAME="Shelf 2" RESERVEDNAME="">
+      <PARENT>Back Store</PARENT>
+     </GODOWN>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GODOWN NAME="Back Store" RESERVEDNAME="">
+      <PARENT>&#4; Primary</PARENT>
+     </GODOWN>
+    </TALLYMESSAGE>
+
+    <!-- Stock items. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Wood Screw 25mm" RESERVEDNAME="">
+      <PARENT>Screws</PARENT>
+      <BASEUNITS>Nos</BASEUNITS>
+      <ADDITIONALUNITS/>
+      <OPENINGBALANCE> 1000 Nos</OPENINGBALANCE>
+      <OPENINGVALUE>-2000.00</OPENINGVALUE>
+      <OPENINGRATE>2.00/Nos</OPENINGRATE>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <HSNCODE>7318</HSNCODE>
+      </GSTDETAILS.LIST>
+      <BATCHALLOCATIONS.LIST>
+       <GODOWNNAME>Main Location</GODOWNNAME>
+       <BATCHNAME>Primary Batch</BATCHNAME>
+       <OPENINGBALANCE> 1000 Nos</OPENINGBALANCE>
+       <OPENINGVALUE>-2000.00</OPENINGVALUE>
+      </BATCHALLOCATIONS.LIST>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Steel Wire" RESERVEDNAME="">
+      <PARENT>Hardware</PARENT>
+      <BASEUNITS>kg</BASEUNITS>
+      <OPENINGBALANCE> 50.500 kg</OPENINGBALANCE>
+      <OPENINGVALUE>-5050.00</OPENINGVALUE>
+      <OPENINGRATE>100.00/kg</OPENINGRATE>
+      <BATCHALLOCATIONS.LIST>
+       <GODOWNNAME>Main Location</GODOWNNAME>
+       <BATCHNAME>Primary Batch</BATCHNAME>
+       <OPENINGBALANCE> 30.500 kg</OPENINGBALANCE>
+       <OPENINGVALUE>-3050.00</OPENINGVALUE>
+      </BATCHALLOCATIONS.LIST>
+      <BATCHALLOCATIONS.LIST>
+       <GODOWNNAME>Back Store</GODOWNNAME>
+       <BATCHNAME>Primary Batch</BATCHNAME>
+       <OPENINGBALANCE> 20 kg</OPENINGBALANCE>
+       <OPENINGVALUE>-2000.00</OPENINGVALUE>
+      </BATCHALLOCATIONS.LIST>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <!-- Value left blank: taken from quantity x rate. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Copper Pipe" RESERVEDNAME="">
+      <PARENT>Hardware</PARENT>
+      <BASEUNITS>mtr</BASEUNITS>
+      <OPENINGBALANCE> 12.5 mtr</OPENINGBALANCE>
+      <OPENINGRATE>80.00/mtr</OPENINGRATE>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <!-- Its unit has no UNIT master in this file; parent given by the group's alias. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Wall Paint" RESERVEDNAME="">
+      <PARENT>Paints</PARENT>
+      <BASEUNITS>ltr</BASEUNITS>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Hinge Box" RESERVEDNAME="">
+      <PARENT>Hardware</PARENT>
+      <BASEUNITS>Box of 10 Nos</BASEUNITS>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Orphan Item" RESERVEDNAME="">
+      <PARENT>Loop A</PARENT>
+      <BASEUNITS>Nos</BASEUNITS>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+   </REQUESTDATA>
+  </IMPORTDATA>
+ </BODY>
+</ENVELOPE>

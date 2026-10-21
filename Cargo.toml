@@ -1,0 +1,36 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "apps/desktop/src-tauri"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+repository = "https://github.com/khataos/khataos"
+publish = false
+license = "AGPL-3.0-or-later"
+
+[workspace.dependencies]
+khata-core = { path = "crates/khata-core" }
+khata-compliance = { path = "crates/khata-compliance" }
+khata-in = { path = "crates/khata-in" }
+khata-ae = { path = "crates/khata-ae" }
+khata-sa = { path = "crates/khata-sa" }
+khata-sg = { path = "crates/khata-sg" }
+khata-gb = { path = "crates/khata-gb" }
+khata-us = { path = "crates/khata-us" }
+khata-mx = { path = "crates/khata-mx" }
+khata-de = { path = "crates/khata-de" }
+khata-en16931 = { path = "crates/khata-en16931" }
+khata-fr = { path = "crates/khata-fr" }
+khata-nl = { path = "crates/khata-nl" }
+khata-es = { path = "crates/khata-es" }
+chrono = { version = "0.4", features = ["serde"] }
+hex = "0.4"
+rust_decimal = { version = "1", features = ["serde-with-str"] }
+rust_decimal_macros = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+uuid = { version = "1", features = ["v4", "v5", "v7", "serde"] }

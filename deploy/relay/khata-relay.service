@@ -1,0 +1,52 @@
+# KhataOS relay as a systemd service (Linux). See docs/deploy-relay.md.
+#
+#   sudo useradd --system --home-dir /var/lib/khata-relay --shell /usr/sbin/nologin khata
+#   sudo install -m 0755 khata-server /usr/local/bin/khata-server
+#   sudo install -d -m 0700 /etc/khata-relay
+#   sudo sh -c 'umask 077; printf "KHATA_ADMIN_KEY=%s\n" "$(openssl rand -hex 32)" > /etc/khata-relay/env'
+#   sudo cp khata-relay.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now khata-relay
+#
+# Data: /var/lib/khata-relay (server.db). Logs: journalctl -u khata-relay
+
+[Unit]
+Description=KhataOS relay (end-to-end encrypted sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=khata
+Group=khata
+ExecStart=/usr/local/bin/khata-server
+# The admin key lives here (KHATA_ADMIN_KEY=...), readable only by root.
+EnvironmentFile=/etc/khata-relay/env
+Environment=KHATA_DATA_DIR=/var/lib/khata-relay
+# Only the reverse proxy (Caddy or cloudflared) on this machine connects.
+Environment=KHATA_BIND=127.0.0.1:8787
+# 1: anyone with the address may create encrypted companies, within the
+# limits below. 0: only with the sign-up (admin) key.
+Environment=KHATA_OPEN_RELAY=0
+# The proxy tells us the client's address; safe because we bind to 127.0.0.1.
+Environment=KHATA_TRUST_PROXY=1
+Environment=KHATA_RELAY_MAX_NEW_PER_IP_DAY=20
+Environment=KHATA_RELAY_MAX_BYTES=1073741824
+# Environment=KHATA_RELAY_MAX_TOTAL_BYTES=50000000000
+StateDirectory=khata-relay
+StateDirectoryMode=0700
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the server needs nothing but its data folder and the network.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

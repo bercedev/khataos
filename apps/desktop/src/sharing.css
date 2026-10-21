@@ -1,0 +1,163 @@
+/* Sharing screens: configuration lists (TallyPrime-style "List of
+   Configurations"), the invite code card and access lists. */
+
+.cfg {
+  max-width: 760px;
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cfg-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.cfg-title {
+  padding: 8px 14px;
+  font-weight: 700;
+  color: var(--brand);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.cfg-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(200px, 1.2fr);
+  gap: 16px;
+  padding: var(--cell-py) 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  cursor: default;
+}
+
+.cfg-row:last-child {
+  border-bottom: none;
+}
+
+.cfg-row.cur {
+  background: var(--sel);
+  color: var(--sel-ink);
+  box-shadow: inset var(--edge) 0 0 var(--accent);
+}
+
+.cfg-row.info {
+  color: var(--muted);
+}
+
+.cfg-section {
+  padding: 8px 14px 3px;
+  font-size: max(var(--text-min), 11.5px);
+  text-transform: uppercase;
+  letter-spacing: calc(0.4px * var(--tracking));
+  color: var(--muted);
+}
+
+.cfg-value {
+  font-style: var(--italic);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cfg-value.warn {
+  color: var(--warn);
+}
+
+.cfg-value.ok {
+  color: var(--ok);
+}
+
+.cfg-hint {
+  font-size: max(var(--text-min), 12.5px);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cfg-hint b {
+  color: var(--ink);
+}
+
+.invite-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 17px;
+  line-height: 1.45;
+  padding: 14px;
+  background: var(--surface-2);
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.invite-copy {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.code-input {
+  width: 100%;
+  min-height: 96px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid var(--field-line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.code-input:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: 1px;
+}
+
+div.choice {
+  position: fixed;
+  inset-inline-end: 180px;
+  bottom: 46px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  min-width: 280px;
+}
+
+.choice-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.choice-row.cur {
+  background: var(--sel);
+  color: var(--sel-ink);
+  font-weight: 600;
+}
+
+.choice-row .muted {
+  font-weight: 400;
+}
+
+/* Right to left: an invite code reads left to right; the paste box takes
+   each line's direction from its text (an Arabic placeholder, a Latin code). */
+[dir="rtl"] .invite-code {
+  direction: ltr;
+}
+
+[dir="rtl"] .code-input {
+  unicode-bidi: plaintext;
+}

@@ -1,0 +1,85 @@
+name: Tax rule
+description: A tax rule, rate, threshold, check or return box that is wrong or missing.
+labels: ["tax-rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tax rules in KhataOS must rest on a **primary source**: the law, a regulation, a notification or circular, or the tax authority's own guidance, form or API specification. Blog posts and forum answers are useful leads, but they can't be the only source.
+
+        Use made-up figures in examples. Never paste real invoices, tax IDs or customer data.
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country
+      options:
+        - India
+        - United Arab Emirates
+        - Saudi Arabia
+        - Singapore
+        - United Kingdom
+        - Germany
+        - France
+        - Netherlands
+        - Spain
+        - United States
+        - Mexico
+        - Another country
+    validations:
+      required: true
+  - type: input
+    id: area
+    attributes:
+      label: Area
+      description: The tax and the part of it.
+      placeholder: "GST place of supply, VAT 201 box 1, a TDS threshold, the ZATCA QR, MTD box 6…"
+    validations:
+      required: true
+  - type: textarea
+    id: rule
+    attributes:
+      label: The rule
+      description: State the rule in your own words, with the dates it applies from (and to).
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Official source (link)
+      description: A link to the primary source. Add the section, paragraph, table or page.
+      placeholder: "https://… (section / paragraph)"
+    validations:
+      required: true
+  - type: textarea
+    id: more-sources
+    attributes:
+      label: Other sources
+      description: Further official links, or secondary sources that explain the rule.
+  - type: textarea
+    id: current
+    attributes:
+      label: What KhataOS does now
+      description: The screen, report or file, and what it shows. A small worked example with made-up figures helps.
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What it should do
+      description: The correct result for the same example, and how the source supports it.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "0.1.0 / a1b2c3d"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: The source above is an official, primary source.
+          required: true
+        - label: This report contains no real customer data, invoices or tax IDs.
+          required: true

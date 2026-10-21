@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written sample in the shape of a TallyPrime "Export > Masters > XML (Data Interchange)" file. -->
+<ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Shah &amp; Sons</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Sundry Debtors" RESERVEDNAME="Sundry Debtors">
+      <PARENT>&#4; Current Assets</PARENT>
+      <ISSUBLEDGER>No</ISSUBLEDGER>
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>Sundry Debtors</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Suspense A/c" RESERVEDNAME="Suspense A/c">
+      <PARENT>&#4; Primary</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+    <!-- Child listed before its parent. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Mumbai Debtors" RESERVEDNAME="">
+      <PARENT>West Debtors</PARENT>
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>Mumbai Debtors</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Salary Accounts" RESERVEDNAME="">
+      <PARENT>Current A/cs</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="West Debtors" RESERVEDNAME="">
+      <PARENT>Sundry Debtors</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP RESERVEDNAME="">
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>Current A/cs</NAME>
+        <NAME>Current Accounts</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+      <PARENT>Bank Accounts</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Branch Assets" RESERVEDNAME="">
+      <PARENT>&#4; Primary</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <GROUP NAME="Orphans" RESERVEDNAME="">
+      <PARENT>No Such Group</PARENT>
+     </GROUP>
+    </TALLYMESSAGE>
+
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Sales GST" RESERVEDNAME="">
+      <PARENT>Sales</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Cash Payment" RESERVEDNAME="">
+      <PARENT>Payment</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Petty Cash" RESERVEDNAME="">
+      <PARENT>Cash Payment</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Customer Order" RESERVEDNAME="">
+      <PARENT>Sales Order</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Cash" RESERVEDNAME="">
+      <PARENT>Cash-in-Hand</PARENT>
+      <OPENINGBALANCE>-25000.00</OPENINGBALANCE>
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>Cash</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="HDFC Bank" RESERVEDNAME="">
+      <PARENT>Current Accounts</PARENT>
+      <OPENINGBALANCE>-1,00,000.00</OPENINGBALANCE>
+      <LANGUAGENAME.LIST>
+       <NAME.LIST TYPE="String">
+        <NAME>HDFC Bank</NAME>
+        <NAME>HDFC</NAME>
+       </NAME.LIST>
+      </LANGUAGENAME.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Ramesh Traders" RESERVEDNAME="">
+      <PARENT>Mumbai Debtors</PARENT>
+      <OPENINGBALANCE>15,000.00 Dr</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Suresh Suppliers" RESERVEDNAME="">
+      <PARENT>Sundry Creditors</PARENT>
+      <OPENINGBALANCE>20000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Capital A/c" RESERVEDNAME="">
+      <PARENT>Capital Account</PARENT>
+      <OPENINGBALANCE>₹ 1,30,000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Profit &amp; Loss A/c" RESERVEDNAME="Profit &amp; Loss A/c">
+      <PARENT>&#4; Primary</PARENT>
+      <OPENINGBALANCE>-10000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Sales" RESERVEDNAME="">
+      <PARENT>Sales Accounts</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Purchase" RESERVEDNAME="">
+      <PARENT>Purchase Accounts</PARENT>
+      <OPENINGBALANCE></OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Rent" RESERVEDNAME="">
+      <PARENT>Indirect Expenses</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Output Tax" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Lost Ledger" RESERVEDNAME="">
+      <PARENT>Orphans</PARENT>
+      <OPENINGBALANCE>-1.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+   </REQUESTDATA>
+  </IMPORTDATA>
+ </BODY>
+</ENVELOPE>

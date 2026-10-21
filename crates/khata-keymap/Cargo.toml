@@ -1,0 +1,13 @@
+[package]
+name = "khata-keymap"
+description = "Keyboard bindings, including a TallyPrime-compatible default map"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true

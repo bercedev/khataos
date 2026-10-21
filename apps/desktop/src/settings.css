@@ -1,0 +1,70 @@
+/* Settings screens: voucher numbering, company details, tax rates, godowns.
+   Built on the shared form and report classes in style.css. */
+
+.field.multiline {
+  height: auto;
+  min-height: calc(var(--row) * 3);
+  padding: 4px 8px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+/* A value set elsewhere (the state read from a GSTIN) */
+.field.locked {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* A two-way choice switched with Space (Sales / Purchases) */
+.field.choice {
+  cursor: default;
+  caret-color: transparent;
+}
+
+.fstatic {
+  padding-top: 4px;
+  font-weight: 600;
+}
+
+/* "Next number: 26-27/14" under the numbering fields */
+.vt-preview {
+  margin: 4px 0 2px;
+  font-size: 14px;
+}
+
+.vt-preview b {
+  font-variant-numeric: tabular-nums;
+  color: var(--brand);
+}
+
+.vt-warn {
+  color: var(--warn);
+  font-size: max(var(--text-min), 12.5px);
+  min-height: 17px;
+}
+
+.form .note {
+  max-width: 560px;
+}
+
+.opening-panel code,
+.form .note code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: max(var(--text-min), 12px);
+}
+
+/* Tax rate list: the row that adds a rate (left out of print and CSV) */
+.rtable tr.empty.addrow td {
+  text-align: start;
+  padding: 6px 10px;
+}
+
+.rtable td .status {
+  font-size: max(var(--text-min), 12px);
+  color: var(--muted);
+}
+
+/* Godown summary: batch rows under an item */
+.rtable tr.sub td:first-child {
+  color: var(--muted);
+}

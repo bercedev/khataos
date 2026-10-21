@@ -1,0 +1,265 @@
+/* Ratio Analysis and the Dashboard: key-figure tiles and inline-SVG charts.
+   Series colours are checked for colour-blind separation and contrast on the
+   surface in both modes; text always uses the ink tokens, never a series colour.
+   --series-1 is money in, --series-2 money out, --series-3 the cash & bank
+   line: each theme sets them (themes.css; scripts/theme-check.mjs checks them). */
+
+/* -------------------------------------------------------- Ratio Analysis */
+
+.rtable.ratios td.num {
+  width: 170px;
+}
+
+/* ------------------------------------------------------------- Dashboard */
+
+.dash-tiles {
+  display: grid;
+  /* At most five across: balances fill the first row, the period's results the second. */
+  grid-template-columns: repeat(auto-fill, minmax(max(180px, calc((100% - 32px) / 5)), 1fr));
+  gap: 8px;
+}
+
+.dash-tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 12px 6px;
+  cursor: default;
+  min-width: 0;
+}
+
+.dash-label {
+  font-size: max(var(--text-min), 13px);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.dash-value {
+  font-family: var(--font-num);
+  font-size: var(--fs-figure);
+  font-weight: var(--fw-figure);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 2px 0 1px;
+}
+
+/* "Net loss" / "Gross loss" in the label says it too: colour is never the only sign. */
+.dash-value.loss {
+  color: var(--neg);
+}
+
+.dash-sub,
+.dash-hint {
+  font-size: max(var(--text-min), 13px);
+  color: var(--muted);
+}
+
+/* The Enter hint shows only on the item under the cursor. */
+.dash-hint {
+  visibility: hidden;
+  margin-top: 2px;
+}
+
+.dash .rrow.cur .dash-hint {
+  visibility: visible;
+}
+
+.dash-tile.cur {
+  background: var(--sel);
+  color: var(--sel-ink);
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus);
+}
+
+.dash-charts {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.dash-chart {
+  grid-column: span 2;
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px 8px;
+  min-width: 0;
+  cursor: default;
+}
+
+.dash-chart.wide {
+  grid-column: span 3;
+}
+
+@media (max-width: 1100px) {
+  .dash-chart,
+  .dash-chart.wide {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 820px) {
+  .dash-chart,
+  .dash-chart.wide {
+    grid-column: span 6;
+  }
+}
+
+.dash-chart.cur {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus);
+}
+
+.dash-chead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  margin-bottom: 6px;
+}
+
+.dash-ctitle {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.dash-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: max(var(--text-min), 13px);
+  color: var(--ink);
+}
+
+.dash-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dash-key .sw {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--series-1);
+}
+
+.dash-key .sw.s2 {
+  background: var(--series-2);
+}
+
+.dash-key .sw.s3 {
+  height: 2px;
+  border-radius: 1px;
+  background: var(--series-3);
+}
+
+.dash-plot {
+  width: 100%;
+  min-height: 60px;
+}
+
+.dash-empty {
+  display: grid;
+  place-items: center;
+  min-height: 120px;
+  color: var(--muted);
+  font-size: max(var(--text-min), 13px);
+}
+
+/* Chart view: the table is kept for screen readers only. Table view: no drawing. */
+.dash-chart:not(.as-table) .dash-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dash-chart.as-table .dash-plot {
+  display: none;
+}
+
+.dash-chart.as-table .dash-table td.num {
+  width: auto;
+}
+
+/* --------------------------------------------------------------- SVG */
+
+svg.chart {
+  display: block;
+  font-family: var(--font);
+  overflow: visible;
+}
+
+svg.chart text {
+  font-size: max(var(--text-min), 13px);
+}
+
+svg.chart .tick {
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+svg.chart .label {
+  fill: var(--ink);
+}
+
+svg.chart .value {
+  fill: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+svg.chart .grid {
+  stroke: color-mix(in srgb, var(--line) 70%, transparent);
+  stroke-width: 1;
+}
+
+svg.chart .axis {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+svg.chart .hit {
+  fill: transparent;
+}
+
+svg.chart .band:hover .hit {
+  fill: color-mix(in srgb, var(--sel) 55%, transparent);
+}
+
+svg.chart path.s1 {
+  fill: var(--series-1);
+}
+
+svg.chart path.s2 {
+  fill: var(--series-2);
+}
+
+svg.chart path.line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+svg.chart path.line.s3 {
+  stroke: var(--series-3);
+}
+
+svg.chart circle.dot.s3 {
+  fill: var(--series-3);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.dash-chart.as-table .dash-legend {
+  display: none;
+}

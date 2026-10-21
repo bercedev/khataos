@@ -1,0 +1,16 @@
+# Caddy in front of the KhataOS relay: automatic HTTPS (Let's Encrypt).
+# Replace relay.example.in with your own name; its DNS A/AAAA record must
+# point at this server, and ports 80 and 443 must be open.
+# Install as /etc/caddy/Caddyfile, then: sudo systemctl reload caddy
+
+relay.example.in {
+	# Pushes are at most 8 MiB; refuse anything bigger at the door.
+	request_body {
+		max_size 10MB
+	}
+	# Caddy sets X-Forwarded-For to the client's address
+	# (the relay reads it with KHATA_TRUST_PROXY=1).
+	reverse_proxy 127.0.0.1:8787
+	encode gzip
+	# No access log: the relay needs no record of who connected when.
+}

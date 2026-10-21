@@ -1,0 +1,23 @@
+[package]
+name = "khata-package"
+description = "Encrypted, verifiable update files for sharing books without a server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+hex.workspace = true
+khata-core.workspace = true
+khata-seal = { path = "../khata-seal" }
+khata-store = { path = "../khata-store" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+chrono.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true

@@ -1,0 +1,21 @@
+[package]
+name = "khata-en16931"
+description = "EN 16931 (European e-invoice) semantic model, core business rules, UBL 2.1 / UN/CEFACT CII D16B writers (EN 16931, XRechnung 3.0, Peppol BIS Billing 3.0), Peppol PINT SG/AE and Factur-X PDF/A-3"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+chrono.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+# Factur-X PDF (src/facturx.rs): compresses the content, font and XML streams.
+flate2 = "1"
+
+[dev-dependencies]
+rust_decimal_macros.workspace = true
+# Only to check in tests that the writers' output is well-formed XML.
+quick-xml = "0.38.4"

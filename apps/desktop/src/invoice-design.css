@@ -1,0 +1,49 @@
+/* Company → Invoice design (screens/invoice_design.ts): the form and its
+   live preview side by side; one column on narrow screens. Logical
+   properties only, so Arabic mirrors. */
+
+.idesign {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.idesign .form.master {
+  max-width: none;
+}
+
+.idesign-preview {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.idesign-preview-page {
+  margin-block-start: 8px;
+  max-height: calc(100vh - 180px);
+  overflow: auto;
+}
+
+.field.idesign-choice {
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+}
+
+.idesign-screen .fsection-title {
+  margin-block-start: 14px;
+}
+
+@media (max-width: 900px) {
+  .idesign {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .idesign-preview {
+    position: static;
+  }
+}

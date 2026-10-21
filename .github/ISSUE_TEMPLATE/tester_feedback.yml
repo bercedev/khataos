@@ -1,0 +1,106 @@
+name: Tester feedback
+description: For accountants, CAs, bookkeepers and businesses trying KhataOS.
+labels: ["tester-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying KhataOS. The tester guide is [docs/testing.md](https://github.com/khataos/khataos/blob/main/docs/testing.md).
+
+        > [!WARNING]
+        > Feedback is public. **Don't share real company files, customer or employee names, tax IDs, bank details or real figures.** Describe what you did with a test company.
+
+        Found a clear bug? The **Bug report** form gets it fixed faster. A wrong tax rule? Use the **Tax rule** form.
+  - type: dropdown
+    id: role
+    attributes:
+      label: You are
+      options:
+        - Chartered accountant / CPA / tax practitioner
+        - Accountant or bookkeeper
+        - Business owner
+        - Accounting student
+        - Developer
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: business
+    attributes:
+      label: Type of business you tested for
+      placeholder: "Trading, manufacturing, services, retail, a CA firm with many clients…"
+    validations:
+      required: true
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country
+      options:
+        - India
+        - United Arab Emirates
+        - Saudi Arabia
+        - Singapore
+        - United Kingdom
+        - Germany
+        - France
+        - Netherlands
+        - Spain
+        - United States
+        - Mexico
+        - Another country
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Device
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "0.1.0 / a1b2c3d"
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you tried
+      description: The vouchers, reports, returns or features you used.
+      placeholder: |
+        - Created a company, ledgers and 20 sales and purchase vouchers
+        - Ran GSTR-1 and GSTR-3B for one month
+        - Imported a Tally XML export of a test company
+    validations:
+      required: true
+  - type: textarea
+    id: worked
+    attributes:
+      label: What worked well
+  - type: textarea
+    id: confusing
+    attributes:
+      label: What was confusing, wrong or slow
+      description: Where you got stuck, figures you didn't trust, or wording that didn't make sense.
+    validations:
+      required: true
+  - type: textarea
+    id: tally
+    attributes:
+      label: Compared with TallyPrime
+      description: If you use TallyPrime, where did KhataOS behave differently from what your hands expected? Which keys or workflows were missing? Describe it in your own words; please don't attach Tally screenshots.
+  - type: dropdown
+    id: would-use
+    attributes:
+      label: Would you use it for real books once it's out of alpha?
+      options:
+        - "Yes"
+        - Maybe, if the issues above are fixed
+        - "No"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else

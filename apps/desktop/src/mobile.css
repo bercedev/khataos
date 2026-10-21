@@ -1,0 +1,464 @@
+/*
+ * Phones and tablets (Android / iOS builds). Every rule is scoped under
+ * `html.mobile`, which src/platform.ts sets only on a mobile OS, so the
+ * desktop layout never changes. Logical properties keep Arabic (RTL) right;
+ * safe-area insets are physical, so they pad physical sides.
+ */
+
+html.mobile,
+html.mobile body {
+  height: 100%;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------ L1 zones */
+
+html.mobile .shell {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* With a larger text size (body zoom) viewport units grow too; the body's own height doesn't. */
+html.mobile.zoomed .shell {
+  height: 100%;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Top bar: brand mark only, search, and a menu that scrolls sideways. */
+html.mobile .topbar {
+  min-height: 48px;
+  gap: 8px;
+  padding-inline: 8px;
+}
+
+html.mobile .brand > span:last-child {
+  display: none;
+}
+
+html.mobile .search {
+  flex: 0 1 140px;
+  min-width: 88px;
+  height: 36px;
+}
+
+html.mobile .brand {
+  flex: none;
+}
+
+/* The menu takes the room left after the brand and search, and scrolls
+   sideways inside it instead of pushing the top bar wider than the screen. */
+html.mobile .menu {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-inline-start: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.mobile .menu::-webkit-scrollbar {
+  display: none;
+}
+
+html.mobile .menu-item {
+  flex: none;
+  min-height: 44px;
+  padding-inline: 10px;
+}
+
+/* ------------------------------------------ shortcut hints on touch */
+
+/* With no keyboard, "Ctrl+A: Accept" on a button is noise: the button is
+   the way in. platform.ts wraps the ": " after a chord in .m-sep, and adds
+   `hwkeys` once a hardware keyboard is used, which brings the hints back.
+   The F-key drawer keeps its F1–F12 names (they are the feature names). */
+html.mobile.touch:not(.hwkeys) .menu-item > .key,
+html.mobile.touch:not(.hwkeys) .bkey > .key,
+html.mobile.touch:not(.hwkeys) .m-sep,
+html.mobile.touch:not(.hwkeys) .pick-row.action > .pick-sub,
+html.mobile.touch:not(.hwkeys) .pick-row.create > .pick-sub {
+  display: none;
+}
+
+/* Title strip: [Back] title … company [F1–F12]. */
+html.mobile .titlestrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding-inline: 6px;
+}
+
+html.mobile .title-left,
+html.mobile .title-centre {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.mobile .title-left {
+  flex: 1 1 auto;
+}
+
+html.mobile .title-centre {
+  flex: 0 1 auto;
+  max-width: 40%;
+}
+
+html.mobile .title-right {
+  display: none;
+}
+
+html.mobile .m-back,
+html.mobile .m-fkeys {
+  flex: none;
+  min-width: 44px;
+  min-height: 40px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--brand);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+html.mobile .m-back::before {
+  content: "‹ ";
+}
+
+html.mobile[dir="rtl"] .m-back::before {
+  content: "› ";
+}
+
+html.mobile .m-fkeys[aria-expanded="true"] {
+  background: var(--sel);
+}
+
+/* The work area scrolls; the bottom bar sits above the home indicator. */
+html.mobile .work {
+  grid-column: 1;
+}
+
+html.mobile .screen {
+  padding: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.mobile .bottombar {
+  grid-column: 1;
+  grid-row: 4;
+  min-height: 56px;
+  gap: 6px;
+  padding: 6px 8px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.mobile .bottombar::-webkit-scrollbar {
+  display: none;
+}
+
+html.mobile .bkey,
+html.mobile .bottombar.tight .bkey {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+html.mobile .bkey:active:not(:disabled),
+html.mobile .fkey:active:not(:disabled) {
+  background: var(--sel);
+}
+
+/* F-key side panel → drawer opened by the F1–F12 button. */
+html.mobile .rightbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  inset-inline-end: 0;
+  width: min(320px, 86vw);
+  z-index: 45;
+  gap: 6px;
+  padding: 10px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+html.mobile.fkeys-open .rightbar {
+  display: flex;
+}
+
+html.mobile .m-scrim {
+  display: none;
+}
+
+html.mobile.fkeys-open .m-scrim {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  background: var(--scrim);
+}
+
+html.mobile .fkey {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+html.mobile .fkey.sub {
+  min-height: 40px;
+  padding: 8px 12px;
+}
+
+/* ------------------------------------------------------------- forms */
+
+/* 16px stops iOS zooming into a focused field. */
+html.mobile input,
+html.mobile select,
+html.mobile textarea {
+  font-size: 16px;
+}
+
+html.mobile .field {
+  height: 40px;
+}
+
+html.mobile .frow {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+html.mobile .flabel {
+  padding-top: 0;
+}
+
+html.mobile .famount,
+html.mobile .opening-panel,
+html.mobile .form.master,
+html.mobile .launcher.directory {
+  max-width: none;
+}
+
+html.mobile .dialog-row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+html.mobile .home {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+/* Startup: a compact brand line above the company panel. */
+html.mobile .startup {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 14px;
+  margin-top: 0;
+}
+
+html.mobile .startup-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 12px;
+}
+
+html.mobile .startup-mark {
+  width: 40px;
+  height: 40px;
+}
+
+html.mobile .startup-hero h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+html.mobile .startup-hero p {
+  grid-column: 1 / -1;
+  max-width: none;
+  margin: 0;
+}
+
+html.mobile .home-item {
+  min-height: 44px;
+  align-items: center;
+}
+
+html.mobile .yn-row {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+/* Vouchers: one column of header fields, narrower amount columns. */
+html.mobile .vmain {
+  max-width: none;
+}
+
+html.mobile .vhead,
+html.mobile .vhead-left,
+html.mobile .vhead-right {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+html.mobile .vaccount {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+html.mobile .vgrid.double {
+  grid-template-columns: 44px minmax(0, 1fr) 96px 96px;
+  gap: 6px;
+}
+
+html.mobile .vgrid.single {
+  grid-template-columns: minmax(0, 1fr) 112px;
+  gap: 6px;
+}
+
+/* Narration above the totals, so the footer fits 320 px and larger text (WCAG 1.4.10). */
+html.mobile .vfoot {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+html.mobile .vtotals {
+  justify-content: end;
+  min-width: 0;
+}
+
+html.mobile .vtotals .total {
+  min-width: 0;
+}
+
+/* Company facts: the label column shrinks before the values overflow. */
+html.mobile .home-facts {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+}
+
+html.mobile .home-facts dd {
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------- list pickers: sheets */
+
+/* Touch-sized rows. picker.ts reads --row to page, so the two stay in step. */
+html.mobile .picker {
+  --row: 44px;
+}
+
+/* The side list becomes a full-width bottom sheet; the field it filters
+   stays visible above it (platform.ts scrolls it into view). */
+html.mobile .picker.side {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  inset-inline: 0;
+  width: auto;
+  height: min(58dvh, 560px);
+  z-index: 35;
+  border-width: 1px 0 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+html.mobile .picker.side .pick-head {
+  border-radius: calc(var(--radius-sheet) - 1px) calc(var(--radius-sheet) - 1px) 0 0;
+}
+
+html.mobile .screen:has(> .picker.side) {
+  overflow: auto;
+  padding-bottom: 60dvh;
+}
+
+html.mobile .screen:has(> .picker.side) > .vmain {
+  min-height: 0;
+}
+
+/* Find / Go To: a full-screen sheet. */
+html.mobile .launcher.find > .picker,
+html.mobile .launcher.goto {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  margin: 0;
+  border-radius: 0;
+}
+
+html.mobile .picker.inline {
+  max-height: 60dvh;
+}
+
+/* -------------------------------------------- reports scroll sideways */
+
+html.mobile .report {
+  min-width: 0;
+}
+
+html.mobile .rhead {
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+html.mobile .screen table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.mobile .rtable th.num,
+html.mobile .rtable td.num {
+  width: auto;
+  min-width: 96px;
+}
+
+/* --------------------------------------------- overlays, prompts, toasts */
+
+html.mobile .screen.overlay > .card {
+  max-width: none;
+  margin: 8px 0 0;
+  margin-inline: 0;
+}
+
+html.mobile .prompt,
+html.mobile .dialog {
+  max-width: calc(100vw - 24px);
+}
+
+html.mobile .prompt.corner {
+  inset-inline-end: 12px;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+html.mobile .toasts {
+  inset-inline: 12px;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  align-items: stretch;
+}
+
+html.mobile .toast {
+  max-width: none;
+}

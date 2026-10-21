@@ -1,0 +1,21 @@
+/* Sign-in and users: the sign-in panel and the list of users with the
+   one-line meaning of each role under it. */
+
+.startup.signin .startup-panel .field[type="password"] {
+  letter-spacing: 2px;
+}
+
+.cfg.users .cfg-hint p {
+  margin: 0 0 4px;
+}
+
+.cfg.users .role-line {
+  font-size: max(var(--text-min), 12px);
+}
+
+/* Switched off: a Yes / No answered with Y, N or Space. */
+.field.yesno {
+  width: 80px;
+  cursor: default;
+  caret-color: transparent;
+}

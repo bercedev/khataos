@@ -1,0 +1,61 @@
+name: Crash or problem report (from the app)
+description: Filled in by KhataOS's "Report a problem" or the crash prompt. Check it, then submit.
+title: "Crash: "
+labels: ["bug", "crash"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        KhataOS filled in this form on your device. Nothing was sent until you submit it here. The app took company data out of the error text first; see [what a report holds](https://github.com/khataos/khataos/blob/main/docs/crash-reporting.md).
+
+        > [!WARNING]
+        > **Issues are public. Never attach a company file (`.khata`, `.khatapkg`), a Tally export, a screenshot of real books, or customer, supplier or employee details.** Read the text below once more and delete anything that looks like a name, GSTIN/VAT number, PAN, phone number, email or amount.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Filled in by the app.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and architecture
+      description: Filled in by the app. Add the OS version if you know it (Windows 11, macOS 26, Android 15…).
+      placeholder: "windows x86_64"
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: desktop, android or ios.
+      placeholder: "desktop"
+    validations:
+      required: true
+  - type: input
+    id: country
+    attributes:
+      label: Country pack
+      description: The open company's country code (IN, AE, SA, SG, GB, DE, FR, NL, ES, US, MX), empty if none was open.
+      placeholder: "IN"
+  - type: input
+    id: language
+    attributes:
+      label: Display language
+      placeholder: "en"
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened
+      description: Say what you were doing, step by step, above the line. Below it are the crash details the app collected.
+    validations:
+      required: true
+  - type: checkboxes
+    id: no-company-data
+    attributes:
+      label: Before you submit
+      options:
+        - label: I read the report and it has no company data, and I haven't attached a company file.
+          required: true

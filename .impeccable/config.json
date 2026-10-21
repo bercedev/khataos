@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "apps/desktop/src/sharing.css"
+        ],
+        "createdAt": "2026-10-19T08:28:08.006Z",
+        "reason": "Claude (agent) decided: .cfg-row.cur inset accent is the keyboard list-cursor marker on a selected row, identical to the app-wide list cursor in style.css; functional, not a decorative card side-tab"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "apps/desktop/src/style.css"
+        ],
+        "createdAt": "2026-10-20T14:34:05.772Z",
+        "reason": "Claude (agent) decided: .pick-row / .home-item inline-start 3px bar is the keyboard list-cursor marker on the selected row (same sanctioned exception as sharing.css .cfg-row.cur); now written with logical border-inline-start for RTL; functional, not a decorative card side-tab"
+      }
+    ]
+  }
+}

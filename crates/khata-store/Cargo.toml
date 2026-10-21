@@ -1,0 +1,22 @@
+[package]
+name = "khata-store"
+description = "Local-first SQLite storage: an append-only, tamper-evident audit trail per company"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+khata-core.workspace = true
+rusqlite = { version = "0.37", features = ["bundled"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+chrono.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true

@@ -1,0 +1,4 @@
+/* Ledger form: rows that come and go (reason for an invalid tax ID). */
+.form .frow[hidden] {
+  display: none;
+}

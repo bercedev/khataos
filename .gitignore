@@ -1,0 +1,55 @@
+# Build outputs
+target/
+node_modules/
+dist/
+# Docs site (mkdocs build) and its local Python environment
+site/
+.venv/
+
+# Company data and shared books: never commit real or test company files
+*.khata
+*.khatapkg
+khata-data/
+
+# Mobile build outputs. The generated Android and iOS projects in
+# apps/desktop/src-tauri/gen are tracked (they carry the release signing
+# config); only what a build writes into them is ignored here and in their
+# own .gitignore files.
+apps/desktop/src-tauri/gen/schemas/
+apps/desktop/src-tauri/gen/android/**/build/
+apps/desktop/src-tauri/gen/android/**/.gradle/
+apps/desktop/src-tauri/gen/android/**/.kotlin/
+apps/desktop/src-tauri/gen/apple/build/
+apps/desktop/src-tauri/gen/apple/Externals/
+apps/desktop/src-tauri/gen/apple/assets/
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+
+# Signing keys and local secrets
+*.jks
+*.keystore
+keystore.properties
+.env
+.env.*
+!.env.example
+*.env
+*.local
+
+# Editor and tool state
+.DS_Store
+.idea/
+.vscode/
+.impeccable/hook.cache.json
+
+# Brand exploration kept local: only the chosen Spine assets are published
+branding/themes/
+branding/concepts/index.html
+branding/concepts/naming-study.svg
+branding/concepts/2-ruled-k/
+branding/concepts/3-balance-key/
+branding/concepts/*/ai/
+branding/concepts/*/*-ai.png
+branding/concepts/*/*-ai.svg
+branding/ai-log.md

@@ -1,0 +1,38 @@
+/* Stock Journal: two panels of item lines (source above destination).
+   Builds on the voucher classes in style.css, inventory.css and
+   voucher-extra.css; adds the voucher type's tint and badge colour
+   (--tint-StockJournal and --kind-StockJournal, in themes.css). */
+
+.work.tint-StockJournal { background: var(--tint-StockJournal); }
+.badge.kind-StockJournal { background: var(--kind-StockJournal); }
+
+.sj-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sj-panel + .sj-panel {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* Panel title with the value of its lines at the right. */
+.sj-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.sj-head .num {
+  font-variant-numeric: tabular-nums;
+}
+
+.sj-kept {
+  margin-top: 4px;
+  font-size: max(var(--text-min), 12.5px);
+  color: var(--muted);
+}

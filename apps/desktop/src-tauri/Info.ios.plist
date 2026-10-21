@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Merged by the Tauri CLI into the generated iOS Info.plist
+  (gen/apple/khataos-desktop_iOS/Info.plist) on every iOS build. Edit this
+  file, not the generated one, which is overwritten. iOS only: desktop
+  builds don't read it.
+
+  NSLocalNetworkUsageDescription: Client mode connects to KhataOS on a PC on
+  the same Wi-Fi; iOS asks the user first and shows this text.
+  No NSBonjourServices: the app doesn't browse for services. A server is
+  reached by the address the user types (a `.local` name resolves without it).
+-->
+<plist version="1.0">
+<dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>KhataOS uses your local network to sync with the KhataOS server on your office network. Your books stay on this device and on the computers you connect to.</string>
+</dict>
+</plist>

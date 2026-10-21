@@ -1,0 +1,52 @@
+/* Inventory: item invoice lines on the voucher screen, the inventory
+   master forms and the stock reports. Built on the shared classes in
+   style.css (.vaccount, .vgrid, .frow, .rtable). */
+
+/* ------------------------------------------------------- item invoice */
+
+.vparty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.vparty .vaccount {
+  grid-template-columns: 120px minmax(0, 420px);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.vgrid.items {
+  grid-template-columns: minmax(0, 1fr) 110px 120px 140px;
+}
+
+.vextra {
+  margin-top: 8px;
+}
+
+.curbal.neg {
+  color: var(--warn);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------- masters */
+
+.famount.narrow {
+  max-width: 90px;
+}
+
+/* -------------------------------------------------------------- reports */
+
+.rtable.detailed th.num,
+.rtable.detailed td.num {
+  width: auto;
+}
+
+.rtable tr.group td.num {
+  font-weight: 600;
+}

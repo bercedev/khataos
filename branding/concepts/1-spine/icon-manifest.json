@@ -1,0 +1,7 @@
+{
+  "default": "icon-1024.png",
+  "bg_color": "#2b2f77",
+  "android_bg": "android/ic_launcher_background.png",
+  "android_fg": "android/ic_launcher_foreground.png",
+  "android_monochrome": "android/ic_launcher_monochrome.png"
+}

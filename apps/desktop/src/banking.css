@@ -1,0 +1,53 @@
+/* Banking: the bank reconciliation table, whose Bank Date column takes a
+   date on the cursor row. */
+
+.rtable.brs td.bcell {
+  width: 140px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.rtable.brs td.bcell .bdate:empty::before {
+  content: "–";
+  color: var(--muted);
+}
+
+.rtable.brs td.bcell.editing .bdate {
+  display: none;
+}
+
+.field.bankdate {
+  height: 22px;
+  width: 124px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cursor on Particulars: Enter opens the voucher. */
+.rtable.brs tr.cur.on-part td.part {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* Older entries still uncleared, carried into the period. */
+.rtable tr.carried td:first-child {
+  color: var(--muted);
+}
+
+/* Statement import review: the matched voucher and the tick column. */
+.rtable.stmt td.match .byref {
+  color: var(--ok);
+  font-size: max(var(--text-min), 12px);
+}
+
+.rtable.stmt td.match.none {
+  color: var(--muted);
+  font-style: var(--italic);
+}
+
+.rtable.stmt th.tick,
+.rtable.stmt td.tick {
+  width: 36px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ok);
+  cursor: pointer;
+}

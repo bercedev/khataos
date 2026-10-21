@@ -1,0 +1,51 @@
+name: docs
+
+# Builds the docs site (mkdocs.yml) on every push to main and on pull
+# requests that touch the docs. Publishing to GitHub Pages is off until a
+# maintainer turns it on (see docs/README.md, "The docs site"):
+#   1. Settings → Pages → Build and deployment → Source: GitHub Actions.
+#   2. Settings → Secrets and variables → Actions → Variables: DOCS_PAGES = true.
+
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+  pull_request:
+    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install mkdocs-material==9.5.49
+      - run: mkdocs build
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request' && vars.DOCS_PAGES == 'true'
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DOCS_PAGES == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,322 @@
+/* The accountant's desk (screens/desk.ts) and the notes block on ledger
+   statements and vouchers. Logical properties only, so Arabic mirrors. */
+
+.desk-banner p {
+  margin: 0;
+}
+
+.desk-estimate {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.desk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.desk-lists,
+.desk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.desk-section .tside-title,
+.desk-day .tside-title {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.desk-count {
+  font-size: max(var(--text-min), 11.5px);
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.desk-rows {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.desk-row {
+  display: grid;
+  grid-template-columns: 7.5em 7em minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: var(--cell-py) var(--cell-px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  cursor: default;
+}
+
+.desk-row:last-child {
+  border-bottom: none;
+}
+
+.desk-row.cur {
+  background: var(--sel);
+  color: var(--sel-ink);
+  box-shadow: inset var(--edge) 0 0 var(--accent);
+}
+
+.desk-row.late .desk-date {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.desk-row.done .desk-text .strong {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.desk-date {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.desk-tag {
+  font-size: max(var(--text-min), 11.5px);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.desk-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.desk-sub {
+  display: block;
+  font-size: max(var(--text-min), 12px);
+  color: var(--muted);
+}
+
+.desk-amt {
+  direction: ltr;
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.desk-group {
+  padding: 3px 10px;
+  font-size: max(var(--text-min), 11.5px);
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.desk-setup .desk-row {
+  border-inline-start: 3px solid var(--accent);
+}
+
+.k-due.desk-row .desk-tag {
+  color: var(--brand);
+}
+
+.desk-empty {
+  margin: 4px 0 0;
+}
+
+.k-due .desk-tag,
+.desk-dot.k-due {
+  color: var(--brand);
+}
+
+.k-note .desk-tag,
+.desk-dot.k-note {
+  color: var(--ok);
+}
+
+.k-msme .desk-tag,
+.k-zatca .desk-tag,
+.desk-dot.k-msme,
+.desk-dot.k-zatca {
+  color: var(--warn);
+}
+
+/* ----------------------------------------------------------- calendar */
+
+.desk-cal-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  margin-block-end: 6px;
+}
+
+.desk-cal-keys {
+  margin-inline-start: auto;
+  font-size: max(var(--text-min), 11.5px);
+}
+
+.desk-month {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.desk-wd {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: max(var(--text-min), 11.5px);
+  text-align: center;
+  padding: 3px 0;
+}
+
+.desk-cell {
+  background: var(--surface);
+  min-height: 52px;
+  padding: 3px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  cursor: default;
+  font-variant-numeric: tabular-nums;
+}
+
+.desk-cell.other {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.desk-cell.today .desk-dn {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-radius: var(--radius-pill);
+  padding-inline: 6px;
+}
+
+.desk-cell.late .desk-dn {
+  color: var(--danger);
+}
+
+.desk-cell.today.late .desk-dn {
+  color: var(--brand-ink);
+}
+
+.desk-cell.sel {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.desk[data-pane="cal"] .desk-cell.sel {
+  background: var(--sel);
+}
+
+.desk-dn {
+  align-self: flex-start;
+  font-weight: 600;
+}
+
+.desk-hd {
+  font-size: max(var(--text-min), 11px);
+  color: var(--muted);
+}
+
+.desk-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+  margin-block-start: auto;
+}
+
+.desk-dot {
+  font-size: max(var(--text-min), 11px);
+  font-weight: 700;
+}
+
+.desk-dot::before {
+  content: "● ";
+  font-size: 9px;
+}
+
+/* ----------------------------------------- notes on statements, vouchers */
+
+.desk-notes {
+  margin-block-start: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--ok);
+  border-radius: var(--radius);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.desk-notes-title {
+  font-weight: 700;
+}
+
+.desk-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+}
+
+.desk-note-title {
+  font-weight: 600;
+}
+
+.desk-note.done .desk-note-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.note-mark {
+  color: var(--ok);
+  margin-inline-start: 4px;
+}
+
+/* ------------------------------------------------------------ phones */
+
+html.mobile .desk-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html.mobile .desk-row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "date tag amt"
+    "text text text";
+  min-height: var(--row, 26px);
+  padding-block: 8px;
+}
+
+html.mobile .desk-date {
+  grid-area: date;
+}
+
+html.mobile .desk-tag {
+  grid-area: tag;
+}
+
+html.mobile .desk-text {
+  grid-area: text;
+}
+
+html.mobile .desk-amt {
+  grid-area: amt;
+}
+
+html.mobile .desk-cell {
+  min-height: 44px;
+  padding: 2px 3px;
+}
+
+html.mobile .desk-cal-keys {
+  display: none;
+}

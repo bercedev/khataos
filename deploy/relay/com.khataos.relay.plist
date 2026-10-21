@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  KhataOS relay as a macOS background service (launchd). See docs/deploy-relay.md.
+
+  Replace YOUR-MAC-USER below with the account that runs the relay (`whoami`), then:
+
+    sudo mkdir -p /usr/local/bin /usr/local/var/khata-relay
+    sudo cp khata-server /usr/local/bin/ && sudo chmod 755 /usr/local/bin/khata-server
+    sudo chown YOUR-MAC-USER /usr/local/var/khata-relay && chmod 700 /usr/local/var/khata-relay
+    (umask 077; openssl rand -hex 32 > /usr/local/var/khata-relay/admin.key)
+    sudo cp com.khataos.relay.plist /Library/LaunchDaemons/
+    sudo chown root:wheel /Library/LaunchDaemons/com.khataos.relay.plist
+    sudo launchctl bootstrap system /Library/LaunchDaemons/com.khataos.relay.plist
+
+  It starts at boot, before anyone logs in, and restarts if it stops.
+  The admin key stays in admin.key (readable only by YOUR-MAC-USER), not in this file.
+  Data: /usr/local/var/khata-relay/data. Log: /usr/local/var/khata-relay/relay.log
+-->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.khataos.relay</string>
+	<key>UserName</key>
+	<string>YOUR-MAC-USER</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/sh</string>
+		<string>-c</string>
+		<string>KHATA_ADMIN_KEY="$(cat /usr/local/var/khata-relay/admin.key)" exec /usr/local/bin/khata-server</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>KHATA_DATA_DIR</key>
+		<string>/usr/local/var/khata-relay/data</string>
+		<key>KHATA_BIND</key>
+		<string>127.0.0.1:8787</string>
+		<!-- 1: anyone with the address may create encrypted companies (within limits). -->
+		<key>KHATA_OPEN_RELAY</key>
+		<string>0</string>
+		<!-- cloudflared on this Mac tells the relay who the client is. -->
+		<key>KHATA_TRUST_PROXY</key>
+		<string>1</string>
+	</dict>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>/usr/local/var/khata-relay/relay.log</string>
+	<key>StandardErrorPath</key>
+	<string>/usr/local/var/khata-relay/relay.log</string>
+</dict>
+</plist>

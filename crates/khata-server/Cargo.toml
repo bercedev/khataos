@@ -1,0 +1,31 @@
+[package]
+name = "khata-server"
+description = "Self-hostable sync server: team sync and protected, expiring access for external accountants"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+axum = "0.8.9"
+chrono.workspace = true
+hex.workspace = true
+khata-core.workspace = true
+khata-print = { path = "../khata-print" }
+khata-seal = { path = "../khata-seal" }
+khata-store = { path = "../khata-store" }
+rusqlite = { version = "0.37", features = ["bundled"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio = { version = "1.53.3", features = ["macros", "rt-multi-thread", "net"] }
+uuid.workspace = true
+
+[dev-dependencies]
+http-body-util = "0.1.5"
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+tower = { version = "0.5.3", features = ["util"] }

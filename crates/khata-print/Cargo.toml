@@ -1,0 +1,41 @@
+[package]
+name = "khata-print"
+description = "Print-ready HTML, PDF and CSV for KhataOS reports and invoices"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+chrono.workspace = true
+khata-core.workspace = true
+serde.workspace = true
+# PDF export (src/pdf): compresses content, font and image streams, as the
+# Factur-X writer in khata-en16931 does; also inflates the bundled fonts.
+flate2 = "1"
+# PDF export: decodes PNG logos and signatures (pure Rust, already in the
+# app's dependency tree through Tauri).
+png = "0.18"
+# PDF export, text (src/pdf/shape.rs): OpenType shaping (a pure-Rust
+# HarfBuzz port, MIT), the Unicode Bidirectional Algorithm and script
+# itemisation (MIT OR Apache-2.0). Exact versions: the PDF must not change
+# under a minor update.
+rustybuzz = "=0.20.1"
+unicode-bidi = "=0.3.18"
+unicode-script = "=0.5.8"
+# PDF export, fonts (src/pdf/font.rs): subsets TrueType and CFF fonts for
+# embedding (MIT OR Apache-2.0; no variable-font support needed), and finds
+# the system's CJK and other fallback fonts by family name (MIT).
+subsetter = { version = "=0.2.6", default-features = false }
+fontdb = { version = "=0.24.0", default-features = false, features = ["std", "fs", "memmap", "fontconfig"] }
+
+[build-dependencies]
+# Compresses the bundled fonts into the binary (inflated on first use).
+flate2 = "1"
+
+[dev-dependencies]
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+serde_json.workspace = true

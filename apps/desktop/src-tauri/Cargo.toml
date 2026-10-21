@@ -1,0 +1,97 @@
+[package]
+name = "khataos-desktop"
+description = "KhataOS desktop app (Tauri 2): keyboard-first accounting"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "khataos_desktop"
+path = "src/lib.rs"
+# staticlib for iOS, cdylib for Android (Tauri 2 mobile); rlib for the desktop binary and tests.
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "khataos-desktop"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "=2.7.1", features = [] }
+
+[dependencies]
+khata-core.workspace = true
+khata-compliance.workspace = true
+khata-in.workspace = true
+khata-ae.workspace = true
+khata-sa.workspace = true
+khata-sg.workspace = true
+khata-gb.workspace = true
+khata-us.workspace = true
+khata-mx.workspace = true
+khata-de.workspace = true
+khata-en16931.workspace = true
+khata-fr.workspace = true
+khata-nl.workspace = true
+khata-es.workspace = true
+khata-keymap = { path = "../../../crates/khata-keymap" }
+khata-store = { path = "../../../crates/khata-store" }
+khata-import-tally = { path = "../../../crates/khata-import-tally" }
+khata-print = { path = "../../../crates/khata-print" }
+khata-sync = { path = "../../../crates/khata-sync" }
+chrono.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+tauri = { version = "=2.12.1", features = [] }
+tauri-plugin-dialog = "=2.8.1"
+# Phones only (registered under cfg(mobile) in src/lib.rs): reads and writes the
+# content:// and file:// URIs that the file dialogs return there.
+tauri-plugin-fs = "=2.7.1"
+# Office-network sharing (src/lan.rs): the app embeds khata-server in Server mode.
+axum = "=0.8.9"
+base64 = "0.22.1"
+khata-server = { path = "../../../crates/khata-server" }
+local-ip-address = "0.6"
+# getifaddrs/freeifaddrs (src/lan.rs `interface_addrs`): local-ip-address never
+# frees the list on macOS, iOS and Android.
+libc = "0.2"
+# Internet sharing: end-to-end encrypted relay sync and accountant files.
+khata-package = { path = "../../../crates/khata-package" }
+khata-seal = { path = "../../../crates/khata-seal" }
+tokio = { version = "=1.53.3", features = ["macros", "rt-multi-thread", "net", "sync", "time"] }
+ureq = { version = "=3.4.2", features = ["json"] }
+# Company users: password hashes (src/security.rs).
+argon2 = "0.5.3"
+getrandom = "0.3"
+# HMRC Making Tax Digital (src/mtd_client.rs): PKCE (SHA-256) and the
+# Gov-Client-MAC-Addresses fraud-prevention header.
+sha2.workspace = true
+# One KhataOS per company file (src/api.rs `CompanyLock`): std's File::try_lock
+# needs Rust 1.89, newer than the workspace's rust-version.
+fs4 = { version = "1.1.0", features = ["sync"] }
+
+[dev-dependencies]
+# The mock IRP in src/irp_client.rs uses khata-in's test keys.
+khata-in = { workspace = true, features = ["test-support"] }
+rust_decimal_macros.workspace = true
+# A real khata-server for the sync and rebase tests, as in khata-sync's own tests.
+axum = "=0.8.9"
+khata-server = { path = "../../../crates/khata-server" }
+tokio = { version = "=1.53.3", features = ["macros", "rt-multi-thread", "net"] }
+ureq = { version = "=3.4.2", features = ["json"] }
+
+# Phones only (registered under cfg(mobile) in src/lib.rs): opens the
+# crash-report issue link in the browser. The desktop uses its own opener
+# (src/mtd_client.rs open_in_browser).
+[target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
+tauri-plugin-opener = "=2.7.2"
+
+# mac_address has no iOS backend; src/mtd_client.rs sends no MAC addresses there.
+# Keep this table last, and add new dependencies to the tables above it:
+# anything listed below this header is left out of iOS builds.
+[target.'cfg(not(target_os = "ios"))'.dependencies]
+mac_address = "1.2.1"

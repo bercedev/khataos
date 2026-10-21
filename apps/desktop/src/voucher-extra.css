@@ -1,0 +1,50 @@
+/* Voucher entry extras: godown and batch columns on item lines, and the
+   automatic tax lines of an item invoice. Builds on inventory.css. */
+
+/* Item lines: name, [godown], [batch], quantity, rate, amount. */
+.vgrid.items.wg {
+  grid-template-columns: minmax(0, 1fr) 160px 110px 120px 140px;
+}
+
+.vgrid.items.wb {
+  grid-template-columns: minmax(0, 1fr) 120px 110px 120px 140px;
+}
+
+.vgrid.items.wg.wb {
+  grid-template-columns: minmax(0, 1fr) 150px 110px 100px 110px 130px;
+}
+
+/* An auto tax line: a small tag before the component and percent. */
+.vtax-tag {
+  display: inline-block;
+  margin-inline-end: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  font-size: max(var(--text-min), 10.5px);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: calc(0.3px * var(--tracking));
+  text-transform: uppercase;
+  color: var(--ok);
+  line-height: 15px;
+}
+
+/* Tax with no duty ledger: a reminder row, not part of the total. */
+.vtax-missing {
+  align-items: center;
+  padding: 4px 2px;
+  font-size: max(var(--text-min), 12.5px);
+  color: var(--warn);
+}
+
+.vtax-missing .num {
+  text-align: right;
+  text-decoration: line-through;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Foreign currency: "1 USD = [rate] INR" above the lines (docs/multi-currency.md). */
+.vfx-rate { display: flex; align-items: center; gap: 6px; }
+.vfx-rate .field { width: 9em; flex: none; }

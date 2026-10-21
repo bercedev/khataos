@@ -1,0 +1,22 @@
+[package]
+name = "khata-es"
+description = "Spain compliance pack: NIF/NIE/CIF check characters, the autonomous communities, 21/10/4% IVA with inversión del sujeto pasivo, modelo 303 casillas and VeriFactu billing records (SHA-256 chain, QR URL)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+khata-compliance.workspace = true
+khata-core.workspace = true
+chrono.workspace = true
+hex.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+rust_decimal_macros.workspace = true
+serde_json.workspace = true

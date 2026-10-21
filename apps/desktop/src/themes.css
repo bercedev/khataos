@@ -1,0 +1,976 @@
+/*
+ * KhataOS design tokens and themes. Every colour in the app comes from here.
+ *
+ * Switching (src/theme.ts sets these on <html>):
+ *   data-theme   ledger | chartered | executive | terminal | fresh | comfort | regional
+ *   data-mode    light | dark          (the effective mode; "Auto" follows the system)
+ *   data-region  in | gulf | uk | ea   (Regional only: from the company's country, or chosen)
+ *   data-density comfortable | compact
+ *   --zoom       text size × the theme's own scale (Comfort), on <body>
+ *
+ * Rules for this file:
+ *   - Each theme sets every colour token in both modes; `node scripts/theme-check.mjs`
+ *     fails when one is missing or a pair drops below WCAG AA (Comfort: AAA body text).
+ *   - Screens use the semantic names only, never a literal colour.
+ *   - Printed and PDF invoices are not themed: they keep the invoice design's own accent.
+ *   - Voucher-type colours (--kind-*) stay the same in every theme, so a Payment
+ *     looks like a Payment whichever theme is on; their tints follow each theme's paper.
+ *
+ * Tokens
+ *   Surfaces   --bg (window) · --surface (cards, tables, fields) · --surface-2 (bars, table heads)
+ *   Text       --ink (body) · --muted (secondary, still AA) · --brand (titles, key letters)
+ *   Lines      --line (dividers) · --field-line (input borders: 3:1 on every surface, WCAG 1.4.11)
+ *   Brand      --brand · --brand-2 (hover) · --brand-ink (text on brand)
+ *   Top bar    --topbar · --topbar-ink · --topbar-key · --topbar-muted · --topbar-hover · --search-bg · --search-line
+ *   Accent     --accent (cursor edge, marks) · --accent-text (accent as text) · --accent-ink (text on accent)
+ *              --sel-accent-text (accent text on the cursor row)
+ *   Focus      --focus · --focus-width · --focus-halo
+ *   Cursor row --sel · --sel-ink (the keyboard cursor; its 3 px inline-start edge is --accent)
+ *   Status     --danger (error) · --warn · --ok (success)
+ *   Amounts    --pos (profit) · --neg (loss); always with a word or Dr/Cr, never colour alone
+ *   Charts     --series-1 … --series-6
+ *   Vouchers   --kind-<Type> (badge) · --tint-<Type> (screen tint) · --badge-ink
+ *   Other      --selection · --scrollbar · --scrim · --shadow · --off-opacity
+ *   Brand mark src/brand/symbol*.svg (style.css): fixed brand colours, checked against
+ *              --topbar and --bg by theme-check, never recoloured per theme
+ *   Type       --font · --font-num · --font-heading · --fs-base · --fs-title · --fs-display
+ *              --fs-figure · --fw-figure · --text-min · --tracking · --italic
+ *   Shape      --radius-xs · --radius-sm · --radius-md · --radius · --radius-lg · --radius-sheet · --radius-pill
+ *   Density    --row · --cell-py · --cell-px · --field-gap · --item-py · --screen-py · --screen-px
+ */
+
+/* ================================================================ base */
+/* Shared tokens, and Ledger light (the default, and what shows before
+   src/theme.ts runs). */
+
+:root {
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "Noto Sans", sans-serif;
+  --font-num: var(--font);
+  --font-heading: var(--font);
+  --fs-base: 14px;
+  --fs-title: 17px;
+  --fs-display: 22px;
+  --fs-figure: 20px;
+  --fw-figure: 650;
+  /* Smallest type, letter-spacing of small caps labels and italics; Arabic changes all three (style.css). */
+  --text-min: 0px;
+  --tracking: 1;
+  --italic: italic;
+
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius: 8px;
+  --radius-lg: 10px;
+  --radius-sheet: 14px;
+  --radius-pill: 999px;
+
+  --row: 26px;
+  --cell-py: 5px;
+  --cell-px: 10px;
+  --field-gap: 10px;
+  --item-py: 4px;
+  --screen-py: 18px;
+  --screen-px: 22px;
+
+  --focus-width: 2px;
+  --focus-halo: 25%;
+  /* Unused F-key slots and other "not here" controls. */
+  --off-opacity: 0.42;
+  /* Width of a row's "current" stripe on its inline-start edge, as an inset shadow offset. */
+  --edge: 3px;
+  /* System scrollbars unless a theme sets "thumb track". */
+  --scrollbar: auto;
+
+  /* ---- Ledger light: the Spine brand palette (branding/README.md) ---------
+     Ledger indigo #2b2f77 (brand, top bar), Indigo 600 #3f45a8, marigold
+     #c76a12 (spine, cursor edge, marks), marigold text #a5580e (small text on
+     light), marigold light #f2a65a (keys and "OS" on indigo), paper #f5f3ee.
+     A brand change edits --brand, --brand-2, --topbar, --topbar-key, --accent,
+     --accent-text, --sel-accent-text, --focus and --sel here and in Ledger
+     dark, then `node scripts/theme-check.mjs`. Nothing else needs to change. */
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --ink: #1c1e2a;
+  --muted: #5e6276;
+  --line: #d9d6cd;
+  --field-line: #87857f;
+  --brand: #2b2f77;
+  --brand-2: #3f45a8;
+  --brand-ink: #ffffff;
+  --topbar: #2b2f77;
+  --topbar-ink: #ffffff;
+  --topbar-key: #f2a65a;
+  --topbar-muted: #c3c5dc;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --search-line: rgba(255, 255, 255, 0.5);
+  --accent: #c76a12;
+  --accent-text: #a5580e;
+  --sel-accent-text: #954f0b;
+  --accent-ink: #ffffff;
+  --focus: #3a43c9;
+  --sel: #e3e6fc;
+  --sel-ink: #1c1e2a;
+  --danger: #b4232a;
+  --warn: #9c5104;
+  --ok: #1b7a57;
+  --pos: #1b6a8a;
+  --neg: #b4232a;
+  --series-1: #4a51c9; /* money in: sales, receipts, debtors */
+  --series-2: #d9781c; /* money out: purchases, payments, creditors, expenses */
+  --series-3: #0f9488; /* cash & bank balance */
+  --series-4: #8a4fb0;
+  --series-5: #c2416f;
+  --series-6: #6b7a22;
+  --badge-ink: #ffffff;
+  --scrim: rgba(20, 21, 28, 0.38);
+  --selection: #c9cdf6;
+  --shadow: 0 6px 24px rgba(28, 30, 42, 0.14);
+
+  --tint-Payment: #fbeceb;
+  --tint-Receipt: #e7f4eb;
+  --tint-Contra: #e6f0fa;
+  --tint-Journal: #f2eee2;
+  --tint-Sales: #eaedfc;
+  --tint-Purchase: #f3eaf7;
+  --tint-CreditNote: #fcefe1;
+  --tint-DebitNote: #e3f1f1;
+  --tint-StockJournal: #eef1e3;
+
+  --kind-Payment: #b23b3b;
+  --kind-Receipt: #237a4b;
+  --kind-Contra: #2367a6;
+  --kind-Journal: #7a6326;
+  --kind-Sales: #3f45a8;
+  --kind-Purchase: #7d3c98;
+  --kind-CreditNote: #b25e12;
+  --kind-DebitNote: #1f7272;
+  --kind-StockJournal: #55702a;
+  color-scheme: light;
+}
+
+/* Ledger dark, and the dark voucher-type colours every theme shares. */
+:root[data-mode="dark"] {
+  --bg: #14151c;
+  --surface: #1c1e28;
+  --surface-2: #242734;
+  --ink: #e7e7ee;
+  --muted: #9b9eb1;
+  --line: #353849;
+  --field-line: #70727e;
+  --brand: #8f96ff;
+  --brand-2: #a9aeff;
+  --brand-ink: #14151c;
+  --topbar: #23264d;
+  --topbar-ink: #e7e7ee;
+  --topbar-key: #f2a65a;
+  --topbar-muted: #c3c5dc;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --search-line: rgba(255, 255, 255, 0.5);
+  --accent: #f2a65a;
+  --accent-text: #f2a65a;
+  --sel-accent-text: #f2a65a;
+  --accent-ink: #14151c;
+  --focus: #a9aeff;
+  --sel: #2c3263;
+  --sel-ink: #f2f2f8;
+  --danger: #ff7b7b;
+  --warn: #f2a65a;
+  --ok: #5fd3a2;
+  --pos: #6cc4ee;
+  --neg: #ff8a7a;
+  --series-1: #7c84f5;
+  --series-2: #cf7f30;
+  --series-3: #1fa89c;
+  --series-4: #b48ad6;
+  --series-5: #e27aa0;
+  --series-6: #a3b356;
+  --badge-ink: #14151c;
+  --scrim: rgba(0, 0, 0, 0.5);
+  --selection: #3f4785;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+
+  --tint-Payment: #2a1d20;
+  --tint-Receipt: #192a21;
+  --tint-Contra: #18242f;
+  --tint-Journal: #28251b;
+  --tint-Sales: #1e2135;
+  --tint-Purchase: #271d2c;
+  --tint-CreditNote: #2c2217;
+  --tint-DebitNote: #172828;
+  --tint-StockJournal: #1f2519;
+
+  --kind-Payment: #ff8f8f;
+  --kind-Receipt: #6fd69c;
+  --kind-Contra: #7db8f0;
+  --kind-Journal: #d9c27a;
+  --kind-Sales: #a9aeff;
+  --kind-Purchase: #d49ce8;
+  --kind-CreditNote: #f2a65a;
+  --kind-DebitNote: #6fd0d0;
+  --kind-StockJournal: #b4d17a;
+  color-scheme: dark;
+}
+
+/* First paint, before src/theme.ts has set data-mode: the window follows the system. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode]) {
+    --bg: #14151c;
+    --surface: #1c1e28;
+    --ink: #e7e7ee;
+    color-scheme: dark;
+  }
+}
+
+/* Every theme but Ledger tints voucher screens from its own paper and the
+   shared voucher-type colour, in both modes. */
+:root[data-theme]:not([data-theme="ledger"]) {
+  --sel-accent-text: var(--accent-text);
+  --tint-Payment: color-mix(in srgb, var(--kind-Payment) var(--tint-mix), var(--bg));
+  --tint-Receipt: color-mix(in srgb, var(--kind-Receipt) var(--tint-mix), var(--bg));
+  --tint-Contra: color-mix(in srgb, var(--kind-Contra) var(--tint-mix), var(--bg));
+  --tint-Journal: color-mix(in srgb, var(--kind-Journal) var(--tint-mix), var(--bg));
+  --tint-Sales: color-mix(in srgb, var(--kind-Sales) var(--tint-mix), var(--bg));
+  --tint-Purchase: color-mix(in srgb, var(--kind-Purchase) var(--tint-mix), var(--bg));
+  --tint-CreditNote: color-mix(in srgb, var(--kind-CreditNote) var(--tint-mix), var(--bg));
+  --tint-DebitNote: color-mix(in srgb, var(--kind-DebitNote) var(--tint-mix), var(--bg));
+  --tint-StockJournal: color-mix(in srgb, var(--kind-StockJournal) var(--tint-mix), var(--bg));
+}
+
+/* ============================================================ density */
+/* Works with any theme. Comfortable is the base above. */
+
+:root[data-density="compact"] {
+  --row: 22px;
+  --cell-py: 2px;
+  --cell-px: 8px;
+  --field-gap: 6px;
+  --item-py: 2px;
+  --screen-py: 12px;
+  --screen-px: 16px;
+}
+
+/* =========================================================== Chartered */
+/* Conservative and print-like: paper white, ink navy, red-ink negatives,
+   serif report titles, square corners, rules instead of shadows.
+   For Chartered Accountants and auditors who want screens to read like statements. */
+
+:root[data-theme="chartered"] {
+  --font-heading: "Charter", "Iowan Old Style", "Georgia", "Noto Serif", serif;
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius: 3px;
+  --radius-lg: 4px;
+  --radius-sheet: 8px;
+  --tint-mix: 5%;
+  --scrollbar: #b9bfc9 transparent;
+
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f2f1ec;
+  --ink: #13203a;
+  --muted: #4d586b;
+  --line: #d3d6dc;
+  --field-line: #858991;
+  --brand: #1b2a4a;
+  --brand-2: #34497a;
+  --brand-ink: #ffffff;
+  --topbar: #1b2a4a;
+  --topbar-ink: #ffffff;
+  --topbar-key: #f3c2b8;
+  --topbar-muted: #c5cddc;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --accent: #9b2226;
+  --accent-text: #9b2226;
+  --accent-ink: #ffffff;
+  --focus: #2b4c8c;
+  --sel: #e6ebf3;
+  --sel-ink: #13203a;
+  --danger: #9b1c1c;
+  --warn: #8a4a06;
+  --ok: #1f6b45;
+  --pos: #1d4f91;
+  --neg: #a1261b;
+  --series-1: #34497a;
+  --series-2: #b0651e;
+  --series-3: #2f7d6d;
+  --series-4: #7a4f8a;
+  --series-5: #a8455a;
+  --series-6: #6b6a2a;
+  --badge-ink: #ffffff;
+  --scrim: rgba(19, 32, 58, 0.38);
+  --selection: #cdd7e8;
+  --shadow: 0 1px 3px rgba(19, 32, 58, 0.14), 0 0 0 1px rgba(19, 32, 58, 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme="chartered"][data-mode="dark"] {
+  --scrollbar: #4a5466 transparent;
+  --bg: #10141c;
+  --surface: #161b25;
+  --surface-2: #1d2330;
+  --ink: #e8ebf0;
+  --muted: #a6aebd;
+  --line: #2f3747;
+  --field-line: #676f7e;
+  --brand: #a9bde3;
+  --brand-2: #c2d1ec;
+  --brand-ink: #10141c;
+  --topbar: #1a2232;
+  --topbar-ink: #e8ebf0;
+  --topbar-key: #f2a99f;
+  --topbar-muted: #b4bccb;
+  --topbar-hover: rgba(255, 255, 255, 0.1);
+  --search-bg: rgba(255, 255, 255, 0.1);
+  --accent: #ec8c80;
+  --accent-text: #f2a99f;
+  --accent-ink: #10141c;
+  --focus: #a9bde3;
+  --sel: #273349;
+  --sel-ink: #f3f5f8;
+  --danger: #f2928a;
+  --warn: #e3ac62;
+  --ok: #72c99c;
+  --pos: #93bcf2;
+  --neg: #f2a07e;
+  --series-1: #8ea6d8;
+  --series-2: #d58f4c;
+  --series-3: #4fb3a0;
+  --series-4: #b98fcb;
+  --series-5: #e08a9c;
+  --series-6: #b2b166;
+  --badge-ink: #10141c;
+  --scrim: rgba(0, 0, 0, 0.5);
+  --selection: #34476b;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  color-scheme: dark;
+}
+
+/* =========================================================== Executive */
+/* Refined graphite with a restrained champagne-brass accent and larger
+   summary figures: the numbers that matter, read at a glance. For CxOs and owners. */
+
+:root[data-theme="executive"] {
+  --fs-title: 19px;
+  --fs-display: 26px;
+  --fs-figure: 26px;
+  --fw-figure: 600;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --tint-mix: 6%;
+  --scrollbar: #b7b9bd transparent;
+
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --surface-2: #ebebe8;
+  --ink: #1c1e21;
+  --muted: #5a5e65;
+  --line: #d8d9db;
+  --field-line: #828386;
+  --brand: #2c3036;
+  --brand-2: #4b525c;
+  --brand-ink: #ffffff;
+  --topbar: #1e2125;
+  --topbar-ink: #f3f2ef;
+  --topbar-key: #d8bd8a;
+  --topbar-muted: #b8bbc0;
+  --topbar-hover: rgba(255, 255, 255, 0.1);
+  --search-bg: rgba(255, 255, 255, 0.12);
+  --accent: #9c7b3c;
+  --accent-text: #7a5f2c;
+  --accent-ink: #ffffff;
+  --focus: #3b5b8c;
+  --sel: #ece6d8;
+  --sel-ink: #1c1e21;
+  --danger: #a3262a;
+  --warn: #8a5408;
+  --ok: #2b6e4f;
+  --pos: #2b5d8a;
+  --neg: #a8361f;
+  --series-1: #3e5373;
+  --series-2: #b08440;
+  --series-3: #4b8a82;
+  --series-4: #7d6a9a;
+  --series-5: #a8566a;
+  --series-6: #6f7a3a;
+  --badge-ink: #ffffff;
+  --scrim: rgba(20, 21, 24, 0.4);
+  --selection: #e3d8bf;
+  --shadow: 0 8px 28px rgba(20, 21, 24, 0.12);
+  color-scheme: light;
+}
+
+:root[data-theme="executive"][data-mode="dark"] {
+  --scrollbar: #45484e transparent;
+  --bg: #121315;
+  --surface: #1a1b1e;
+  --surface-2: #222327;
+  --ink: #ecebe8;
+  --muted: #a5a8ae;
+  --line: #34363b;
+  --field-line: #6c6f74;
+  --brand: #dcc69c;
+  --brand-2: #e8d7b5;
+  --brand-ink: #121315;
+  --topbar: #0c0d0e;
+  --topbar-ink: #ecebe8;
+  --topbar-key: #dcc69c;
+  --topbar-muted: #a5a8ae;
+  --topbar-hover: rgba(255, 255, 255, 0.08);
+  --search-bg: rgba(255, 255, 255, 0.1);
+  --accent: #c9a86a;
+  --accent-text: #dcc69c;
+  --accent-ink: #121315;
+  --focus: #93b2dc;
+  --sel: #302d27;
+  --sel-ink: #f5f3ee;
+  --danger: #f08d86;
+  --warn: #e3b465;
+  --ok: #7cc7a2;
+  --pos: #93b8e6;
+  --neg: #f0a07a;
+  --series-1: #8ea3c4;
+  --series-2: #c9a05a;
+  --series-3: #5fae9f;
+  --series-4: #a993c6;
+  --series-5: #d68a9b;
+  --series-6: #a9b46a;
+  --badge-ink: #121315;
+  --scrim: rgba(0, 0, 0, 0.55);
+  --selection: #4a4433;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+/* ============================================================ Terminal */
+/* Dense and data-first: monospace tabular figures, hairline rules, square
+   corners and high contrast in dark; blue up, orange down. For finance and tech geeks. */
+
+:root[data-theme="terminal"] {
+  --font-num: "JetBrains Mono", "SF Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius: 2px;
+  --radius-lg: 3px;
+  --radius-sheet: 6px;
+  --tint-mix: 6%;
+  --scrollbar: #a7afb9 transparent;
+
+  --bg: #f6f7f8;
+  --surface: #ffffff;
+  --surface-2: #eceff2;
+  --ink: #0b0d10;
+  --muted: #464f5a;
+  --line: #ccd2d9;
+  --field-line: #81878e;
+  --brand: #0b4f8a;
+  --brand-2: #1565b0;
+  --brand-ink: #ffffff;
+  --topbar: #11151a;
+  --topbar-ink: #f2f5f8;
+  --topbar-key: #7cc4ff;
+  --topbar-muted: #aab4bf;
+  --topbar-hover: rgba(255, 255, 255, 0.1);
+  --search-bg: rgba(255, 255, 255, 0.12);
+  --accent: #0e7c74;
+  --accent-text: #0b6a63;
+  --accent-ink: #ffffff;
+  --focus: #1565b0;
+  --sel: #dcebfa;
+  --sel-ink: #0b0d10;
+  --danger: #b42318;
+  --warn: #934a00;
+  --ok: #146c43;
+  --pos: #0b5cad;
+  --neg: #b54708;
+  --series-1: #1565b0;
+  --series-2: #d4610f;
+  --series-3: #0e8a80;
+  --series-4: #7a47b8;
+  --series-5: #c23a6b;
+  --series-6: #5f7a12;
+  --badge-ink: #ffffff;
+  --scrim: rgba(11, 13, 16, 0.4);
+  --selection: #b9d6f5;
+  --shadow: 0 2px 10px rgba(11, 13, 16, 0.14);
+  color-scheme: light;
+}
+
+:root[data-theme="terminal"][data-mode="dark"] {
+  --scrollbar: #3a434e #0a0c0f;
+  --bg: #0a0c0f;
+  --surface: #0f1216;
+  --surface-2: #161a20;
+  --ink: #f2f5f8;
+  --muted: #aab4bf;
+  --line: #29313b;
+  --field-line: #626973;
+  --brand: #7cc4ff;
+  --brand-2: #a3d5ff;
+  --brand-ink: #0a0c0f;
+  --topbar: #050607;
+  --topbar-ink: #f2f5f8;
+  --topbar-key: #7cc4ff;
+  --topbar-muted: #aab4bf;
+  --topbar-hover: rgba(255, 255, 255, 0.08);
+  --search-bg: rgba(255, 255, 255, 0.1);
+  --accent: #3fd0c2;
+  --accent-text: #5fdccf;
+  --accent-ink: #0a0c0f;
+  --focus: #7cc4ff;
+  --sel: #16304a;
+  --sel-ink: #ffffff;
+  --danger: #ff8a80;
+  --warn: #ffbf66;
+  --ok: #5fd99a;
+  --pos: #7cc4ff;
+  --neg: #ffa064;
+  --series-1: #5aa9f0;
+  --series-2: #f08a3c;
+  --series-3: #2fc4b4;
+  --series-4: #b28cf0;
+  --series-5: #f07aa6;
+  --series-6: #a8c94a;
+  --badge-ink: #0a0c0f;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --selection: #1f4a73;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+/* =============================================================== Fresh */
+/* Vibrant but grown-up: violet with a coral accent, softer rounded corners,
+   every colour still AA. No neon, no glow. For young people and Gen Z
+   running their first business or side hustle. */
+
+:root[data-theme="fresh"] {
+  --radius-xs: 4px;
+  --radius-sm: 7px;
+  --radius-md: 8px;
+  --radius: 11px;
+  --radius-lg: 14px;
+  --radius-sheet: 18px;
+  --tint-mix: 8%;
+  --scrollbar: #c9c3e3 transparent;
+
+  --bg: #f8f6ff;
+  --surface: #ffffff;
+  --surface-2: #efecfb;
+  --ink: #1b1530;
+  --muted: #5a546f;
+  --line: #dfdbf0;
+  --field-line: #878398;
+  --brand: #5236e0;
+  --brand-2: #6c52f5;
+  --brand-ink: #ffffff;
+  --topbar: #4b2fd6;
+  --topbar-ink: #ffffff;
+  --topbar-key: #ffd866;
+  --topbar-muted: #dcd5ff;
+  --topbar-hover: rgba(255, 255, 255, 0.14);
+  --search-bg: rgba(255, 255, 255, 0.16);
+  --accent: #e8466f;
+  --accent-text: #c2244f;
+  --accent-ink: #ffffff;
+  --focus: #5236e0;
+  --sel: #ebe5ff;
+  --sel-ink: #1b1530;
+  --danger: #c0233d;
+  --warn: #9a4b00;
+  --ok: #0d7556;
+  --pos: #1a5fc4;
+  --neg: #b8410e;
+  --series-1: #5b3df5;
+  --series-2: #f06a3a;
+  --series-3: #0e9c8f;
+  --series-4: #c04fc0;
+  --series-5: #2f86d8;
+  --series-6: #7a8f12;
+  --badge-ink: #ffffff;
+  --scrim: rgba(27, 21, 48, 0.4);
+  --selection: #d9ceff;
+  --shadow: 0 8px 26px rgba(75, 47, 214, 0.14);
+  color-scheme: light;
+}
+
+:root[data-theme="fresh"][data-mode="dark"] {
+  --scrollbar: #4a4370 transparent;
+  --bg: #13101e;
+  --surface: #1b172b;
+  --surface-2: #231e38;
+  --ink: #f3f0ff;
+  --muted: #b3adcb;
+  --line: #393354;
+  --field-line: #706b8b;
+  --brand: #a898ff;
+  --brand-2: #bfb3ff;
+  --brand-ink: #13101e;
+  --topbar: #221a4a;
+  --topbar-ink: #f3f0ff;
+  --topbar-key: #ffd866;
+  --topbar-muted: #cbc4ec;
+  --topbar-hover: rgba(255, 255, 255, 0.1);
+  --search-bg: rgba(255, 255, 255, 0.12);
+  --accent: #ff7aa0;
+  --accent-text: #ff9bb8;
+  --accent-ink: #13101e;
+  --focus: #bfb3ff;
+  --sel: #33295e;
+  --sel-ink: #fbfaff;
+  --danger: #ff8fa3;
+  --warn: #ffc06e;
+  --ok: #60d8b0;
+  --pos: #82c3ff;
+  --neg: #ffa870;
+  --series-1: #9a86ff;
+  --series-2: #ff8c5a;
+  --series-3: #2fc6b6;
+  --series-4: #e08ae0;
+  --series-5: #6cb4f5;
+  --series-6: #b5c94a;
+  --badge-ink: #13101e;
+  --scrim: rgba(0, 0, 0, 0.55);
+  --selection: #4a3d8a;
+  --shadow: 0 8px 26px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+/* ============================================================= Comfort */
+/* Accessibility first: 120 % text and rows on top of the chosen text size
+   (src/theme.ts), AAA contrast for body and secondary text, solid field
+   borders, a wide focus ring and less-faded unavailable keys.
+   For older users, low vision, and long days at the screen. */
+
+:root[data-theme="comfort"] {
+  --focus-width: 3px;
+  --focus-halo: 45%;
+  --off-opacity: 0.6;
+  --tint-mix: 6%;
+  --scrollbar: #6b6f78 #ecebe5;
+
+  --bg: #fbfaf6;
+  --surface: #ffffff;
+  --surface-2: #f0eee7;
+  --ink: #111111;
+  --muted: #3b3e46;
+  --line: #a4a7ae;
+  --field-line: #6b6f78;
+  --brand: #17357f;
+  --brand-2: #2447a8;
+  --brand-ink: #ffffff;
+  --topbar: #17357f;
+  --topbar-ink: #ffffff;
+  --topbar-key: #ffd27a;
+  --topbar-muted: #e2e8f8;
+  --topbar-hover: rgba(255, 255, 255, 0.16);
+  --search-bg: rgba(255, 255, 255, 0.18);
+  --accent: #a84600;
+  --accent-text: #8a3a00;
+  --accent-ink: #ffffff;
+  --focus: #17357f;
+  --sel: #fff0c2;
+  --sel-ink: #111111;
+  --danger: #9b1b1b;
+  --warn: #7a4100;
+  --ok: #17663a;
+  --pos: #154a94;
+  --neg: #9e2a0b;
+  --series-1: #2447a8;
+  --series-2: #c2560a;
+  --series-3: #0f7a70;
+  --series-4: #7a3fa0;
+  --series-5: #b0305e;
+  --series-6: #5a6b10;
+  --badge-ink: #ffffff;
+  --scrim: rgba(17, 17, 17, 0.45);
+  --selection: #ffe08a;
+  --shadow: 0 4px 18px rgba(17, 17, 17, 0.18);
+  color-scheme: light;
+}
+
+:root[data-theme="comfort"][data-mode="dark"] {
+  --scrollbar: #8a919e #16191f;
+  --bg: #0f1115;
+  --surface: #16191f;
+  --surface-2: #1e2229;
+  --ink: #ffffff;
+  --muted: #d3d7de;
+  --line: #5d6573;
+  --field-line: #8a919e;
+  --brand: #adc6ff;
+  --brand-2: #c6d8ff;
+  --brand-ink: #0f1115;
+  --topbar: #182540;
+  --topbar-ink: #ffffff;
+  --topbar-key: #ffd27a;
+  --topbar-muted: #dbe3f5;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --accent: #ffb067;
+  --accent-text: #ffc48a;
+  --accent-ink: #0f1115;
+  --focus: #ffd27a;
+  --sel: #2a3a5f;
+  --sel-ink: #ffffff;
+  --danger: #ffa3a3;
+  --warn: #ffc875;
+  --ok: #86e3ad;
+  --pos: #a3ccff;
+  --neg: #ffb38a;
+  --series-1: #8fb0ff;
+  --series-2: #ff9a52;
+  --series-3: #3fd0bf;
+  --series-4: #c9a0f0;
+  --series-5: #ff8fb5;
+  --series-6: #c3d35a;
+  --badge-ink: #0f1115;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --selection: #4a5f8f;
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* ============================================================ Regional */
+/* One theme, four palettes: the company's country picks one (India, the
+   Gulf, the UK, East Asia and Singapore), or the user does. Neutral paper and
+   the same layout everywhere; only the brand, top bar, accent and focus take
+   the regional colour, so contrast is tuned once. Profit and loss use blue and
+   orange, not green and red: red means "up" on East Asian markets and
+   "loss" in the West. Without a region it looks like Ledger. */
+
+:root[data-theme="regional"] {
+  --tint-mix: 7%;
+
+  --bg: #f6f3ec;
+  --surface: #ffffff;
+  --surface-2: #eeeae1;
+  --ink: #1c1d24;
+  --muted: #5b5e6c;
+  --line: #d9d4c8;
+  --field-line: #837f76;
+  --brand: #2b2f77;
+  --brand-2: #3f45a8;
+  --brand-ink: #ffffff;
+  --topbar: #2b2f77;
+  --topbar-ink: #ffffff;
+  --topbar-key: #f2a65a;
+  --topbar-muted: #c3c5dc;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --accent: #c2650f;
+  --accent-text: #984c06;
+  --accent-ink: #ffffff;
+  --focus: #3a43c9;
+  --sel: #dfe2fb;
+  --sel-ink: #1c1d24;
+  --danger: #b4232a;
+  --warn: #9c5104;
+  --ok: #176b4c;
+  --pos: #1b5fa0;
+  --neg: #a6430b;
+  --series-1: #4a51c9;
+  --series-2: #d9781c;
+  --series-3: #0f9488;
+  --series-4: #8a4fb0;
+  --series-5: #c2416f;
+  --series-6: #6b7a22;
+  --badge-ink: #ffffff;
+  --scrim: rgba(20, 21, 28, 0.38);
+  --selection: #c9cdf6;
+  --shadow: 0 6px 24px rgba(28, 30, 42, 0.14);
+  color-scheme: light;
+}
+
+:root[data-theme="regional"][data-mode="dark"] {
+  --bg: #14151a;
+  --surface: #1c1d24;
+  --surface-2: #24252e;
+  --ink: #ebeae6;
+  --muted: #a3a3ad;
+  --line: #373843;
+  --field-line: #6f7079;
+  --brand: #8f96ff;
+  --brand-2: #a9aeff;
+  --brand-ink: #14151a;
+  --topbar: #23264d;
+  --topbar-ink: #ebeae6;
+  --topbar-key: #f2a65a;
+  --topbar-muted: #c3c5dc;
+  --topbar-hover: rgba(255, 255, 255, 0.12);
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --accent: #f2a65a;
+  --accent-text: #f2a65a;
+  --accent-ink: #14151a;
+  --focus: #a9aeff;
+  --sel: #2c3263;
+  --sel-ink: #f2f2f8;
+  --danger: #ff7b7b;
+  --warn: #f2a65a;
+  --ok: #5fd3a2;
+  --pos: #7fbff5;
+  --neg: #ffa064;
+  --series-1: #7c84f5;
+  --series-2: #cf7f30;
+  --series-3: #1fa89c;
+  --series-4: #b48ad6;
+  --series-5: #e27aa0;
+  --series-6: #a3b356;
+  --badge-ink: #14151a;
+  --scrim: rgba(0, 0, 0, 0.5);
+  --selection: #3f4785;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+/* India · Haldi & Neel: indigo dye and turmeric, on a sandal-cream paper. */
+:root[data-theme="regional"][data-region="in"] {
+  --bg: #f8f4ea;
+  --surface-2: #f0eadb;
+  --brand: #1e3a8a;
+  --brand-2: #2f4fb0;
+  --topbar: #1a2f6e;
+  --topbar-key: #f7c948;
+  --topbar-muted: #c8d0ea;
+  --accent: #b07a00;
+  --accent-text: #8a5a00;
+  --focus: #2f4fb0;
+  --sel: #fbefc7;
+  --selection: #f7dc8a;
+  --series-1: #2f4fb0;
+  --series-2: #c07a00;
+}
+
+:root[data-theme="regional"][data-region="in"][data-mode="dark"] {
+  --bg: #12141c;
+  --surface-2: #1f2230;
+  --brand: #9db4ff;
+  --brand-2: #b8c8ff;
+  --topbar: #18224a;
+  --topbar-key: #f7c948;
+  --topbar-muted: #c8d0ea;
+  --accent: #f2c14e;
+  --accent-text: #f5cd6b;
+  --focus: #b8c8ff;
+  --sel: #2a3260;
+  --selection: #3b4785;
+  --series-1: #8ea6ff;
+  --series-2: #e0a530;
+}
+
+/* Gulf · Emerald & Sand: deep emerald with sand and a muted gold. */
+:root[data-theme="regional"][data-region="gulf"] {
+  --bg: #f6f1e6;
+  --surface-2: #ede5d4;
+  --brand: #0b5e45;
+  --brand-2: #127a5a;
+  --topbar: #0a4a38;
+  --topbar-key: #e3c27a;
+  --topbar-muted: #c5dbd1;
+  --accent: #9c7424;
+  --accent-text: #7c5b16;
+  --focus: #127a5a;
+  --sel: #e1efe7;
+  --selection: #c3e0d1;
+  --series-1: #127a5a;
+  --series-2: #b07a1e;
+  --series-3: #3d5aa8;
+}
+
+:root[data-theme="regional"][data-region="gulf"][data-mode="dark"] {
+  --bg: #0f1513;
+  --surface-2: #1c2623;
+  --brand: #6fd1aa;
+  --brand-2: #92ddbf;
+  --topbar: #0c2a21;
+  --topbar-key: #e3c27a;
+  --topbar-muted: #b9d3c8;
+  --accent: #e0bd72;
+  --accent-text: #e6c98a;
+  --focus: #92ddbf;
+  --sel: #1d3b31;
+  --selection: #285444;
+  --series-1: #4fc096;
+  --series-2: #d9a948;
+  --series-3: #8ea6f0;
+}
+
+/* UK · Heritage: navy with a brick-red accent and stone paper. */
+:root[data-theme="regional"][data-region="uk"] {
+  --bg: #f5f3ef;
+  --surface-2: #ebe8e1;
+  --brand: #1b2b52;
+  --brand-2: #2e4478;
+  --topbar: #1b2b52;
+  --topbar-key: #f1a58e;
+  --topbar-muted: #c4cbdc;
+  --accent: #a53d2a;
+  --accent-text: #9a3624;
+  --focus: #2e4478;
+  --sel: #e4e8f1;
+  --selection: #cad3e6;
+  --series-1: #2e4478;
+  --series-2: #b8502f;
+}
+
+:root[data-theme="regional"][data-region="uk"][data-mode="dark"] {
+  --bg: #11131a;
+  --surface-2: #1f222c;
+  --brand: #a8baea;
+  --brand-2: #c1cff2;
+  --topbar: #18203a;
+  --topbar-key: #f1a58e;
+  --topbar-muted: #bfc7da;
+  --accent: #e8836c;
+  --accent-text: #f0a08d;
+  --focus: #c1cff2;
+  --sel: #28314d;
+  --selection: #3a4670;
+  --series-1: #8fa6e0;
+  --series-2: #e0784f;
+}
+
+/* East Asia and Singapore · Lacquer & Teal: deep teal with a lacquer-red accent. */
+:root[data-theme="regional"][data-region="ea"] {
+  --bg: #f4f5f2;
+  --surface-2: #e9ece8;
+  --brand: #0d5c63;
+  --brand-2: #12767f;
+  --topbar: #0b4a50;
+  --topbar-key: #ffb3a3;
+  --topbar-muted: #c3dcdd;
+  --accent: #c0352b;
+  --accent-text: #b02e25;
+  --focus: #12767f;
+  --sel: #dcefee;
+  --selection: #bfe1df;
+  --series-1: #12767f;
+  --series-2: #c0352b;
+  --series-3: #5a4bb0;
+}
+
+:root[data-theme="regional"][data-region="ea"][data-mode="dark"] {
+  --bg: #0e1415;
+  --surface-2: #1b2526;
+  --brand: #6cd0d6;
+  --brand-2: #94dde1;
+  --topbar: #0b2b2e;
+  --topbar-key: #ffb3a3;
+  --topbar-muted: #b7d3d4;
+  --accent: #ff8a7a;
+  --accent-text: #ff9f91;
+  --focus: #94dde1;
+  --sel: #183b3e;
+  --selection: #25555a;
+  --series-1: #3fbcc4;
+  --series-2: #f07a62;
+  --series-3: #a99cf0;
+}

@@ -876,6 +876,24 @@ impl Book {
         self.vouchers.values().filter(|v| !v.cancelled)
     }
 
+    /// The narration of the latest voucher (by date, then entry order) that
+    /// has one, optionally only of `kind` and only with a line for `ledger`:
+    /// what `Ctrl+R` and `Alt+R` bring back into a new voucher.
+    pub fn last_narration(&self, kind: Option<VoucherKind>, ledger: Option<LedgerId>) -> Option<&str> {
+        let mut best: Option<&Voucher> = None;
+        // Ids are UUIDv7, so the map runs in entry order: on the same date the later entry wins.
+        for v in self.active_vouchers().filter(|v| {
+            !v.narration.trim().is_empty()
+                && kind.is_none_or(|k| v.kind == k)
+                && ledger.is_none_or(|l| v.entries.iter().any(|e| e.ledger == l))
+        }) {
+            if best.is_none_or(|b| v.date >= b.date) {
+                best = Some(v);
+            }
+        }
+        best.map(|v| v.narration.as_str())
+    }
+
     pub fn delete_voucher(&mut self, at: DateTime<Utc>, user: &str, id: VoucherId) -> Result<(), BookError> {
         let current = self.vouchers.get(&id).ok_or(BookError::UnknownVoucher)?;
         self.commit(at, user, AuditAction::Delete, format!("voucher:{}", id.0), Some(json(current)), None)

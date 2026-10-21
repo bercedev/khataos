@@ -88,6 +88,14 @@ pub fn last_rate(slot: &Slot, item_id: &str, kind: khata_core::VoucherKind, part
     Ok(inventory::last_rate(book, item, inward, party).map(crate::api::amt).unwrap_or_default())
 }
 
+/// The narration `Ctrl+R` (of `kind`) or `Alt+R` (for `ledger_id`) repeats.
+/// Empty when no earlier voucher matches.
+pub fn last_narration(slot: &Slot, kind: Option<khata_core::VoucherKind>, ledger_id: &str) -> ApiResult<String> {
+    let book = open_ref(slot)?;
+    let ledger = if ledger_id.trim().is_empty() { None } else { Some(LedgerId(parse_uuid(ledger_id, "ledger")?)) };
+    Ok(book.last_narration(kind, ledger).unwrap_or_default().to_string())
+}
+
 pub fn ratio_analysis(slot: &Slot, from: &str, to: &str) -> ApiResult<RatioAnalysis> {
     Ok(analysis::ratio_analysis(open_ref(slot)?, parse_date(from)?, parse_date(to)?))
 }

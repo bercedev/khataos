@@ -79,6 +79,8 @@ If a tax line can't be filled in, the screen says why: for example, there's no d
 | `Esc` | Clears the field; pressed again, asks "Quit without saving?" |
 | `Ctrl+A` | Save |
 | `Ctrl+D` | Remove the line under the cursor |
+| `Ctrl+R` | Repeat the narration of the last voucher of this type |
+| `Alt+R` | Repeat the narration of the last voucher, of any type, for a ledger: the one in the field under the cursor, else the voucher's first ledger (the party on an invoice) |
 | `Alt+C` | In a ledger, item or godown field: create a new one. In an amount field: the calculator |
 | `Ctrl+Enter` | Alter the ledger, item or godown highlighted in the list |
 | `Ctrl+N` | Calculator |
@@ -168,4 +170,4 @@ Use it to move stock between godowns, or to record consumption and production.
 
 ## Not built yet
 
-These keys that Tally users know are reserved, and pressing them says so: postdated (`Ctrl+T`) and optional (`Ctrl+L`) vouchers, repeat narration (`Ctrl+R`, `Alt+R`), stock query (`Alt+S`), tax analysis (`Alt+A`), related reports (`Ctrl+O`), unused numbers (`Ctrl+Alt+U`), the edit log (`Alt+Q`) and statutory adjustment (`Alt+J`). `PgUp` and `PgDn` don't move between saved vouchers yet, and `Ctrl+F` (autofill) does nothing. Email and WhatsApp aren't available yet. Memorandum and reversing journals, voucher classes, custom voucher types and cost centres aren't there either.
+These keys that Tally users know are reserved, and pressing them says so: postdated (`Ctrl+T`) and optional (`Ctrl+L`) vouchers, stock query (`Alt+S`), tax analysis (`Alt+A`), related reports (`Ctrl+O`), unused numbers (`Ctrl+Alt+U`), the edit log (`Alt+Q`) and statutory adjustment (`Alt+J`). `PgUp` and `PgDn` don't move between saved vouchers yet, and `Ctrl+F` (autofill) does nothing. Email and WhatsApp aren't available yet. Memorandum and reversing journals, voucher classes, custom voucher types and cost centres aren't there either.

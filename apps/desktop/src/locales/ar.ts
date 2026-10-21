@@ -361,6 +361,10 @@ export const AR: Record<string, string> = {
   "Pick the cash or bank account.": "اختر حساب النقدية أو البنك.",
   "Pick the cash or bank account first.": "اختر حساب النقدية أو البنك أولًا.",
   "Pick the party ledger.": "اختر حساب الطرف.",
+  "Pick a ledger first.": "اختر حسابًا أولًا.", // ar: check
+  "No earlier narration for {ledger}.": "لا يوجد بيان سابق لـ {ledger}.", // ar: check
+  "No earlier narration for {kind} vouchers.": "لا يوجد بيان سابق لسندات {kind}.", // ar: check
+  "Replace the narration?": "استبدال البيان؟", // ar: check
   "Pick the party ledger first.": "اختر حساب الطرف أولًا.",
   "Pick a stock item.": "اختر صنف مخزون.",
   "Pick a stock item first.": "اختر صنف مخزون أولًا.",

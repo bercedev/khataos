@@ -135,8 +135,8 @@ In a voucher, new or saved.
 | `Ctrl+F` | Autofill | Not yet |
 | `Alt+S` | Stock query for the item | Not yet |
 | `Alt+A` | Tax analysis of the voucher | Not yet |
-| `Alt+R` | Repeat the narration of the last voucher for this ledger | Not yet |
-| `Ctrl+R` | Repeat the narration of the last voucher of this type | Not yet |
+| `Alt+R` | Repeat the narration of the last voucher for this ledger | Yes |
+| `Ctrl+R` | Repeat the narration of the last voucher of this type | Yes |
 | `Ctrl+O` | Related reports | Not yet |
 | `Ctrl+Alt+U` | Unused voucher numbers | Not yet |
 | `Alt+Q` | Edit log (versions of this record) | Not yet |

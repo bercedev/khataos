@@ -197,11 +197,11 @@ pub fn describe(context: Context, action: Action) -> (&'static str, Status) {
         TaxAnalysis => ("Tax analysis of the voucher", NotYet),
         RetrieveNarrationSameLedger => (
             "Repeat the narration of the last voucher for this ledger",
-            NotYet,
+            Yes,
         ),
         RetrieveNarrationSameType => (
             "Repeat the narration of the last voucher of this type",
-            NotYet,
+            Yes,
         ),
         RelatedReports => ("Related reports", NotYet),
         UnusedVoucherNumber => ("Unused voucher numbers", NotYet),

@@ -137,8 +137,7 @@ const NOT_YET = new Set([
 const NOT_BUILT = new Set([
   "AlterColumn", "AutoColumns", "BasisOfValues", "ChangeContext", "DuplicateVoucher", "EditLog", "ExceptionReports",
   "FetchByTaxId", "FilterDetails", "HideLine", "InsertVoucherBefore", "InvertSelection", "MarkOptional", "MarkPostDated",
-  "RelatedReports", "RestoreLine", "RetrieveNarrationSameLedger", "RetrieveNarrationSameType", "SaveView",
-  "StatAdjustment", "StockQuery", "TaxAnalysis", "UnusedVoucherNumber",
+  "RelatedReports", "RestoreLine", "SaveView", "StatAdjustment", "StockQuery", "TaxAnalysis", "UnusedVoucherNumber",
 ]);
 /** Shell actions that use the open company's books, so need a sign-in. */
 const NEEDS_SIGN_IN = new Set(["ChangeDate", "ChangePeriod", "CompanyMenu", "DataMenu", "GoTo", "Find", "ImportMenu", "SyncNow", "ExchangeMenu", "ShareMenu"]);

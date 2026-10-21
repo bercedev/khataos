@@ -17,6 +17,7 @@ KhataOS is an independent project, not a copy of Tally, and it is not affiliated
 | Accept and go back | `Ctrl+A` saves, `Esc` goes back, `Enter` moves to the next field |
 | Go To | `Alt+G`, then type part of a report, voucher type or ledger name |
 | Change mode in a voucher | `Ctrl+H`: double entry, single entry, item invoice |
+| Repeat the last narration | `Ctrl+R` for this voucher type, `Alt+R` for a ledger |
 | Create a master from a field | `Alt+C` in a ledger or item field; `Ctrl+Enter` alters the one under the cursor |
 | Calculator | `Ctrl+N`, or `Alt+C` in an amount field |
 | Bill-wise details | A party line opens bill-wise details: new reference, against reference, advance, on account |
@@ -41,6 +42,7 @@ The full list is in the [key reference](keyboard.md#key-reference).
 - **`V` on the home menu opens a Payment voucher.** Press `F4` to `F9` to switch type. The keys for voucher types work inside voucher entry, not on the home menu.
 - **Voucher numbers always come from the series.** You can't type a number by hand on the voucher screen. Set prefixes, suffixes and restarts per voucher type instead (`A`, **Voucher Type**).
 - **Payment, Receipt and Contra open in single entry**, and Sales and Purchase open as an item invoice when the company has stock items. `Ctrl+H` switches. There is no separate "accounting invoice" mode: use the voucher mode with a sales ledger line.
+- **`Alt+R` looks at the field you're in.** On a ledger line it repeats the last narration for that ledger; anywhere else it uses the voucher's first ledger. If the narration already has different text, it asks before replacing it.
 - **Changing saved vouchers needs the Accountant role.** A Data Entry user can only enter new ones.
 - **Find (`Alt+F`) searches ledgers** by any part of the name. Go To (`Alt+G`) searches everything else.
 - **Every party line asks for bill-wise details.** There is no switch on a ledger to turn bill-wise off.
@@ -60,7 +62,7 @@ Pressing a reserved key for one of these says "isn't available in this version y
 - Sales and Purchase Orders, Delivery and Receipt Notes, Rejections In and Out, Physical Stock, Payroll (`Ctrl+F8`, `Ctrl+F9`, `Alt+F8`, `Alt+F9`, `Ctrl+F6`, `Ctrl+F5`, `Ctrl+F7`, `Ctrl+F4`).
 - Optional, postdated, memorandum and reversing vouchers (`Ctrl+L`, `Ctrl+T`).
 - Duplicate or insert a voucher from the Day Book (`Alt+2`, `Alt+I`).
-- Repeat the last narration (`Ctrl+R`, `Alt+R`), unused voucher numbers (`Ctrl+Alt+U`), stock query (`Alt+S`).
+- Unused voucher numbers (`Ctrl+Alt+U`), stock query (`Alt+S`).
 - Custom voucher types with their own series (imported custom types become their base type), and manual voucher numbers.
 - Interest calculation.
 

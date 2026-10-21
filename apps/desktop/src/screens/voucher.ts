@@ -1385,6 +1385,48 @@ export class VoucherScreen implements Screen {
     return rate;
   }
 
+  /**
+   * Ctrl+R repeats the narration of the last voucher of this type; Alt+R that of
+   * the last voucher of any type with a line for `narrationLedger()`. The text
+   * comes in selected, so typing replaces it; a different narration already
+   * typed is replaced only after asking.
+   */
+  private async retrieveNarration(sameLedger: boolean): Promise<void> {
+    const ledger = sameLedger ? this.narrationLedger() : null;
+    if (sameLedger && !ledger) return this.shell.warn("Pick a ledger first.");
+    let text: string;
+    try {
+      text = await api.lastNarration(ledger ? null : this.kind, ledger?.id ?? "");
+    } catch (e) {
+      return this.shell.error(e);
+    }
+    if (!text) {
+      return this.shell.info(
+        ledger
+          ? t("No earlier narration for {ledger}.", { ledger: ledger.name })
+          : t("No earlier narration for {kind} vouchers.", { kind: kindName(this.kind) }),
+      );
+    }
+    const typed = this.narration.value.trim();
+    if (typed && typed !== text && !(await this.shell.ask("Replace the narration?"))) return;
+    this.narration.value = text;
+    this.go(this.indexOf("narration"));
+  }
+
+  /**
+   * Alt+R's ledger: the one in the field under the cursor, else the voucher's
+   * first ledger: the party on an invoice, the first line otherwise.
+   */
+  private narrationLedger(): Ledger | null {
+    const f = this.field();
+    const here =
+      f.k === "account" ? this.account
+      : f.k === "party" ? this.party
+      : f.k === "side" || f.k === "ledger" || f.k === "amount" ? this.lines[f.i]?.ledger
+      : null;
+    return here ?? (this.mode === "item" ? this.party : (this.lines.find((l) => l.ledger)?.ledger ?? this.account));
+  }
+
   /** The item's default rate: the last one traded at, else (purchases) its cost. */
   private async defaultRate(s: StockItem): Promise<string> {
     const last = await this.lastRate(s);
@@ -1662,6 +1704,12 @@ export class VoucherScreen implements Screen {
         return true;
       case "RemoveLine":
         this.removeLine();
+        return true;
+      case "RetrieveNarrationSameType":
+        void this.retrieveNarration(false);
+        return true;
+      case "RetrieveNarrationSameLedger":
+        void this.retrieveNarration(true);
         return true;
       case "Accept":
         void this.save();

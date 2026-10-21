@@ -14,6 +14,8 @@ import { bankingMenu } from "./banking";
 import { StockSummaryReport } from "./inventory";
 import { VoucherScreen } from "./voucher";
 import { DeskScreen, dueSoon } from "./desk";
+import { backupApi, type BackupStatus } from "../backup-api";
+import { backupTime } from "./backup";
 
 interface Item {
   id: string; // GatewayItem name
@@ -67,6 +69,8 @@ export class HomeScreen implements Screen {
   private infoEl = h("div.home-info");
   /** The desk's "due soon" count (null: not readable). */
   private due: { overdue: number; soon: number } | null = null;
+  /** Backups of this company on this computer (null: not readable). */
+  private backup: BackupStatus | null = null;
 
   constructor(private shell: Shell) {
     const menu = h("nav.home-menu", { "aria-label": t("Home menu") });
@@ -92,6 +96,7 @@ export class HomeScreen implements Screen {
   async init(): Promise<void> {
     await this.shell.refreshCompany();
     this.due = await dueSoon(this.shell);
+    this.backup = await backupApi.status().catch(() => null);
     this.paintInfo();
     // One hint at a time: the theme hint waits for the next open when the Arabic one shows.
     if (!this.shell.suggestLanguage()) this.shell.suggestTheme();
@@ -106,6 +111,7 @@ export class HomeScreen implements Screen {
       .refreshCompany()
       .then(async () => {
         this.due = await dueSoon(this.shell);
+        this.backup = await backupApi.status().catch(() => null);
       })
       .then(() => this.paintInfo());
   }
@@ -124,6 +130,17 @@ export class HomeScreen implements Screen {
         h("dt", t("Vouchers")), h("dd", String(c.voucher_count)),
         ...(this.due
           ? [h("dt", t("Due soon")), h("dd", { class: this.due.overdue ? "warn" : "" }, t("{soon} in the next 7 days · {overdue} overdue", { soon: this.due.soon, overdue: this.due.overdue }), h("span.muted", " · T"))]
+          : []),
+        ...(this.backup
+          ? [
+              h("dt", t("Last backup")),
+              h(
+                "dd",
+                { class: this.backup.remind ? "warn" : "" },
+                this.backup.last ? backupTime(this.backup.last.at) : t("None yet"),
+                h("span.muted", this.backup.remind ? ` · ${t("Alt+Y to back up now")}` : " · Alt+Y"),
+              ),
+            ]
           : []),
         h("dt", t("Opening balances")), h("dd", { class: diff === 0n ? "" : "warn" }, diff === 0n ? t("Balanced") : t("Difference {amount}", { amount: M.drCr(diff) })),
         h("dt", t("Signed in as")), h("dd", c.user),

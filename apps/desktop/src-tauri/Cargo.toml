@@ -38,6 +38,8 @@ khata-nl.workspace = true
 khata-es.workspace = true
 khata-keymap = { path = "../../../crates/khata-keymap" }
 khata-store = { path = "../../../crates/khata-store" }
+# Backup and restore (src/backup.rs): verified, optionally sealed .khatabak files.
+khata-backup = { path = "../../../crates/khata-backup" }
 khata-import-tally = { path = "../../../crates/khata-import-tally" }
 khata-print = { path = "../../../crates/khata-print" }
 khata-sync = { path = "../../../crates/khata-sync" }

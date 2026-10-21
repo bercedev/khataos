@@ -178,6 +178,8 @@ export interface Desk {
   msme: MsmeDue[];
   settings: CalendarSettingsDto;
   can_write: boolean;
+  /** No backup for a week (or never) while the books changed. */
+  backup: { last: string | null; days: number | null } | null;
 }
 
 export interface DueCount {

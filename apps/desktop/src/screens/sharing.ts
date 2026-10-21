@@ -343,7 +343,7 @@ export function choose<T extends string>(
  * placeholders and the note are shown through t(); pass a sentence with
  * names in it already translated.
  */
-function form(
+export function form(
   shell: Shell,
   title: string,
   fields: { label: string; value?: string; secret?: boolean; placeholder?: string }[],

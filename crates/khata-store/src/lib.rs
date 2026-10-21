@@ -38,6 +38,8 @@ pub enum StoreError {
     Diverged(u64),
     #[error("not a KhataOS company file")]
     NotACompany,
+    #[error("entry {0} of the audit trail is damaged or out of place")]
+    Damaged(u64),
     #[error("{0}")]
     Record(String),
 }
@@ -168,6 +170,27 @@ impl Store {
         Ok(())
     }
 
+    /// Open a company file (or a plain backup) without changing it: no
+    /// schema upgrade, no device id, nothing written. Refuses a file that
+    /// isn't a KhataOS company.
+    pub fn open_read_only(path: impl AsRef<Path>) -> Result<Self, StoreError> {
+        let conn = Connection::open_with_flags(
+            path,
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
+        )?;
+        let store = Self { conn };
+        let has_tables: i64 = store.conn.query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name IN ('company', 'audit', 'records')",
+            [],
+            |r| r.get(0),
+        )?;
+        if has_tables != 3 {
+            return Err(StoreError::NotACompany);
+        }
+        store.company_name()?;
+        Ok(store)
+    }
+
     pub fn company_name(&self) -> Result<String, StoreError> {
         self.conn
             .query_row("SELECT name FROM company WHERE id = 1", [], |r| r.get(0))
@@ -194,6 +217,139 @@ impl Store {
             .map(|row| Ok(serde_json::from_str::<AuditEntry>(&row?)?))
             .collect::<Result<Vec<_>, StoreError>>()?;
         Ok(Book::replay(self.company_name()?, AuditLog::from(entries))?)
+    }
+
+    /// [`Store::load`], checking more on the way: the sequence numbers run
+    /// 0, 1, 2… with no gap, each row's `hash` column is its entry's hash,
+    /// and the replayed trail verifies end to end. For a copy whose every
+    /// byte must be trusted (a backup), not for each open.
+    pub fn load_verified(&self) -> Result<Book, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT seq, hash, entry FROM audit ORDER BY seq")?;
+        let mut rows = stmt.query([])?;
+        let mut entries = Vec::new();
+        while let Some(row) = rows.next()? {
+            let seq = row.get::<_, i64>(0)? as u64;
+            let hash: String = row.get(1)?;
+            let entry: AuditEntry = serde_json::from_str(&row.get::<_, String>(2)?).map_err(|_| StoreError::Damaged(seq))?;
+            if seq != entries.len() as u64 || entry.seq != seq || entry.hash != hash {
+                return Err(StoreError::Damaged(seq));
+            }
+            entries.push(entry);
+        }
+        let book = Book::replay(self.company_name()?, AuditLog::from(entries))?;
+        book.audit().verify().map_err(StoreError::Damaged)?;
+        Ok(book)
+    }
+
+    /// The hash of entry `seq`, if the trail is that long.
+    pub fn hash_at(&self, seq: u64) -> Result<Option<String>, StoreError> {
+        Ok(self.conn.query_row("SELECT hash FROM audit WHERE seq = ?1", [seq as i64], |r| r.get(0)).optional()?)
+    }
+
+    /// Every entry's hash, in order, as stored in the `hash` column.
+    pub fn hashes(&self) -> Result<Vec<String>, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT hash FROM audit ORDER BY seq")?;
+        stmt.query_map([], |r| r.get(0))?.collect::<Result<_, _>>().map_err(Into::into)
+    }
+
+    /// The hash of the last entry (`None` for empty books).
+    pub fn last_hash(&self) -> Result<Option<String>, StoreError> {
+        Ok(self.conn.query_row("SELECT hash FROM audit ORDER BY seq DESC LIMIT 1", [], |r| r.get(0)).optional()?)
+    }
+
+    /// SQLite's own check of the file's structure (`PRAGMA integrity_check`).
+    pub fn integrity_check(&self) -> Result<(), StoreError> {
+        let mut stmt = self.conn.prepare("PRAGMA integrity_check")?;
+        let problems: Vec<String> = stmt.query_map([], |r| r.get(0))?.collect::<Result<_, _>>()?;
+        if problems.len() == 1 && problems[0] == "ok" {
+            Ok(())
+        } else {
+            Err(StoreError::Record(format!("the file is damaged: {}", problems.join("; "))))
+        }
+    }
+
+    // ------------------------------------------------------------ snapshots
+
+    /// Write a consistent copy of the company to `dest` (which must not
+    /// exist) for a backup, while the company stays open.
+    ///
+    /// `VACUUM INTO` reads in one transaction, so the copy is a snapshot of
+    /// committed data however busy the file is; it is never a raw file copy.
+    /// Then everything that belongs to this computer is taken out of the
+    /// copy: the `settings` table (sync and relay credentials, cursors, a
+    /// device's e-invoicing chain), the sync cursors, and any record with a
+    /// device-local key. A second `VACUUM` rebuilds the copy so that no
+    /// deleted value is left behind in free pages.
+    pub fn snapshot_to(&self, dest: &Path) -> Result<(), StoreError> {
+        if dest.exists() {
+            return Err(StoreError::Record(format!("{} already exists", dest.display())));
+        }
+        let to = dest.to_str().ok_or_else(|| StoreError::Record("the backup path is not valid text".into()))?;
+        self.conn.execute("VACUUM INTO ?1", [to])?;
+        let copy = Connection::open(dest)?;
+        copy.execute_batch("PRAGMA secure_delete = ON;")?;
+        let local: Vec<String> = {
+            let mut stmt = copy.prepare("SELECT key FROM records")?;
+            stmt.query_map([], |r| r.get::<_, String>(0))?
+                .collect::<Result<Vec<_>, _>>()?
+                .into_iter()
+                .filter(|k| records::is_device_local(k))
+                .collect()
+        };
+        let tx = copy.unchecked_transaction()?;
+        tx.execute("DELETE FROM settings", [])?;
+        tx.execute("DELETE FROM sync_state", [])?;
+        tx.execute("DELETE FROM record_sync", [])?;
+        for key in &local {
+            tx.execute("DELETE FROM records WHERE key = ?1", [key])?;
+        }
+        tx.commit()?;
+        copy.execute_batch("VACUUM;")?;
+        Ok(())
+    }
+
+    /// Facts about a backup kept inside it (`backup_info`); empty for a
+    /// company file.
+    pub fn backup_info(&self) -> Result<Vec<(String, String)>, StoreError> {
+        let exists: i64 =
+            self.conn.query_row("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'backup_info'", [], |r| r.get(0))?;
+        if exists == 0 {
+            return Ok(Vec::new());
+        }
+        let mut stmt = self.conn.prepare("SELECT key, value FROM backup_info ORDER BY key")?;
+        stmt.query_map([], |r| Ok((r.get(0)?, r.get(1)?)))?.collect::<Result<_, _>>().map_err(Into::into)
+    }
+
+    /// Write the facts of a backup into a copy made by [`Store::snapshot_to`].
+    pub fn set_backup_info(&self, info: &[(&str, &str)]) -> Result<(), StoreError> {
+        let tx = self.conn.unchecked_transaction()?;
+        tx.execute("CREATE TABLE IF NOT EXISTS backup_info (key TEXT PRIMARY KEY, value TEXT NOT NULL)", [])?;
+        for (k, v) in info {
+            tx.execute(
+                "INSERT INTO backup_info (key, value) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                params![k, v],
+            )?;
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
+    /// Turn a restored backup back into an ordinary company file.
+    pub fn clear_backup_info(&self) -> Result<(), StoreError> {
+        self.conn.execute("DROP TABLE IF EXISTS backup_info", [])?;
+        Ok(())
+    }
+
+    /// Rows of the `settings`, `sync_state` and `record_sync` tables, and
+    /// records with a device-local key: what must never be in a backup.
+    pub fn device_local_rows(&self) -> Result<u64, StoreError> {
+        let n: i64 = self.conn.query_row(
+            "SELECT (SELECT COUNT(*) FROM settings) + (SELECT COUNT(*) FROM sync_state) + (SELECT COUNT(*) FROM record_sync)",
+            [],
+            |r| r.get(0),
+        )?;
+        let local = self.all_records()?.into_iter().filter(|r| records::is_device_local(&r.key)).count();
+        Ok(n as u64 + local as u64)
     }
 
     /// How much of the trail is known to be on `remote`: `(company_id, synced_len)`.

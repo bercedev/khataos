@@ -39,7 +39,7 @@ The "next" list is built from the ranked top-15 lists in the three Tally gap stu
 | Sharing and sync | Office server built into the app (LAN); invites with Accountant or Viewer access, expiry and revoke; end-to-end encrypted relay with moving relays; `.khatapkg` accountant files; browser access for viewers on the LAN; self-hosted `khata-server` with sync, rebase and a review screen | Desk notes, the compliance profile, invoice design, UK VAT schemes and sync settings stay on one computer | A hosted relay run by the project |
 | Desk and calculator | Accountant's Desk: to-dos, notes on records (`Alt+W`), compliance calendar from each country's rules, reminders from bills; calculator panel (`Ctrl+N`) with tax add and take-out | Due dates don't count public holidays | System notifications |
 | Import and export | Tally XML import (masters and Day Book) with a skip report; CSV export of every report | The importer drops bill-wise, cost centre and bank allocations, voucher tax detail, stock vouchers, orders and compound units | Live import from a running Tally (the crate has a client; the app doesn't use it), Excel import, XML/JSON export of masters and vouchers |
-| Backup | The company is one file you can copy | | Backup and restore commands (D1, D2), scheduled backups (D3) |
+| Backup | Backup and restore in the Data menu (`Alt+Y`): a checked snapshot of the open company, optional password encryption, restore as a new company or replace with a kept copy; automatic backups on close and daily that keep N; a backup before every risky action; a reminder after 7 days; phones save and pick through the system dialogs | Automatic backups on phones stay inside the app until saved elsewhere | Cloud backup target, backups of several companies at once, a notifications panel for failed automatic backups (H4) |
 
 ### Countries
 
@@ -63,7 +63,7 @@ Ranked by the pain a Tally user feels in the first week, then by value for the e
 
 ### First: protect the data, and make migration complete
 
-1. **Backup and restore**, then **scheduled backups** that keep several versions (D1, D2, D3). Local-first means the user owns the risk.
+1. ~~**Backup and restore**, then **scheduled backups** that keep several versions (D1, D2, D3).~~ Done: see [Backup](guide/backup.md). Next: make the Tally import ready for real company data ([readiness review](research/tally-import-readiness.md)).
 2. **Opening bills on party ledgers, and importing bill allocations from Tally** (M5). Without them, outstandings and ageing are empty after a migration.
 3. **Edit-log viewer** (`Alt+Q`) with a version diff, then edit-log summaries (Y7, Y8, S5). The data is already in the trail; auditors need to see it.
 

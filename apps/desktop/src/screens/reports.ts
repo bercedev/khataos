@@ -983,6 +983,7 @@ export class ImportReportScreen extends Report {
       h("div.tside-title", tr("Skipped ({n})", { n: r.skipped.length })),
       h("table.rtable", h("thead", h("tr", h("th", tr("Kind")), h("th", tr("Name")), h("th", tr("Reason")))), skipped),
       h("div.note", tr("Everything imported is saved and recorded in the audit trail. Fix the skipped items in Tally, or create them here.")),
+      ...(r.backup ? [h("div.note", tr("The company was backed up before the import: {file}. Data → Restore brings it back.", { file: ltr(r.backup) }))] : []),
     );
   }
 }

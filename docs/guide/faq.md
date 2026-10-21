@@ -35,7 +35,7 @@ No. Entries are encrypted on your computer before they're sent, and the relay on
 No. The company file on your disk isn't encrypted (accountant files are). Protect it like any other business file, and use your device's disk encryption.
 
 **How do I back up?**
-Copy the company file. There's no backup command yet. See [Backup](backup.md).
+Press `Alt+Y` (the Data menu), then **Backup**. KhataOS checks every backup before it says it worked, and backs up automatically when the company closes and once a day. See [Backup](backup.md).
 
 **Can I edit or delete history?**
 You can alter, cancel and delete vouchers, but every change is kept in the audit trail, which can't be switched off or edited. This is what Indian rules require (Companies (Accounts) Rule 3(1)).

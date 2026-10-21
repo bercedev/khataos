@@ -1678,7 +1678,13 @@ pub mod cmd {
         blocking(move || {
             let lan = app.state::<LanState>();
             let state = app.state::<AppState>();
-            let report = super::move_relay(&mut slot(&state), &relay_url, signup_key.as_deref())?;
+            let mut company = slot(&state);
+            // Moving the company is a risky action: an automatic backup first.
+            if let Some(path) = state.path.lock().ok().and_then(|p| p.clone()) {
+                crate::backup::before_risky(&company, &crate::backup::cmd::env(&app)?, &path, "moving relay")?;
+            }
+            let report = super::move_relay(&mut company, &relay_url, signup_key.as_deref())?;
+            drop(company);
             // The old relay is going away: offer the new one for other
             // companies too, if this computer was using the old one.
             let mut cfg = lock(&lan.config).clone();

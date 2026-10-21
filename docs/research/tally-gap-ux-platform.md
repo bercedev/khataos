@@ -113,9 +113,9 @@ Common sources, cited by short name below:
 
 | # | Feature | What it does | KhataOS status | File | Effort | Pri | Source |
 |---|---|---|---|---|---|---|---|
-| D1 | Backup (manual) | Copies one or more companies to a folder or drive. | **missing** | new: `apps/desktop/src-tauri/src/commands.rs` (SQLite online backup); `crates/khata-store/src/lib.rs` | S | P1 | https://help.tallysolutions.com/backup-local/ |
-| D2 | Restore | Brings a backup back as a company, or restores one dated version. | **missing** | same as D1 | S | P1 | https://help.tallysolutions.com/backup-local/ |
-| D3 | Scheduled auto backup | Backs up on a schedule (incremental by default), keeps N versions, and can also back up to Tally's cloud with an encryption password. Failed runs show in notifications. | **missing** | same as D1, plus a scheduler; H4 for failures | M | P1 | https://help.tallysolutions.com/tallydrive-backup/ |
+| D1 | Backup (manual) | Copies one or more companies to a folder or drive. | **have** (`Alt+Y` → Backup: a `VACUUM INTO` snapshot of the open company, verified after writing, optional password encryption; one company at a time) | `crates/khata-backup/src/lib.rs`; `apps/desktop/src-tauri/src/backup.rs`; `apps/desktop/src/screens/backup.ts` | – | – | https://help.tallysolutions.com/backup-local/ |
+| D2 | Restore | Brings a backup back as a company, or restores one dated version. | **have** (`Alt+Y` → Restore: verified first, then a new company file, or Replace with the name typed, the old file kept as `.before-restore-…khata` and the company lock respected) | same as D1 | – | – | https://help.tallysolutions.com/backup-local/ |
+| D3 | Scheduled auto backup | Backs up on a schedule (incremental by default), keeps N versions, and can also back up to Tally's cloud with an encryption password. Failed runs show in notifications. | **partial**: on close and daily, keeps N (default 10), a backup before risky actions, a desk reminder after 7 days. Full copies, not incremental; no cloud target; failures only in the log until H4 exists | same as D1 (`start_scheduler`, `due_on_close`, `rotate`) | S (H4, cloud) | P2 | https://help.tallysolutions.com/tallydrive-backup/ |
 | D4 | Repair | Finds and fixes damaged company data, drops what it cannot recover, and reports counts before and after. | **missing**. The design makes it less needed: the trail is append-only and the books are rebuilt from it on every open | `crates/khata-store/src/lib.rs` (load replays the trail) | M | P3 | https://help.tallysolutions.com/repair-company-data-tally/ |
 | D5 | Data verification | Checks the company data for errors, for example before a split. | **partial**: the hash chain is verified each time a company opens. There is no verify command or report the user can run | `crates/khata-store/src/lib.rs` (load); `crates/khata-core/src/audit.rs` | S | P2 | https://help.tallysolutions.com/split-company-data-in-tallyprime-faq/ |
 | D6 | Migration | Moves data from older releases into the current format. It can be paused, and a summary of counts follows. | **have** for Tally to KhataOS (XML file and live Tally, with a skipped-items report). Schema versions in the store | `crates/khata-import-tally/src/`; `apps/desktop/src/screens/reports.ts` (import result); `crates/khata-store/src/lib.rs` (schema_version) | – | – | https://help.tallysolutions.com/tally-prime/data-management/migrate-company-data-tally/ |
@@ -164,8 +164,8 @@ The ranking weighs what a Tally user misses in the first week against effort. In
 
 | Rank | Item | Rows | Effort | Why now |
 |---|---|---|---|---|
-| 1 | Backup and restore (manual) | D1, D2 | S | Local-first means the user owns the risk. With no backup, one lost disk loses the books. |
-| 2 | Scheduled auto backup with N kept versions | D3 | M | Tally 7.0 made this standard. It builds on 1 and feeds the notifications panel. |
+| 1 | ~~Backup and restore (manual)~~ (done) | D1, D2 | S | Local-first means the user owns the risk. With no backup, one lost disk loses the books. |
+| 2 | ~~Scheduled auto backup with N kept versions~~ (done, except failures in a notifications panel) | D3 | M | Tally 7.0 made this standard. It builds on 1 and feeds the notifications panel. |
 | 3 | Edit log viewer (Alt+Q) for vouchers and masters | S5 | M | The trail already exists and is stronger than Tally's. Auditors (Rule 3(1)) need to see it, and today they cannot. |
 | 4 | Duplicate a voucher (Alt+2) from the Day Book and ledgers | E2 | S | The daily shortcut for repeat entries, and the key is already bound. |
 | 5 | Retrieve narration (Ctrl+R, Alt+R) | E8 | S | Small, and heavily used in data entry. Both keys are already bound. |

@@ -42,8 +42,8 @@ export class StartupScreen implements Screen {
         h(
           "p",
           isMobile()
-            ? t("Local-first accounting. Your books live in one file on this device.")
-            : t("Local-first accounting. Your books live in one file on this computer."),
+            ? t("Accounting that works offline. Your books live in one file on this device.")
+            : t("Accounting that works offline. Your books live in one file on this computer."),
         ),
       ),
       this.panel,
@@ -102,8 +102,11 @@ export class StartupScreen implements Screen {
       this.panel.replaceChildren(
         h("div.panel-title", t("Create Company")),
         h("label.frow", h("span.flabel", t("Company name")), this.nameIn),
-        h("label.frow", h("span.flabel", t("Company file")), this.pathIn),
-        h("p.note", t("Enter moves to the next field. Accept with Ctrl+A, or Enter on the last field.")),
+        // Phones keep company files in the app's own storage, so there is no path to choose.
+        ...(isMobile() ? [] : [h("label.frow", h("span.flabel", t("Company file")), this.pathIn)]),
+        h("p.note", isMobile()
+          ? t("Your company is saved on this device. Press Enter or Accept to create it.")
+          : t("Enter moves to the next field. Accept with Ctrl+A, or Enter on the last field.")),
       );
       void this.suggestPath();
     } else {
@@ -169,6 +172,7 @@ export class StartupScreen implements Screen {
       case "NextField":
         if (this.mode === "create" && this.at === 0) {
           if (!this.nameIn.value.trim()) this.shell.warn(t("Enter the company name."));
+          else if (isMobile()) void this.confirm();
           else {
             this.at = 1;
             this.focus();
@@ -206,6 +210,7 @@ export class StartupScreen implements Screen {
     if (this.mode === "open") return this.openPath(this.pathIn.value.trim());
     const name = this.nameIn.value.trim();
     if (!name) return this.shell.warn(t("Enter the company name."));
+    if (isMobile()) await this.suggestPath();
     try {
       const info = await api.createCompany(this.pathIn.value.trim(), name);
       this.shell.info(t("Created {name}.", { name: info.name }));

@@ -295,6 +295,20 @@ knows only tokens.
 | older copies | `an_older_server_syncs_the_books_and_keeps_the_records_waiting`, `an_older_client_syncs_the_books_unchanged_with_a_newer_server` (`khata-sync`), `older_and_newer_packages_open_both_ways`, the migration test above |
 | secrets | `device_local_and_credential_keys_never_leave_the_device` (`khata-sync`) |
 
+## Backups
+
+A backup (`.khatabak`, `crates/khata-backup`, `docs/guide/backup.md`) takes
+the same line: it carries the books and every shared record, and none of the
+device-local state. The snapshot (`Store::snapshot_to`) empties the
+`settings`, `sync_state` and `record_sync` tables and drops any record with a
+device-local key, then rebuilds the file so no deleted value stays in its
+free pages. A restored company is therefore not connected to any server or
+relay, and counts as a new device for ZATCA and VeriFactu.
+
+Tests: `a_backup_contains_no_device_local_or_credential_keys` (`khata-backup`)
+checks the backup file's bytes, plain and encrypted, for the sync token, the
+relay key, server addresses and the device chains.
+
 ## Not done yet
 
 - The browser portal (`/portal`) doesn't show notes.

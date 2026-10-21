@@ -36,6 +36,9 @@ pub struct ImportSummary {
     /// Stock item lines posted on vouchers.
     pub inventory_lines: usize,
     pub skipped: Vec<SkippedItem>,
+    /// The automatic backup taken before importing into a company that
+    /// already had books (src/backup.rs).
+    pub backup: Option<String>,
 }
 
 fn kind_label(kind: khata_import_tally::ItemKind) -> &'static str {
@@ -96,6 +99,7 @@ pub fn import_tally(slot: &mut Slot, paths: &[String]) -> ApiResult<ImportSummar
                 reason: s.reason.to_string(),
             })
             .collect(),
+        backup: None,
     })
 }
 

@@ -49,6 +49,7 @@ import { CompanyDetailsForm, TaxRatesReport, ZatcaSellerForm } from "./settings"
 import { UsersScreen } from "./signin";
 import { reportProblem } from "../crash";
 import { DeskScreen } from "./desk";
+import { AutoBackupScreen, backupNow, restoreBackup } from "./backup";
 import {
   DENSITIES, MODES, REGIONS, TEXT_SIZES, THEMES, displayPrefs, previewDisplay, revertDisplay, themeInfo, zoomOf,
   type DisplayPrefs,
@@ -231,7 +232,11 @@ function reportItems(shell: Shell): PickItem<Go>[] {
 function matches(items: PickItem<Go>[], q: string): PickItem<Go>[] {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
   const hit = (text: string) => words.every((w) => text.toLowerCase().includes(w));
-  return items.filter((i) => hit(i.label) || i.aliases?.some(hit));
+  const found = items.filter((i) => hit(i.label) || i.aliases?.some(hit));
+  // Rows that start with what was typed come first, so a first letter and Enter picks
+  // that row (Alt+Y, A: Automatic backups, not the "a" inside "Backup"). The order is otherwise kept.
+  const starts = (i: PickItem<Go>) => (words.length > 0 && i.label.toLowerCase().startsWith(words[0]) ? 0 : 1);
+  return found.map((i, n) => ({ i, n })).sort((a, b) => starts(a.i) - starts(b.i) || a.n - b.n).map((x) => x.i);
 }
 
 async function ledgerItems(shell: Shell, q: string, section?: string): Promise<PickItem<Go>[]> {
@@ -284,6 +289,9 @@ export class GoToScreen extends PickerScreen {
       { id: "c:rates", label: "Tax Rates", sub: "HSN/SAC rate list", section: "Company", data: () => new TaxRatesReport(shell) },
       { id: "c:invoice-design", label: "Invoice design", sub: "logo, template, bank details, terms", section: "Company", aliases: ["invoice template", "logo", "print design", "bank details"], data: () => void import("./invoice_design").then((m) => shell.push(new m.InvoiceDesignScreen(shell))) },
       { id: "u:import", label: "Import from Tally XML", section: "Utilities", data: () => void importFromTally(shell) },
+      { id: "u:backup", label: "Backup", sub: "Alt+Y · a checked copy of the company", section: "Data", aliases: ["back up", "save a copy"], data: () => void backupNow(shell) },
+      { id: "u:restore", label: "Restore", sub: "from a backup file (.khatabak)", section: "Data", aliases: ["restore a backup"], data: () => void restoreBackup(shell) },
+      { id: "u:autobackup", label: "Automatic backups", sub: "on close, daily, how many to keep", section: "Data", aliases: ["scheduled backup", "backup settings"], data: () => new AutoBackupScreen(shell) },
       { id: "u:sync", label: "Sync settings", section: "Utilities", data: () => new SyncSettingsScreen(shell) },
       { id: "u:desk", label: "Accountant's Desk", sub: "to-dos, notes, due dates", section: "Utilities", aliases: ["desk", "to-do", "todo", "notes", "reminders", "calendar", "due dates", "compliance calendar"], data: () => new DeskScreen(shell) },
       { id: "h:report", label: "Report a problem", sub: "opens a GitHub issue you review first", section: "Help", aliases: ["bug", "crash", "feedback"], data: () => void reportProblem(shell) },
@@ -502,5 +510,21 @@ export function importMenu(shell: Shell): Screen {
   return new MenuScreen(shell, "Import", [
     { id: "tally", label: "Import from Tally XML", sub: "masters + Day Book", data: () => void importFromTally(shell) },
     { id: "khatapkg", label: "Open accountant file (.khatapkg)", sub: "encrypted, from KhataOS", data: () => void openAccountantFile(shell) },
+  ]);
+}
+
+/** Alt+Y: Data. Backup and Restore (Tally's B and R), automatic backups, and the Tally migration.
+ *  With no company open, only Restore: a backup becomes a new company file. */
+export function dataMenu(shell: Shell): Screen {
+  const open = Boolean(shell.company);
+  return new MenuScreen(shell, "Data", [
+    ...(open ? [{ id: "backup", label: "Backup", sub: "a checked copy of the company", data: () => void backupNow(shell) }] : []),
+    { id: "restore", label: "Restore", sub: "from a backup file (.khatabak)", data: () => void restoreBackup(shell) },
+    ...(open
+      ? [
+          { id: "auto", label: "Automatic backups", sub: "on close, daily, how many to keep", data: () => new AutoBackupScreen(shell) },
+          { id: "migrate", label: "Import from Tally XML", sub: "migrate masters and Day Book", section: "Migrate", data: () => void importFromTally(shell) },
+        ]
+      : []),
   ]);
 }

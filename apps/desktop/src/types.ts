@@ -343,6 +343,8 @@ export interface ImportSummary {
   godowns_created: number;
   inventory_lines: number;
   skipped: { kind: string; name: string; reason: string }[];
+  /** The automatic backup taken before importing into a company that already had books. */
+  backup: string | null;
 }
 
 export interface SyncSettings {

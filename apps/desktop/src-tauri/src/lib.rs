@@ -1,6 +1,7 @@
 //! KhataOS desktop shell: Tauri 2 commands over the open company.
 
 pub mod api;
+pub mod backup;
 mod commands;
 pub mod crash;
 pub mod desk;
@@ -91,7 +92,19 @@ pub fn run() {
             if let Ok(dir) = app.path().app_data_dir() {
                 lan::init(app.handle(), dir);
             }
+            // Automatic backups: once a day while a company is open (src/backup.rs).
+            backup::start_scheduler(app.handle().clone());
             Ok(())
+        })
+        // Closing the main window closes the company: take its automatic
+        // backup first, when one is due (the process is about to end, so
+        // not on a thread of its own).
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { .. } = event
+                && window.label() == "main"
+            {
+                commands::backup_before_exit(window.app_handle());
+            }
         })
         .invoke_handler(tauri::generate_handler![
             commands::create_company,
@@ -117,6 +130,12 @@ pub fn run() {
             commands::group_summary,
             commands::keymap,
             commands::close_company,
+            backup::cmd::backup_status,
+            backup::cmd::backup_set_prefs,
+            backup::cmd::backup_now,
+            backup::cmd::backup_encrypted,
+            backup::cmd::backup_inspect,
+            backup::cmd::backup_restore,
             commands::quit_app,
             commands::report_error,
             commands::create_group,

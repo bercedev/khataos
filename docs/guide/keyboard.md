@@ -51,7 +51,7 @@ These work on every screen unless the screen uses the key for something else.
 | `Ctrl+G` | Switch To (like Go To, but replaces the screen) | Not yet |
 | `Alt+F` | Find a ledger by part of its name and open its statement | Yes |
 | `Alt+K` | Company menu: sync, company details, invoice design, users, language | Yes |
-| `Alt+Y` | Data menu | Not yet |
+| `Alt+Y` | Data menu: Backup, Restore, Automatic backups, Import from Tally XML. Type the first letter and press `Enter` | Yes |
 | `Alt+Z` | Exchange menu: connect to the office server, the relay, invites | Yes |
 | `Alt+O` | Import menu: Tally XML, accountant file (.khatapkg) | Yes |
 | `Alt+E` | Export menu: PDF, e-invoice files and the other exports of a document | Partly: the Day Book and saved vouchers |

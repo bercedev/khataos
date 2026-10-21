@@ -114,7 +114,9 @@
 }
 
 .desk-setup .desk-row {
-  border-inline-start: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: var(--radius);
 }
 
 .k-due.desk-row .desk-tag {
@@ -247,8 +249,8 @@
 .desk-notes {
   margin-block-start: 10px;
   padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-inline-start: 3px solid var(--ok);
+  border: 1px solid color-mix(in srgb, var(--ok) 35%, var(--line));
+  background: color-mix(in srgb, var(--ok) 6%, var(--surface));
   border-radius: var(--radius);
   background: var(--surface);
   display: flex;

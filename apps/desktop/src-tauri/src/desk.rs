@@ -593,6 +593,10 @@ pub struct DeskDto {
     pub settings: CalendarSettingsDto,
     /// The signed-in user may add and change notes.
     pub can_write: bool,
+    /// No backup for a week (or never) while the books changed: a gentle
+    /// reminder (src/backup.rs). Filled in by the command, which knows
+    /// this computer's backup folder.
+    pub backup: Option<crate::backup::ReminderDto>,
 }
 
 fn days(d: NaiveDate, n: u64) -> NaiveDate {
@@ -698,6 +702,7 @@ pub fn overview(slot: &Slot, as_at: &str, to: &str) -> ApiResult<DeskDto> {
         msme: msme(book, as_at),
         settings: settings_dto(book, read_settings(store)?, profile_set(store)?),
         can_write: can_write(slot),
+        backup: None,
     })
 }
 
@@ -746,8 +751,14 @@ pub mod cmd {
     }
 
     #[tauri::command(rename_all = "snake_case")]
-    pub fn desk_overview(state: State<'_, AppState>, as_at: String, to: String) -> ApiResult<DeskDto> {
-        overview(&*lock(&state)?, &as_at, &to)
+    pub fn desk_overview(app: tauri::AppHandle, state: State<'_, AppState>, as_at: String, to: String) -> ApiResult<DeskDto> {
+        let path = state.path.lock().ok().and_then(|p| p.clone());
+        let slot = lock(&state)?;
+        let mut desk = overview(&slot, &as_at, &to)?;
+        if let (Some(path), Ok(env)) = (path, crate::backup::cmd::env(&app)) {
+            desk.backup = crate::backup::reminder(&slot, &env, &path, chrono::Utc::now());
+        }
+        Ok(desk)
     }
 
     #[tauri::command(rename_all = "snake_case")]

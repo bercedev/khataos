@@ -53,13 +53,45 @@ pub fn open_company(state: State<'_, AppState>, path: String) -> ApiResult<api::
 }
 
 #[tauri::command(rename_all = "snake_case")]
-pub fn close_company(state: State<'_, AppState>) -> ApiResult<()> {
+pub fn close_company(app: AppHandle, state: State<'_, AppState>) -> ApiResult<()> {
     let mut slot = lock(&state)?;
+    let job = closing_backup(&app, &state, &slot);
     *slot = None;
     *held(&state)? = None;
     crate::security::sign_out();
     set_path(&state, None);
+    // The automatic backup on close runs from the closed file, off the window's thread.
+    if let Some(job) = job {
+        job.spawn();
+    }
     Ok(())
+}
+
+/// The automatic backup due as the open company closes, if any.
+fn closing_backup(app: &AppHandle, state: &AppState, slot: &Slot) -> Option<crate::backup::CloseJob> {
+    let path = state.path.lock().ok().and_then(|p| p.clone())?;
+    let env = crate::backup::cmd::env(app).ok()?;
+    crate::backup::due_on_close(slot, &env, &path)
+}
+
+/// The app is closing with a company open: close it and take its automatic
+/// backup now, when one is due.
+pub(crate) fn backup_before_exit(app: &AppHandle) {
+    let state = app.state::<AppState>();
+    let job = {
+        let Ok(mut slot) = state.company.lock() else { return };
+        let job = closing_backup(app, &state, &slot);
+        if job.is_some() {
+            *slot = None;
+        }
+        job
+    };
+    if let Some(job) = job {
+        match job.run() {
+            Ok(d) => eprintln!("automatic backup (on exit): {}", d.path),
+            Err(e) => eprintln!("automatic backup (on exit) failed: {e}"),
+        }
+    }
 }
 
 #[tauri::command(rename_all = "snake_case")]
@@ -221,6 +253,7 @@ pub fn quit_app(app: AppHandle, state: State<'_, AppState>) {
     // Home gesture does), so Quit does nothing there.
     #[cfg(not(target_os = "ios"))]
     {
+        backup_before_exit(&app);
         // Release the company's lock now (the OS would at exit anyway).
         if let Ok(mut held) = state.company_lock.lock() {
             *held = None;
@@ -294,18 +327,27 @@ pub fn overdue_payables(
 
 // ------------------------------------------------------------ import
 
+/// Runs off the window's thread: a large Day Book takes a while to parse
+/// and post, and the window keeps painting meanwhile.
 #[tauri::command(rename_all = "snake_case")]
-pub fn import_tally(
-    app: AppHandle,
-    state: State<'_, AppState>,
-    paths: Vec<String>,
-) -> ApiResult<export::ImportSummary> {
-    // On a phone the picker returns URIs: read them through the OS first.
-    let local = paths
-        .iter()
-        .map(|p| crate::phone_files::local_input(&app, p, &["xml"], 200 * 1024 * 1024).map(|l| l.display().to_string()))
-        .collect::<ApiResult<Vec<_>>>()?;
-    export::import_tally(&mut *lock(&state)?, &local)
+pub async fn import_tally(app: AppHandle, paths: Vec<String>) -> ApiResult<export::ImportSummary> {
+    tauri::async_runtime::spawn_blocking(move || {
+        // On a phone the picker returns URIs: read them through the OS first.
+        let local = paths
+            .iter()
+            .map(|p| crate::phone_files::local_input(&app, p, &["xml"], 200 * 1024 * 1024).map(|l| l.display().to_string()))
+            .collect::<ApiResult<Vec<_>>>()?;
+        let state = app.state::<AppState>();
+        let mut slot = state.company.lock().map_err(|_| "company state is poisoned".to_owned())?;
+        // Into a company that already has books: an automatic backup first.
+        let path = state.path.lock().ok().and_then(|p| p.clone());
+        let env = crate::backup::cmd::env(&app)?;
+        let (mut summary, safety) = crate::backup::import_tally(&mut slot, &env, path.as_deref(), &local)?;
+        summary.backup = safety.map(|d| d.path);
+        Ok(summary)
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 // -------------------------------------------------------------- sync
@@ -354,6 +396,7 @@ pub async fn rebase(app: AppHandle) -> ApiResult<sync::RebaseReport> {
             .company
             .lock()
             .map_err(|_| "company state is poisoned".to_owned())?;
+        crate::backup::before_risky(&slot, &crate::backup::cmd::env(&app)?, &path, "sync rebase")?;
         sync::rebase(&mut slot, &path)
     })
     .await

@@ -33,7 +33,7 @@ The full list is in the [key reference](keyboard.md#key-reference).
 
 ## What's different
 
-- **Your company is one file.** Each company is a single `.khata` file on your computer. Copy it to back it up (see [Backup](backup.md)). There is no data folder with many files.
+- **Your company is one file.** Each company is a single `.khata` file on your computer. Back it up with `Alt+Y` → **Backup**, as in Tally (see [Backup](backup.md)). There is no data folder with many files.
 - **One company open at a time.** `F3` closes the company and shows the company list, rather than switching between several loaded companies.
 - **The country is picked once.** When a company is opened for the first time, you pick its country. That sets the currency, the financial year and the tax rules. See [Your first company](first-company.md).
 - **No closing or splitting at the year end.** The books are one continuous record, so balances carry forward by themselves. Move to the new year with `Alt+F2`.
@@ -83,7 +83,7 @@ Pressing a reserved key for one of these says "isn't available in this version y
 
 **Everything else**
 
-- Backup and restore commands, and scheduled backups. Copy the company file for now (see [Backup](backup.md)).
+- Repair, split and Tally-style data verification in the Data menu (`Alt+Y` has Backup, Restore and Automatic backups).
 - Help (`F1`), company features (`F11`), configuration (`F12`), Switch To (`Ctrl+G`), notifications.
 - Email and WhatsApp (`Ctrl+M`, `Ctrl+Alt+W`), the print and export menus (`Alt+P`, `Alt+E` outside the Day Book), print preview and paper sizes other than A4.
 - Import from Excel, export to Excel or XML, live import from a running Tally.

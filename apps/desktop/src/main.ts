@@ -4,7 +4,7 @@ import { h } from "./dom";
 import { savedLanguage, setLanguage } from "./i18n";
 import { Keymap } from "./keys";
 import { Shell } from "./shell";
-import { FindScreen, GoToScreen, MenuScreen, companyMenu, importMenu, languageMenu } from "./screens/launcher";
+import { FindScreen, GoToScreen, MenuScreen, companyMenu, dataMenu, importMenu, languageMenu } from "./screens/launcher";
 import { syncNow } from "./screens/company";
 import { exchangeMenu, installSharing, shareMenu } from "./screens/sharing";
 import { CountryScreen } from "./screens/country";
@@ -77,6 +77,7 @@ async function main(): Promise<void> {
     goTo: () => new GoToScreen(shell),
     companyMenu: () => companyMenu(shell),
     importMenu: () => importMenu(shell),
+    dataMenu: () => dataMenu(shell),
     syncNow: () => syncNow(shell),
     exchangeMenu: () => exchangeMenu(shell),
     shareMenu: () => shareMenu(shell),

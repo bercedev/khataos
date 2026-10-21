@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/style.css"
+        ],
+        "createdAt": "2026-10-21T12:02:19.799Z",
+        "reason": "Claude (agent) decided: .pick-row / .home-item inline-start 3px bar is the keyboard list-cursor marker on the selected row, already sanctioned for apps/desktop/src/style.css; this entry covers the same file as the hook sees it from apps/desktop"
+      }
+    ]
+  }
+}

@@ -125,6 +125,8 @@ type Item =
   | { k: "pdc"; date: string; pdc: PostDated }
   | { k: "msme"; date: string; msme: MsmeDue }
   | { k: "zatca"; date: string; waiting: number; overdue: number }
+  /** No backup for a week (or never) while the books changed. */
+  | { k: "backup"; date: string; days: number | null }
   /** "Set up your compliance profile", until it is saved. */
   | { k: "setup"; date: null };
 
@@ -140,6 +142,7 @@ const TAG: Record<Item["k"], string> = {
   pdc: "Post-dated",
   msme: "MSME 45 days",
   zatca: "ZATCA",
+  backup: "Backup",
   setup: "Setup",
 };
 
@@ -352,6 +355,8 @@ export class DeskScreen implements Screen {
     const dues = this.monthDues.get(this.month) ?? [];
     const items = this.dated(dues).filter((i) => i.date === iso && this.shown(i));
     if (this.zatca && iso === today(this.shell) && this.zatca.waiting + this.zatca.overdue > 0) items.push({ k: "zatca", date: iso, ...this.zatca });
+    const backup = this.desk?.backup;
+    if (backup && iso === today(this.shell) && this.shown({ k: "backup", date: iso, days: backup.days })) items.push({ k: "backup", date: iso, days: backup.days });
     return items;
   }
 
@@ -394,6 +399,7 @@ export class DeskScreen implements Screen {
     const ahead = all.filter((i) => (i.k === "due" || i.k === "note") && i.date! > soon && i.date! <= later);
     if (zatca?.overdue) overdue.unshift({ k: "zatca", date: asAt, waiting: 0, overdue: zatca.overdue });
     if (zatca?.waiting) todays.unshift({ k: "zatca", date: asAt, waiting: zatca.waiting, overdue: 0 });
+    if (d.backup) todays.unshift({ k: "backup", date: asAt, days: d.backup.days });
     this.listRows = [];
     // By due date, grouped by category (tax returns, payments, company filings, audit, reminders, to-dos).
     const grouped = (items: Item[]) => {
@@ -470,6 +476,10 @@ export class DeskScreen implements Screen {
       case "zatca":
         text = [h("span.strong", i.overdue ? t("{n} simplified invoice(s) past the 24-hour reporting limit", { n: i.overdue }) : t("{n} document(s) waiting in the ZATCA queue", { n: i.waiting }))];
         sub = t("Simplified invoices are reported within 24 hours");
+        break;
+      case "backup":
+        text = [h("span.strong", i.days === null ? t("This company hasn't been backed up yet") : t("No backup for {n} days", { n: i.days }))];
+        sub = t("Press Enter to back up now (Alt+Y → Backup). Automatic backups: Alt+Y → Automatic backups.");
         break;
       case "setup":
         text = [h("span.strong", t("Set up your compliance profile"))];
@@ -635,6 +645,10 @@ export class DeskScreen implements Screen {
         return;
       case "zatca":
         void import("./zatca").then((m) => s.push(new m.ZatcaQueueReport(s)));
+        return;
+      case "backup":
+        await (await import("./backup")).backupNow(s);
+        await this.reload();
         return;
       case "due":
         this.openReturn(i.due);

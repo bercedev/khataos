@@ -8,7 +8,8 @@
 
 - Create the KhataOS company and pick its country first. The import menu works only in an open company with a country set. See [Create your first company](first-company.md).
 - If the company has users, sign in as Owner, Accountant or Data Entry. An Auditor can't import, and neither can anyone a company was shared with as a Viewer, who can only read.
-- There is no undo. The import is saved as soon as it finishes, and it is recorded in the audit trail. A fresh test company is the easy way to try again.
+- Import into a new, empty company. Into a company that already has books, KhataOS asks first and takes an automatic [backup](backup.md) before it starts; if the import goes wrong, `Alt+Y` → **Restore** brings that backup back. The import itself has no undo: it is saved as soon as it finishes, and it is recorded in the audit trail.
+- Before you import real company data, read the [readiness review](../research/tally-import-readiness.md) for what a real TallyPrime export may trip on.
 
 ## 1. Export from Tally
 

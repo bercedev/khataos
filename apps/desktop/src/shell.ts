@@ -124,11 +124,11 @@ export function labelFor(action: string | null): string {
 // Ctrl+K (language) stays off this bar: it is full at 1360 px. The company list and Company menu show it.
 const TOP_MENU = ["CompanyMenu", "DataMenu", "ExchangeMenu", "GoTo", "ImportMenu", "ExportMenu", "ShareMenu", "PrintMenu", "Help"];
 const SHELL_ACTIONS = new Set([
-  "Back", "Quit", "QuitApp", "SwitchCompany", "OpenCompany", "ShutCompany", "CompanyMenu", "GoTo", "Find", "ImportMenu", "SyncNow",
+  "Back", "Quit", "QuitApp", "SwitchCompany", "OpenCompany", "ShutCompany", "CompanyMenu", "DataMenu", "GoTo", "Find", "ImportMenu", "SyncNow",
   "DisplayLanguage", "ChangeDate", "ChangePeriod", "Calculator",
 ]);
 const NOT_YET = new Set([
-  "DataMenu", "ExchangeMenu", "ExportMenu", "ShareMenu", "PrintMenu", "Help", "ContextHelp",
+  "ExchangeMenu", "ExportMenu", "ShareMenu", "PrintMenu", "Help", "ContextHelp",
   "ExportCurrent", "EmailCurrent", "WhatsAppCurrent", "PrintCurrent", "CompanyFeatures", "Configure",
   "EntryLanguage", "Notifications", "SwitchTo",
 ]);
@@ -141,7 +141,7 @@ const NOT_BUILT = new Set([
   "StatAdjustment", "StockQuery", "TaxAnalysis", "UnusedVoucherNumber",
 ]);
 /** Shell actions that use the open company's books, so need a sign-in. */
-const NEEDS_SIGN_IN = new Set(["ChangeDate", "ChangePeriod", "CompanyMenu", "GoTo", "Find", "ImportMenu", "SyncNow", "ExchangeMenu", "ShareMenu"]);
+const NEEDS_SIGN_IN = new Set(["ChangeDate", "ChangePeriod", "CompanyMenu", "DataMenu", "GoTo", "Find", "ImportMenu", "SyncNow", "ExchangeMenu", "ShareMenu"]);
 const FSLOTS = ["F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10"];
 
 type Hooks = {
@@ -153,6 +153,8 @@ type Hooks = {
   goTo: () => Screen;
   companyMenu: () => Screen;
   importMenu: () => Screen;
+  /** Alt+Y: Backup, Restore, Automatic backups. Restore works with no company open. */
+  dataMenu?: () => Screen;
   syncNow: () => Promise<void>;
   /** Alt+Z (sharing: screens/sharing.ts). Works with no company open. */
   exchangeMenu?: () => Screen;
@@ -489,6 +491,10 @@ export class Shell {
       case "ImportMenu":
         if (!this.company) this.warn(tr("Open a company first, then import into it."));
         else void this.push(this.hooks.importMenu());
+        return true;
+      case "DataMenu":
+        if (!this.hooks.dataMenu) break;
+        void this.push(this.hooks.dataMenu());
         return true;
       case "SyncNow":
         if (!this.company) return false;

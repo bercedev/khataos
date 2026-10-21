@@ -94,7 +94,7 @@ impl CompanyLock {
 }
 
 /// `path` with its folder resolved (the file itself may not exist yet).
-fn canonical(path: &Path) -> PathBuf {
+pub(crate) fn canonical(path: &Path) -> PathBuf {
     path.canonicalize().unwrap_or_else(|_| {
         match (path.parent().and_then(|d| d.canonicalize().ok()), path.file_name()) {
             (Some(dir), Some(name)) => dir.join(name),

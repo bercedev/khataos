@@ -165,6 +165,15 @@ export async function importFromTally(shell: Shell): Promise<void> {
   }
   const paths = picked === null ? [] : Array.isArray(picked) ? picked : [picked];
   if (!paths.length) return;
+  // Into books that already have entries: say so, and that a backup comes first.
+  const c = shell.company;
+  if (c.voucher_count > 0 || c.ledger_count > 0) {
+    const yes = await shell.ask(
+      t("{company} already has books. KhataOS backs it up first, then imports into it. For a first migration, a new company is safer. Import into {company}?", { company: c.name }),
+      { yesFirst: false },
+    );
+    if (!yes) return;
+  }
   shell.info(t("Importing {n} file(s)…", { n: paths.length }));
   try {
     const summary = await shell.transition(api.importTally(paths));

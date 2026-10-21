@@ -23,7 +23,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       # No frontend build needed: apps/desktop/src-tauri/build.rs writes a
       # placeholder dist/index.html for tauri::generate_context! when it is missing.
-      - run: cargo test --workspace
+      - run: cargo test --workspace --no-fail-fast
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
   frontend:

@@ -485,6 +485,12 @@ mod tests {
         DateTime::from_timestamp(1_760_000_000, 0).unwrap()
     }
 
+    /// Best-effort cleanup. Windows can't delete a file that a `Store` still
+    /// in scope holds open, so a failure here only leaves a temp file behind.
+    fn remove(path: impl AsRef<std::path::Path>) {
+        let _ = std::fs::remove_file(path);
+    }
+
     fn tmp(name: &str) -> std::path::PathBuf {
         let p = std::env::temp_dir().join(format!("khataos-test-{}-{name}.khata", std::process::id()));
         let _ = std::fs::remove_file(&p);
@@ -525,7 +531,7 @@ mod tests {
         assert_eq!(loaded.name, "Demo Traders");
         assert_eq!(loaded.trial_balance(), book.trial_balance());
         assert_eq!(loaded.audit().entries(), book.audit().entries());
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -538,7 +544,7 @@ mod tests {
         book.set_opening_balance(now(), "u", rent, dec!(5)).unwrap();
         assert_eq!(store.save(&book).unwrap(), 1);
         assert_eq!(store.len().unwrap(), 5);
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -552,7 +558,7 @@ mod tests {
         assert!(upd.unwrap_err().to_string().contains("append-only"));
         assert!(del.unwrap_err().to_string().contains("append-only"));
         assert_eq!(store.len().unwrap(), 4);
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -563,7 +569,7 @@ mod tests {
         // A different company history with the same length must not be appended to.
         let other = sample();
         assert!(matches!(store.save(&other), Err(StoreError::Diverged(_))));
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -580,7 +586,7 @@ mod tests {
         let store = Store::open(&path).unwrap();
         assert_eq!(store.setting("sync.url").unwrap().as_deref(), Some("https://other.example.in"));
         assert_eq!(store.settings().unwrap(), [("sync.url".to_owned(), "https://other.example.in".to_owned())]);
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -617,8 +623,8 @@ mod tests {
         assert_eq!(a.record("invoice.logo").unwrap(), None);
         a.set_record("invoice.logo", Some("png2"), "asha").unwrap();
         assert_eq!(a.records("invoice.").unwrap(), [("invoice.logo".to_owned(), "png2".to_owned())]);
-        std::fs::remove_file(path).unwrap();
-        std::fs::remove_file(b_path).unwrap();
+        remove(path);
+        remove(b_path);
     }
 
     #[test]
@@ -638,8 +644,8 @@ mod tests {
         assert_eq!(s1.all_records().unwrap(), s2.all_records().unwrap());
         assert_eq!(s1.record("desk.calendar").unwrap().as_deref(), Some("b"));
         assert!(s1.merge_records(&[w("share.key", Some("k"), 1, "d")]).is_err());
-        std::fs::remove_file(p1).unwrap();
-        std::fs::remove_file(p2).unwrap();
+        remove(p1);
+        remove(p2);
     }
 
     #[test]
@@ -659,7 +665,7 @@ mod tests {
         s.set_record_cursor("https://r", &c).unwrap();
         assert_eq!(s.record_cursor("https://r").unwrap(), c);
         assert_eq!(s.pending_records("https://r").unwrap(), 1);
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 
     #[test]
@@ -690,6 +696,6 @@ mod tests {
         // Opening again changes nothing.
         let store = Store::open(&path).unwrap();
         assert_eq!(store.record_rev().unwrap(), 2);
-        std::fs::remove_file(path).unwrap();
+        remove(path);
     }
 }

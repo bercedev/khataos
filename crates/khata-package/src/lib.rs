@@ -409,7 +409,10 @@ mod tests {
         // Tampering with the records is caught like tampering with entries.
         let mut file: serde_json::Value = serde_json::from_slice(&newer).unwrap();
         let mut r = file["records"].as_str().unwrap().to_owned();
-        r.replace_range(r.len() - 2.., "00");
+        // Flip one bit of the last byte. (Writing "00" there changed nothing
+        // whenever the random ciphertext already ended in 00, about 1 run in 256.)
+        let last = u8::from_str_radix(&r[r.len() - 2..], 16).unwrap() ^ 0x01;
+        r.replace_range(r.len() - 2.., &format!("{last:02x}"));
         file["records"] = r.into();
         assert!(matches!(open_with_records(&serde_json::to_vec(&file).unwrap(), "p"), Err(PackageError::Seal(_))));
     }

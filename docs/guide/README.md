@@ -4,7 +4,7 @@ description: "User guide for KhataOS, free open source accounting software that 
 
 # KhataOS user guide
 
-KhataOS is free, open source accounting software that keeps your books in a file on your own computer, works offline, and handles GST in India, VAT in the UAE, Saudi Arabia and the UK, and more. It is built for the keyboard and uses the keys Tally users know, so if you know TallyPrime you already know most of them.
+KhataOS is free, open source accounting software that keeps your books in a file on your own computer, works offline, and handles GST in India, VAT in the UAE, Saudi Arabia and the UK, and more. It is built for the keyboard, and many of its shortcuts work the same way as in TallyPrime, so if you know TallyPrime you already know many of them.
 
 > **KhataOS is in alpha.** Try it on a test company. Don't use it for your only set of books yet.
 

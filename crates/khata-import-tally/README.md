@@ -64,12 +64,16 @@ for s in &report.skipped {
 ## Exporting from Tally
 
 - **TallyPrime:**
-  1. Open the company and go to Gateway of Tally → Display More Reports → List of Accounts.
+  1. Open the company and, from TallyPrime's main menu, go to Display More Reports → List of Accounts.
   2. Press Alt+E (Export) and choose Format = XML (Data Interchange). This file holds the masters.
   3. Export the Day Book for the whole period the same way, with Show voucher details set to Yes. This file holds the vouchers.
   4. Import both files together with `import_all`, so the vouchers can use the voucher types and ledger aliases defined in the masters file.
 - **Tally.ERP 9:** use Display → List of Accounts and Display → Day Book, then Alt+E with format XML.
 - **Over HTTP:** in F1 Help → Settings → Connectivity, set TallyPrime to act as Server (or Both) on port 9000, then build with `--features http`.
+
+## Trademarks
+
+"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility with Tally's XML export.
 
 ## Limitations
 

@@ -7,9 +7,9 @@ How KhataOS behaves from the keyboard, so people moving from TallyPrime keep the
 The rules come from:
 - a hands-on behavioural study of TallyPrime 7.2 (Educational mode, 2026-10-19). Notes are kept privately, outside this repo;
 - [`../research/tally-shortcuts.md`](../research/tally-shortcuts.md), which has the full key table;
-- [`../research/tally-pain-points.md`](../research/tally-pain-points.md), which records where Tally lets users down.
+- [`../research/tally-pain-points.md`](../research/tally-pain-points.md), which records the problems Tally users report.
 
-Each rule is tagged **KEEP** (copy the behaviour), **FIX** (copy the behaviour but remove a known pain point) or **NEW** (not in Tally).
+Each rule is tagged **KEEP** (match the behaviour), **FIX** (match the behaviour but remove a known pain point) or **NEW** (not seen in the TallyPrime study). Statements below about how TallyPrime behaved come from that hands-on study of release 7.2, unless a source is linked.
 
 The key bindings themselves are implemented in `crates/khata-keymap`.
 
@@ -68,7 +68,7 @@ The key bindings themselves are implemented in `crates/khata-keymap`.
 | Ma1 | The ledger form's sections depend on the nature of the chosen group: bank fields (account number, IFSC, SWIFT, branch); party fields (bill-by-bill tracking, credit period, PAN, tax registration); or expense fields (tax applicability, HSN/SAC, rate). Sections change instantly when the group changes. | KEEP |
 | Ma2 | The parent group's nature appears in italics under the group name ("(Current Assets)"). | KEEP |
 | Ma3 | Tax attributes are inherited from **company → group → ledger**, and the form shows where each value comes from. | KEEP |
-| Ma4 | Typing an IFSC code fills in the bank and branch from the public RBI IFSC dataset, offline. | NEW (Tally doesn't do this) |
+| Ma4 | Typing an IFSC code fills in the bank and branch from the public RBI IFSC dataset, offline. | NEW |
 | Ma5 | Tally users expect these default groups in KhataOS's default chart: Bank Accounts, Bank OCC A/c, Bank OD A/c, Branch / Divisions, Capital Account, Cash-in-Hand, Current Assets, Current Liabilities, Deposits (Asset), Direct/Indirect Expenses and Incomes, Duties & Taxes, Fixed Assets, Investments, Loans & Advances (Asset), Loans (Liability), Misc. Expenses (Asset), Provisions, Purchase Accounts, Reserves & Surplus, Sales Accounts, Secured Loans, Stock-in-Hand, Sundry Creditors, Sundry Debtors, Suspense A/c, Unsecured Loans. Group aliases are searchable ("Expenses (Direct)" finds Direct Expenses). | KEEP |
 | Ma6 | Amounts are right-aligned and shown in the locale's grouping: **2,50,000.00** for India, 250,000.00 elsewhere. Dr/Cr is a separate sub-field; its default follows the group's nature, and typing D or C sets it. | KEEP |
 | Ma7 | While opening balances are being entered, a panel shows the company-wide opening total and how far it is from balancing. | KEEP |
@@ -100,7 +100,7 @@ The key bindings themselves are implemented in `crates/khata-keymap`.
 
 | # | Rule | Tag |
 |---|---|---|
-| C1 | **One build. The audit trail is always on and can't be switched off.** Tally ships separate builds with and without its edit log. KhataOS doesn't: India requires the edit log for companies (Companies Act Rule 3(1)) and for all GST registrants (GST Rule 56(8)). | FIX |
+| C1 | **One build. The audit trail is always on and can't be switched off.** Tally ships separate builds with and without its edit log ([Edit Log FAQ](https://help.tallysolutions.com/edit-log-in-tallyprime-faq/)). KhataOS doesn't: India requires the edit log for companies (Companies Act Rule 3(1)) and for all GST registrants (GST Rule 56(8)). | FIX |
 | C2 | On first run, the user picks the **country pack**, which sets the financial-year start, currency, phone prefix, state list and the tax regimes that must be on (GST for India). Advanced switches sit behind "show more" / "show all". | KEEP |
 | C3 | A company can hold several tax registrations, one per state. | KEEP |
 

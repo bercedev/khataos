@@ -15,7 +15,7 @@ description: "Documentation for KhataOS, free open source accounting software fo
 
 # KhataOS documentation
 
-KhataOS is free, open source accounting software. It works offline, keeps your books on your own computer, is built for the keyboard, and uses the keys Tally users know. It handles GST in India, VAT and ZATCA e-invoicing in the UAE and Saudi Arabia, and UK Making Tax Digital, and runs on Windows, macOS, Linux and Android. This page lists all the documentation.
+KhataOS is free, open source accounting software. It works offline, keeps your books on your own computer, is built for the keyboard, and many of its shortcuts work the same way as in TallyPrime. It handles GST in India, VAT and ZATCA e-invoicing in the UAE and Saudi Arabia, and UK Making Tax Digital, and runs on Windows, macOS, Linux and Android. This page lists all the documentation.
 
 ![KhataOS home screen with the company summary and the keyboard menu](images/keyboard-accounting-home-menu.webp)
 
@@ -72,12 +72,16 @@ Detailed notes on each compliance pack: the rules, the sources behind them, what
 
 ## Research
 
-Background studies in `docs/research/`. They are planning inputs, written at a point in time, and may lag the code.
+Background studies in `docs/research/`. They are planning inputs, written at a point in time, and may lag the code. What they say about other products, including prices and user opinions, is as found on the research date and quoted from the sources linked in each study; check the vendor's own site for current details.
 
 - Tally gap studies: [accounting](research/tally-gap-accounting.md) · [inventory, payroll and tax](research/tally-gap-inventory-payroll-tax.md) · [user experience and platform](research/tally-gap-ux-platform.md)
 - Tally: [pain points](research/tally-pain-points.md) · [shortcuts](research/tally-shortcuts.md)
 - [Voucher numbering](research/voucher-numbering.md) · [Accountant's desk](research/accountant-desk.md)
 - Compliance: [India](research/india-compliance.md) · [India GST advanced](research/india-gst-advanced.md) · [India TDS and TCS](research/india-tds-tcs.md) · [India Schedule III](research/india-schedule-3.md) · [UAE and KSA](research/mena-compliance.md) · [Singapore](research/singapore-compliance.md) · [UK](research/uk-compliance.md) · [Germany](research/germany-compliance.md) · [France](research/france-compliance.md) · [Netherlands](research/netherlands-compliance.md) · [Spain](research/spain-compliance.md) · [US](research/us-compliance.md) · [Mexico](research/mexico-compliance.md) · [E-invoicing and Peppol](research/einvoicing-peppol.md)
+
+## Trademarks
+
+"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility, such as the key map and data import. Other product and authority names belong to their owners.
 
 ## The docs site
 

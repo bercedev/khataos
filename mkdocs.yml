@@ -4,7 +4,7 @@
 #   .venv/bin/mkdocs serve
 # The build goes to site/docs; the workflow copies website/ to site/ beside it.
 site_name: "KhataOS: open source accounting"
-site_description: "Free, open source accounting software that works offline: GST for India, VAT and ZATCA e-invoicing for the Gulf, UK Making Tax Digital, and a Tally alternative."
+site_description: "Free, open source accounting software that works offline: GST for India, VAT and ZATCA e-invoicing for the Gulf, UK Making Tax Digital, and an alternative to TallyPrime."
 # The docs are served under /docs/ of the GitHub Pages site; the website in
 # website/ is the root (see .github/workflows/docs.yml). site_url gives the docs
 # canonical links and a sitemap.xml.
@@ -20,7 +20,11 @@ exclude_docs: |
 # Kept for old links to /docs/download/: it points to the website's download page.
 not_in_nav: |
   /download.md
-copyright: Copyright © 2026 the KhataOS contributors. AGPL-3.0-or-later.
+copyright: >-
+  Copyright © 2026 the KhataOS contributors. AGPL-3.0-or-later.<br>
+  "Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd.
+  KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions.
+  The names are used only to describe compatibility.
 
 theme:
   name: material

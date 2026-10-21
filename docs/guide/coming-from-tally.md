@@ -1,12 +1,12 @@
 ---
-description: "Moving from TallyPrime to KhataOS, a free and open source Tally alternative: the same keys, what works differently, and how to import your Tally data."
+description: "Moving from TallyPrime to KhataOS, free and open source accounting software: the keys you know, what works differently, and how to import your data from Tally's XML export."
 ---
 
 # Coming from Tally
 
 **What you'll do:** see how KhataOS, a free and open source alternative to TallyPrime, compares with what you know: which of your habits work as they are, which work a little differently, and what isn't there yet, so the first week holds no surprises.
 
-KhataOS is an independent project, not a copy of Tally. It reproduces the *behaviour* Tally users rely on, such as the keys and the workflow, and it can [import your Tally data](import-from-tally.md). Nothing here comes from Tally's code, screens or text.
+KhataOS is an independent project, not a copy of Tally, and it is not affiliated with, endorsed by or sponsored by Tally Solutions. It reproduces the *behaviour* Tally users rely on, such as the keys and the workflow, and it can [import your Tally data](import-from-tally.md). Nothing here comes from Tally's code, text, graphics or branding; the screens are KhataOS's own design, arranged around the keyboard conventions Tally users know.
 
 ## Habits that work as they are
 
@@ -98,6 +98,10 @@ What's planned next is in the [roadmap](../roadmap.md).
 
 1. [Install KhataOS](install.md) and [create a test company](first-company.md).
 2. [Import your Tally data](import-from-tally.md) into it, and read the skipped list.
-3. Add the tax ID and state on your main party ledgers (the import doesn't bring them).
+3. Check the tax ID and state on your main party ledgers. The import brings them across when Tally has them; the import summary lists any GSTIN it couldn't verify.
 4. Enter a few days of vouchers in both, and compare the Day Book, Trial Balance and outstandings.
 5. [Tell us](https://github.com/khataos/khataos/issues/new/choose) what's missing or behaves differently from what you expect.
+
+---
+
+"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility.

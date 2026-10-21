@@ -1,6 +1,6 @@
 # Mobile
 
-**What you'll do:** use KhataOS on an Android phone or an iPhone, and see what works differently there.
+**What you'll do:** use KhataOS on an Android phone, and see what works differently there. An iPhone version is coming.
 
 There are no releases in the app stores yet. On Android, download the app from the [download page](https://khataos.github.io/khataos/download/): open **Install steps** on the Android card to see what to tap. There's no iPhone app yet; developers can build it from source: see [Install](install.md#android-and-ios).
 

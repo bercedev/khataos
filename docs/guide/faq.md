@@ -3,7 +3,7 @@
 ## About KhataOS
 
 **What is KhataOS?**
-Free, open source accounting software that keeps your books in a file on your own device, and works offline. It is built for the keyboard and uses the keys Tally users know, so it works as an alternative to TallyPrime. It runs on Windows, macOS and Linux, and builds for Android and iOS.
+Free, open source accounting software that keeps your books in a file on your own device, and works offline. It is built for the keyboard, and many of its shortcuts work the same way as in TallyPrime, so TallyPrime users can switch to it easily. It runs on Windows, macOS and Linux, and builds for Android and iOS.
 
 **Is it ready for my real books?**
 Not yet. KhataOS is in alpha. Try it on a test company, and keep your real books where they are until it's out of alpha.
@@ -12,7 +12,7 @@ Not yet. KhataOS is in alpha. Try it on a test company, and keep your real books
 Nothing. It is free software under the GNU Affero General Public License (AGPL-3.0-or-later): you can use, study, change and share it.
 
 **Is it made by Tally Solutions, or a copy of Tally?**
-No. KhataOS is an independent project. It reproduces the behaviour Tally users rely on, such as the keys and the workflow, without copying Tally's code, screens or text. It imports data through Tally's published XML export.
+No. KhataOS is an independent project. It reproduces the behaviour Tally users rely on, such as the keys and the workflow. It doesn't copy Tally's code, text, help pages, graphics or branding: KhataOS's screens are its own design, while the menu and function key arrangement follow the keyboard conventions Tally users know. It imports data through Tally's published XML export.
 
 **Which countries does it support?**
 India, the UAE, Saudi Arabia, Singapore and the UK are the launch markets. Germany, France, the Netherlands, Spain, the US and Mexico are also in the app, and are less mature. See [the country pages](README.md#your-country).
@@ -46,7 +46,7 @@ You can alter, cancel and delete vouchers, but every change is kept in the audit
 Most of the everyday ones do: the home menu letters, `F4` to `F9`, `Ctrl+A`, `Alt+G`, `F2`, `Alt+F2`, `Ctrl+H`, `Alt+X` and more. Some are reserved but not built yet. See [Coming from Tally](coming-from-tally.md) and the [key reference](keyboard.md#key-reference).
 
 **Can I import my Tally data?**
-Yes: masters and vouchers from Tally's XML export. Bill-wise details, cost centres and some voucher types don't come across yet. See [Import from Tally](import-from-tally.md).
+Yes: masters and vouchers from Tally's XML export, including bill-wise details and opening bills, party GSTIN and state, tax ledgers and custom voucher types. Cost centres, stock vouchers and payroll don't come across yet. See [Import from Tally](import-from-tally.md).
 
 **Can I keep using Tally alongside?**
 Yes. KhataOS doesn't change your Tally data. Import into a test company and compare.

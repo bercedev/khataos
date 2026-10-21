@@ -10,6 +10,8 @@ Research date: 2026-10-19. Scope: India first, then UAE/KSA. This file feeds the
 - Other user forums read directly: TechEnclave (Discourse JSON), Hacker News (Algolia API), Techjockey reviews, Trustpilot, and the CodeWeavers forum.
 - **Tally's own help pages were used for hard facts** such as prices, rules and error messages. **Vendor blogs** (tallyatcloud, accountune, aiaccountant and others) sell competing or adjacent products, so they are flagged `(vendor)`.
 
+**About this file.** It is a planning input, not a review of TallyPrime and not a claim about it. Prices, plans and features are as Tally Solutions published them on the research date and may have changed; check tallysolutions.com for current details. Quotes are the opinions of the users and sites linked next to them, not statements by the KhataOS project. "Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd.; KhataOS is not affiliated with Tally Solutions.
+
 **Evidence tags:**
 - `[V]` the page was fetched and read directly.
 - `[S]` taken from a search-engine summary only.
@@ -63,7 +65,7 @@ Research date: 2026-10-19. Scope: India first, then UAE/KSA. This file feeds the
 - Techjockey reviewers: "PRICE IS HIGH" (accountant, Apr 2023); "license renewed every year may not be a feasible option for small businesses" (Oct 2020); "High upfront cost" (Jul 2024). [Techjockey](https://www.techjockey.com/reviews/tally-erp-9) [V]
 - Capterra UK reviewers call it "pretty expensive". [Capterra UK](https://www.capterra.co.uk/reviews/127762/tally-erp-9) [S]
 - A single-user Silver owner asks whether repeatedly surrendering and re-activating the licence to move between an office PC and a home laptop "will get me into trouble". [CAclubindia, Jul 2020](https://www.caclubindia.com/forum/how-to-use-tally-erp-9-silver-single-user-in-both-my-laptop-and-pc--551062.asp) [V]
-- Cracked copies are widespread: forum replies routinely blame "pirated version" for errors. [CAclubindia](https://www.caclubindia.com/forum/file-corrupt-39438.asp) [V] This suggests price is a real barrier `[U]` as a causal claim.
+- Some forum replies blame a "pirated version" for errors. [CAclubindia](https://www.caclubindia.com/forum/file-corrupt-39438.asp) [V] Whether price is the reason is `[U]`.
 
 **KhataOS answer:** Open-source core with no licence key, no per-seat or per-machine activation, and no "subscription to stay compliant". Statutory updates (GST, TDS, VAT schema changes) ship as free releases. Optional paid services, such as hosted sync and managed e-invoice/GSP relay, sit outside the core and never block reading or exporting your own books. The software never stops working if you stop paying.
 

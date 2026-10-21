@@ -2,7 +2,7 @@
 
 **What you'll do:** learn how keys work in KhataOS, and look up any key.
 
-KhataOS uses the shortcuts Tally users know: the keys a TallyPrime user already knows do the same job here, such as `F8` for a sales voucher, `Alt+G` for Go To and `Ctrl+A` to accept. A few keys are KhataOS additions, and they are marked below.
+Many shortcuts work the same way as in TallyPrime, such as `F8` for a sales voucher, `Alt+G` for Go To and `Ctrl+A` to accept. Some are reserved but not built yet, and a few are KhataOS additions; both are marked below.
 
 ## How keys work
 

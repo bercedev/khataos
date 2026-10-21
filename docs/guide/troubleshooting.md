@@ -55,7 +55,7 @@ Crash notes are in the `crashes` folder in KhataOS's data folder (the last 20 ar
 
 **A key does nothing.** Some reserved keys have nothing behind them and give no message yet, such as `Ctrl+F` in a voucher or in most reports. Check the [key reference](keyboard.md#key-reference). On a Mac, function keys need `fn`, and macOS may take some keys first (see [Keyboard](keyboard.md#on-a-mac)).
 
-**Outstanding and Ageing are empty after importing from Tally.** Bill-wise details don't come across in the import. See [Import from Tally](import-from-tally.md).
+**Outstanding and Ageing are empty after importing from Tally.** Bill-wise details and opening bills are imported, so check the import summary's "Bills" count. If it is 0 while Tally has bills, the export may be missing them or use tags we don't read yet; save the shareable summary and report it. See [Import from Tally](import-from-tally.md).
 
 **The same company shows twice in the company list.** One of them is probably a `.conflict-<time>.khata` file kept after a sync rebase. See [Backup](backup.md#other-ways-your-books-are-kept-safe).
 

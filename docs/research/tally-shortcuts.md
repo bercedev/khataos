@@ -257,7 +257,7 @@ The bottom bar exists from Release 2.0.1 [S2].
 | F8 / F9 / Alt+R / Alt+F7 | Bank Reconciliation | Reconcile, set status, reconcile manually, create a consolidated voucher | [P]. 6.0 and later (Connected Banking [S3]) |
 | Alt+A / Alt+D / Alt+V / Alt+C | Dashboard | Add, remove, expand or configure a tile | [P]. 4.0 and later [S3] |
 
-## 6. Gateway of Tally menu letters
+## 6. TallyPrime main menu letters
 
 Each Gateway item has a highlighted letter, and pressing that letter opens the item. The Gateway is grouped as Masters, Transactions/Vouchers, Utilities and Reports [S3]. ERP 9 documents the convention ("press V in the Gateway of Tally menu" [S6]). **The TallyPrime shortcut page does not list the individual letters**, so the TallyPrime letters below are `[UNVERIFIED]` unless marked otherwise. Confirm them against a live install.
 
@@ -316,7 +316,7 @@ Each Gateway item has a highlighted letter, and pressing that letter opens the i
 
 Observed directly in a running install. This resolves the `[UNVERIFIED]` Gateway letters above.
 
-| Key | Gateway of Tally item | Section |
+| Key | TallyPrime main menu item | Section |
 |---|---|---|
 | C | Create | Masters |
 | A | Alter | Masters |

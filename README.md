@@ -7,7 +7,7 @@
 
 **KhataOS is free, open source accounting software for small businesses and the accountants who work for them.** In India it is free GST accounting software, with GSTR-1, GSTR-3B and e-invoices. In the Gulf it is VAT accounting software for the UAE and Saudi Arabia, with ZATCA e-invoicing. In Britain it prepares your VAT return for UK Making Tax Digital.
 
-It works like TallyPrime and uses the same keys, so it makes an easy Tally alternative, and it can import your data from Tally. It is offline accounting software: your books are one file on your own computer, and nothing leaves it unless you choose to share. It runs on Windows, macOS, Linux and Android (and on iPhone), all from the same code, and it is built for the keyboard.
+If you're used to TallyPrime, you'll feel at home: many of its keyboard shortcuts work the same way, and you can import your company data from a Tally XML export. KhataOS is offline accounting software: your books are one file on your own computer, and nothing leaves it unless you choose to share. It runs on Windows, macOS, Linux and Android from the same code (an iPhone version is coming), and it is built for the keyboard.
 
 > **Status: alpha.** Don't use it for your only set of books yet. Try it on a test company and [tell us what breaks](#try-it-and-report-issues).
 
@@ -36,7 +36,7 @@ Older versions and checksums are on the [releases page](https://github.com/khata
 ## Screenshots
 
 <p>
-  <img src="docs/images/keyboard-accounting-home-menu.webp" alt="KhataOS home screen for an Indian company, with the keyboard menu used by TallyPrime users" width="49%">
+  <img src="docs/images/keyboard-accounting-home-menu.webp" alt="KhataOS home screen for an Indian company, with the single letter keyboard menu" width="49%">
   <img src="docs/images/payment-voucher-entry.webp" alt="Entering a payment voucher in KhataOS with the keyboard, with the ledger list and voucher keys F4 to F10" width="49%">
 </p>
 <p>
@@ -54,7 +54,7 @@ From the top: the home menu, a payment voucher, the dashboard, the accountant's 
 
 - **Your books are a file on your device.** One SQLite file per company. It works offline. Nothing goes to a server unless you choose to share.
 - **An audit trail that is always on.** Every change is a linked entry in a hash chain, and the database refuses edits to history. The trail *is* the storage format, so it can't be switched off, and any copy can rebuild the books from it.
-- **Built for the keyboard, with the keys Tally users know.** F4 to F9 for voucher types, Alt+G for Go To, Ctrl+A to accept, the single letter keys on the home menu, and so on. See the [key reference](docs/guide/keyboard.md). The mouse and touch work too.
+- **Built for the keyboard, with shortcuts familiar to TallyPrime users.** F4 to F9 for voucher types, Alt+G for Go To, Ctrl+A to accept, the single letter keys on the home menu, and so on. See the [key reference](docs/guide/keyboard.md). The mouse and touch work too.
 - **Sharing without pen drives.** An office server on your local network, a relay over the internet that is encrypted so only you and your accountant can read it, or a sealed `.khatapkg` file for your accountant. See [`docs/sharing.md`](docs/sharing.md).
 - **Tax rules in country packs.** The ledger engine knows no country. Each country's tax rules live in their own crate.
 - **English and Arabic**, with a full right to left layout (Ctrl+K). See [`docs/i18n.md`](docs/i18n.md).
@@ -93,7 +93,7 @@ EN 16931 e-invoices (UBL and CII, XRechnung, Peppol BIS Billing 3.0, Factur-X) c
 
 KhataOS is an open source alternative to TallyPrime for people who already know it.
 
-- **The same keys.** The home menu letters, F4 to F9 for vouchers, Alt+G for Go To, Ctrl+A to accept, Esc to go back. See the [key reference](docs/guide/keyboard.md).
+- **Familiar shortcuts.** Many keys work the same way: the home menu letters, F4 to F9 for vouchers, Alt+G for Go To, Ctrl+A to accept, Esc to go back. The [key reference](docs/guide/keyboard.md) marks the ones that aren't built yet.
 - **Your data comes with you.** KhataOS imports masters and vouchers from Tally's XML export, and lists anything it skipped. See [Import from Tally](docs/guide/import-from-tally.md).
 - **What's different, and what isn't there yet**, is in [Coming from Tally](docs/guide/coming-from-tally.md).
 
@@ -192,7 +192,7 @@ All the documentation is listed in [`docs/README.md`](docs/README.md), and publi
 
 ## Clean room policy
 
-KhataOS reproduces **behaviour** that users rely on, such as workflows and key bindings. It doesn't copy TallyPrime's code, screens, text, icons or branding. Data migration uses Tally's published XML interface only.
+KhataOS reproduces **behaviour** that users rely on, such as workflows and key bindings. It doesn't copy TallyPrime's code, text, help pages, graphics, icons or branding. The screens are KhataOS's own design; the menu and function key arrangement follow the keyboard conventions TallyPrime users know. Data migration uses Tally's published XML interface only.
 
 ## Licence
 
@@ -202,4 +202,4 @@ Copyright © 2026 the KhataOS contributors.
 
 ## Trademarks
 
-"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project. It is not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility, such as the key map and data import. Other product and authority names belong to their owners.
+"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility, such as the key map and data import. Other product and authority names belong to their owners.

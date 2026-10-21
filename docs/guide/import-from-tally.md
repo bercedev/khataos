@@ -134,3 +134,7 @@ Press `Esc` to leave the summary.
 | Tax ledger side guessed | One tax ledger is used on both sales and purchases | Check it under Alter Ledger; GST reports still count it by voucher type |
 
 Developers: the importer is the [`khata-import-tally`](../../crates/khata-import-tally) crate. What a real export may still trip on is in the [readiness review](../research/tally-import-readiness.md).
+
+---
+
+"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The import reads the XML that Tally's own Export menu writes; the names are used only to describe that compatibility.

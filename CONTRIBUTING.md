@@ -83,10 +83,10 @@ The details are in [`docs/i18n.md`](docs/i18n.md).
 
 KhataOS reproduces **behaviour** that users rely on, such as workflows and key bindings. It never copies TallyPrime, or any other product:
 - no code, decompiled or otherwise;
-- no screenshots, screen layouts, icons, text, help pages or branding;
+- no screenshots, icons, graphics, colour schemes, text, help pages or branding (following keyboard conventions and menu order is fine; copying how a screen looks is not);
 - data migration uses only Tally's published XML interface.
 
-Don't contribute anything you saw under a licence or NDA that forbids it, such as a vendor's internal documentation or a paid standard's text. Describe behaviour in your own words. Mention TallyPrime only to describe compatibility ("works like", "imports from").
+Don't contribute anything you saw under a licence or NDA that forbids it, such as a vendor's internal documentation or a paid standard's text. Describe behaviour in your own words. Mention TallyPrime only to describe compatibility ("uses the keys TallyPrime users know", "imports from Tally's XML export"), never in a way that suggests a link with Tally Solutions, and never use Tally's logo, colours or screenshots.
 
 ## Sign your commits (DCO)
 

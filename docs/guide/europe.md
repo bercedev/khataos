@@ -47,12 +47,12 @@ On a saved Sales invoice or Credit Note, press `Ctrl+E`:
 
 Things to know:
 
-- **Germany (XRechnung):** the seller's contact, e-mail, IBAN and BIC are read from extra lines in the company **Address**, such as `IBAN: DE02 …` and `E-Mail: rechnung@…`. A public buyer's **Leitweg-ID** goes in the voucher narration as a line `Leitweg-ID: …`. See [Germany](../germany-vat.md).
+- **Germany (XRechnung):** the seller's contact, email, IBAN and BIC are read from extra lines in the company **Address**, such as `IBAN: DE02 …` and `E-Mail: rechnung@…`. A public buyer's **Leitweg-ID** goes in the voucher narration as a line `Leitweg-ID: …`. See [Germany](../germany-vat.md).
 - **Factur-X** is a PDF/A-3 with the invoice data inside it, in the EN 16931 profile. The PDF is a plain text layout, not your invoice design, and has no logo.
 - **Spain (VeriFactu):** no record is made automatically when you save, the VeriFactu QR doesn't print on the invoice, and there are no VeriFactu system settings yet.
 - **France:** the legal mentions (autoliquidation, the 293 B franchise, SIREN) aren't printed on invoices yet.
 - **Netherlands:** there is no Peppol BIS or NLCIUS export.
-- Foreign-currency invoices can't be exported as XRechnung or Factur-X.
+- Invoices in a foreign currency can't be exported as XRechnung or Factur-X.
 
 The shared e-invoice model is described in [EN 16931](../en16931.md) and [Peppol](../peppol.md).
 

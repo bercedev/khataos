@@ -3,7 +3,7 @@
 ## About KhataOS
 
 **What is KhataOS?**
-Free, open-source accounting that keeps your books in a file on your own device. It is keyboard-first and uses Tally-compatible shortcuts. It runs on Windows, macOS and Linux, and builds for Android and iOS.
+Free, open source accounting software that keeps your books in a file on your own device, and works offline. It is built for the keyboard and uses the keys Tally users know, so it works as an alternative to TallyPrime. It runs on Windows, macOS and Linux, and builds for Android and iOS.
 
 **Is it ready for my real books?**
 Not yet. KhataOS is in alpha. Try it on a test company, and keep your real books where they are until it's out of alpha.
@@ -18,7 +18,7 @@ No. KhataOS is an independent project. It reproduces the behaviour Tally users r
 India, the UAE, Saudi Arabia, Singapore and the UK are the launch markets. Germany, France, the Netherlands, Spain, the US and Mexico are also in the app, and are less mature. See [the country pages](README.md#your-country).
 
 **Which languages?**
-English and Arabic, with a full right-to-left layout (`Ctrl+K`). See [Arabic](arabic.md).
+English and Arabic, with a full right to left layout (`Ctrl+K`). See [Arabic](arabic.md).
 
 ## Your data
 
@@ -26,7 +26,7 @@ English and Arabic, with a full right-to-left layout (`Ctrl+K`). See [Arabic](ar
 In one `.khata` file per company, on your device. The home screen shows its path. See [Backup](backup.md).
 
 **Does anything go to the internet?**
-Only what you choose: syncing through a relay or server, e-invoice and tax-portal connections you set up, and crash reports you review and send yourself.
+Only what you choose: syncing through a relay or server, connections to e-invoice and tax portals that you set up, and crash reports you review and send yourself.
 
 **Can someone read my books on the relay?**
 No. Entries are encrypted on your computer before they're sent, and the relay only stores the sealed entries. See [Sharing](sharing.md).
@@ -57,7 +57,7 @@ Not yet. See [what isn't there yet](coming-from-tally.md#not-there-yet) and the 
 ## Tax and compliance
 
 **Does KhataOS file my returns?**
-In most countries, no: it prepares the return figures and the files, and you file them. Saudi Arabia's ZATCA e-invoicing works against ZATCA's sandbox, and the UK MTD submission is built but tested only against a mock. Check the status on each country page.
+In most countries, no: it prepares the return figures and the files, and you file them. Saudi Arabia's ZATCA e-invoicing works against ZATCA's sandbox, and the UK MTD submission is built but tested only against our own test server. Check the status on each country page.
 
 **Can I trust the tax figures?**
 They are a preparation aid. Check them with your accountant before you file. If you find a wrong tax rule, [report it](https://github.com/khataos/khataos/issues/new/choose) with the official source.
@@ -79,7 +79,7 @@ Yes: over the office network, through the relay, or with accountant files. See [
 **Can I open two companies at once?**
 Not yet. One company is open at a time; `F3` goes back to the company list.
 
-**Can I e-mail or WhatsApp an invoice?**
+**Can I email or WhatsApp an invoice?**
 Not yet. Save the PDF (`Ctrl+E`, **PDF**) and send it yourself.
 
 **Where do I report a bug?**

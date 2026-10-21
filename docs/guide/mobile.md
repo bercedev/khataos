@@ -2,7 +2,7 @@
 
 **What you'll do:** use KhataOS on an Android phone or an iPhone, and see what works differently there.
 
-There are no app-store releases yet. To try KhataOS on a phone, build it from source: see [Install](install.md#android-and-ios).
+There are no releases in the app stores yet. To try KhataOS on a phone, build it from source: see [Install](install.md#android-and-ios).
 
 KhataOS on a phone is the same app as on the desktop, with the same books and keys. It needs Android 7.0 or newer, or iOS 15 or newer.
 

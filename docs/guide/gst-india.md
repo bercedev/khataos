@@ -1,8 +1,12 @@
+---
+description: "Free GST accounting software for India: GST invoices, GSTR-1, GSTR-3B, GSTR-2B reconciliation, e-invoices, e-way bills, TDS and TCS in KhataOS."
+---
+
 # India: GST, TDS and TCS
 
 **What you'll do:** set up an Indian company for GST, enter GST invoices, prepare GSTR-1 and GSTR-3B, reconcile GSTR-2B, generate e-invoices, and handle TDS and TCS.
 
-> KhataOS prepares returns and files from your books. It doesn't file anything with the GST portal or the income-tax department. **Check every figure and file with your accountant, and with the official offline tools, before you file.**
+> KhataOS prepares returns and files from your books. It doesn't file anything with the GST portal or the Income Tax Department. **Check every figure and file with your accountant, and with the official offline tools, before you file.**
 
 ## Set up
 
@@ -31,7 +35,7 @@ All of these are in **Go To** (`Alt+G`), under GST. Type part of the name.
 | **GSTR-3B (summary return)** | Tables 3.1, 3.2 and 4, with tax payable | Print and CSV |
 | **GSTR-2B reconciliation** | Matches your purchases with the GSTR-2B JSON downloaded from the portal | `Alt+S` imports the JSON; `Ctrl+Alt+T` sets the tolerance |
 | **Input tax credit (GSTR-3B Table 4)** | ITC available, reversed and ineligible | |
-| **Reverse charge register and self-invoices** | Reverse-charge purchases and their self-invoices | `Ctrl+Alt+P` prints a self-invoice |
+| **Reverse charge register and self-invoices** | Purchases under reverse charge and their self-invoices | `Ctrl+Alt+P` prints a self-invoice |
 | **Reverse charge and blocked credit flags** | Mark purchases as reverse charge or blocked credit | `Alt+R`, `Alt+B`; `Alt+4` the Rule 42 calculator |
 | **ITC to reverse for unpaid bills (Rule 37)** | Supplier bills unpaid after 180 days | |
 | **GSTR-1A: changes after filing** | Outward vouchers changed after you filed | `Alt+F` marks GSTR-1 as filed |
@@ -51,11 +55,11 @@ On a saved Sales invoice or Credit Note, press `Ctrl+E` (Export):
 
 **Set up the IRP:** `Alt+G`, **e-Invoice portal (IRP) settings**: choose the IRP (the NIC sandbox by default), and enter your API credentials and the IRP's public key.
 
-> The IRP connection has been tested **only against a mock** of the published API, not a real IRP. The e-invoice and e-way bill JSON haven't been checked with the official tools. There is no standalone e-way bill API (Part B, cancel, extend) yet. Detail: [e-Invoice](../einvoice.md).
+> The IRP connection has been tested **only against our own test server**, which imitates the published API, not a real IRP. The e-invoice and e-way bill JSON haven't been checked with the official tools. There is no standalone e-way bill API (Part B, cancel, extend) yet. Detail: [e-Invoice](../einvoice.md).
 
 ## TDS and TCS
 
-1. On a supplier's ledger, fill the **TDS** section: PAN, deductee type and any lower-deduction certificate. On a customer's, the **TCS** section.
+1. On a supplier's ledger, fill the **TDS** section: PAN, deductee type and any certificate for lower deduction. On a customer's, the **TCS** section.
 2. On expense and purchase ledgers, set the **Nature of payment (TDS)**; on sales and income ledgers, the **Nature of collection (TCS)**.
 3. `Alt+G`, **Deductor details (TAN)**: your TAN and the person responsible.
 4. In vouchers, KhataOS suggests a TDS line on Journal, Purchase and Payment, and TCS on Sales and Receipt, once the year's threshold is crossed. `Ctrl+D` removes a suggested line.
@@ -66,7 +70,7 @@ Reports in Go To, under TDS: **TDS Payable** and **TCS Payable** (with due dates
 
 ## Schedule III
 
-Go To, under Statutory: **Balance Sheet (Schedule III)**, **Statement of Profit and Loss (Schedule III)**, **Notes to Accounts (Schedule III)** and **Schedule III mapping** (which group goes to which line). Previous-period figures are included. Detail: [Schedule III](../india-schedule-3.md).
+Go To, under Statutory: **Balance Sheet (Schedule III)**, **Statement of Profit and Loss (Schedule III)**, **Notes to Accounts (Schedule III)** and **Schedule III mapping** (which group goes to which line). Figures for the previous period are included. Detail: [Schedule III](../india-schedule-3.md).
 
 ## Not there yet
 

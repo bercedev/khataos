@@ -8,7 +8,7 @@ body:
         Thanks for reporting a bug.
 
         > [!WARNING]
-        > **Never attach a real company file (`.khata`, `.khatapkg`), a real Tally export, or customer, supplier or employee data.** Issues are public. Reproduce the bug in a new test company with made-up names, GSTINs/VAT numbers and amounts, and attach that instead.
+        > **Never attach a real company file (`.khata`, `.khatapkg`), a real Tally export, or customer, supplier or employee data.** Issues are public. Reproduce the bug in a new test company with invented names, GSTINs or VAT numbers and amounts, and attach that instead.
 
         A security problem? Don't file it here: [report it privately](https://github.com/khataos/khataos/security/advisories/new).
         A wrong tax rule or rate? Use the **Tax rule** form instead.
@@ -55,7 +55,7 @@ body:
         - Spain
         - United States
         - Mexico
-        - Not country-specific
+        - Not about one country
     validations:
       required: true
   - type: dropdown

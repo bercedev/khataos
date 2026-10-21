@@ -8,7 +8,7 @@
 2. Set what you want. A preview of your latest invoice updates as you go.
    - **Look:** template (Classic, Modern or Compact), accent colour, font, paper (A4, Letter or A5), and whether cash (B2C) invoices print on 80 mm receipts.
    - **Logo** and **signature** images (PNG, JPEG or SVG): press `Enter` on the field for its menu.
-   - **What to show:** the HSN/SAC or tax-class column, quantity and rate columns, the amount in words, the authorised signatory. Columns your country's law requires stay on.
+   - **What to show:** the HSN/SAC or tax class column, quantity and rate columns, the amount in words, the authorised signatory. Columns your country's law requires stay on.
    - **Bank details:** account name, bank, branch, account number, IBAN, local bank code, SWIFT/BIC.
    - **Texts:** terms, declaration and footer. India also has the LUT ARN for exports.
    - **Titles** for each voucher type. Some countries fix the title by law (for example "Tax Invoice"), and then it can't be changed.
@@ -26,7 +26,7 @@ After you save a Sales invoice, Credit Note or Debit Note, KhataOS asks "Print?"
 
 If some letters in a name don't come out right in the PDF file, print with `Ctrl+P` and save as PDF from the print dialog instead.
 
-**Ship-to and export details:** on a saved Sales invoice or note, press `Ctrl+E`, then **Ship-to and export details**. Add the ship-to address, and for exports the ports, Incoterms, destination, shipping bill and (India) IGST or LUT. These print on the invoice; they don't change the books.
+**Ship-to and export details:** on a saved Sales invoice or note, press `Ctrl+E`, then **Ship-to and export details**. Add the delivery address, and for exports the ports, Incoterms, destination, shipping bill and (India) IGST or LUT. These print on the invoice; they don't change the books.
 
 ## E-invoices
 
@@ -34,17 +34,17 @@ Every e-invoice comes from a saved invoice's **Export** menu: open the voucher a
 
 | Country | On the Export menu | Sent to the authority? |
 |---|---|---|
-| India | **Generate IRN (e-invoice portal)**, **e-Invoice JSON**, **e-Way Bill JSON** | IRP connection: tested only against a mock so far |
+| India | **Generate IRN (e-invoice portal)**, **e-Invoice JSON**, **e-Way Bill JSON** | IRP connection: tested against our test server only, so far |
 | Saudi Arabia | **Submit to ZATCA**, **ZATCA e-invoice XML** | Yes: tested on ZATCA's sandbox |
-| UAE | **UAE e-invoice (PINT AE)**, **Send via Access Point** | Access point: tested only against a mock |
-| Singapore | **InvoiceNow e-invoice (PINT SG)**, **Send via Access Point** | Access point: tested only against a mock |
+| UAE | **UAE e-invoice (PINT AE)**, **Send via Access Point** | Access point: tested against our test server only |
+| Singapore | **InvoiceNow e-invoice (PINT SG)**, **Send via Access Point** | Access point: tested against our test server only |
 | Germany | **XRechnung (UBL or CII)**, **Factur-X / ZUGFeRD PDF** | No: you send the file |
 | France, Netherlands | **Factur-X / ZUGFeRD PDF** | No |
 | Spain | **VeriFactu record**, **Factur-X / ZUGFeRD PDF** | No |
-| Mexico | **CFDI 4.0** (stamping is on the CFDI invoices screen) | PAC connection: tested only against a mock |
+| Mexico | **CFDI 4.0** (stamping is on the CFDI invoices screen) | PAC connection: tested against our test server only |
 | UK, US | PDF only | No e-invoice |
 
-None of these files has been checked with the authority's official validator yet. Check them before you rely on them. The set-up for each is on your country page: [India](gst-india.md), [UAE and Saudi Arabia](vat-gulf.md), [Singapore](singapore.md), [Europe](europe.md), [Mexico](mexico.md).
+None of these files has been checked with the authority's official validator yet. Check them before you rely on them. The setup for each is on your country page: [India](gst-india.md), [UAE and Saudi Arabia](vat-gulf.md), [Singapore](singapore.md), [Europe](europe.md), [Mexico](mexico.md).
 
 The Factur-X PDF is a plain text layout, not your invoice design, and has no logo.
 
@@ -58,8 +58,8 @@ To bill a customer (or record a supplier's bill) in another currency:
 
 1. Alter the party's ledger (`A`, **Ledger**) and set **Currency** to the ISO code, such as `USD` or `EUR`. A cash or bank ledger can have a currency too.
 2. Enter the invoice as usual. A **Rate of exchange** field appears (for example 1 USD = … INR), filled in with the last rate you used. Type the rate for this invoice.
-3. Type amounts in the foreign currency. KhataOS works out the base-currency amounts as you type.
-4. Save. The invoice prints in the customer's currency, with the rate and the base-currency totals.
+3. Type amounts in the foreign currency. KhataOS works out the amounts in your base currency as you type.
+4. Save. The invoice prints in the customer's currency, with the rate and the totals in your base currency.
 
 When the customer pays at a different rate, settle the bill against it (Agst Ref) in a Receipt with that day's rate. The gain or loss goes to **Forex Gain/Loss** when you save. Ledger statements and outstanding bills show both currencies.
 
@@ -68,10 +68,10 @@ Limits today:
 - one foreign currency per voucher;
 - rates are typed in, never fetched online;
 - there is no screen to edit the currency list, keep a table of rates, or revalue open balances at year end;
-- ZATCA, PINT (UAE and Singapore), XRechnung and Factur-X e-invoices refuse foreign-currency invoices.
+- ZATCA, PINT (UAE and Singapore), XRechnung and Factur-X e-invoices refuse invoices in a foreign currency.
 
-More detail: [Multi-currency](../multi-currency.md).
+More detail: [Multiple currencies](../multi-currency.md).
 
 ## Not built yet
 
-E-mailing an invoice (`Ctrl+M`), sending it on WhatsApp (`Ctrl+Alt+W`), print preview settings, printing many invoices directly (other than the Day Book PDF), and cheque layouts other than CTS-2010.
+Emailing an invoice (`Ctrl+M`), sending it on WhatsApp (`Ctrl+Alt+W`), print preview settings, printing many invoices directly (other than the Day Book PDF), and cheque layouts other than CTS-2010.

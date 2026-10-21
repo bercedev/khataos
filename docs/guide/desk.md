@@ -24,7 +24,7 @@ The right side has a month calendar, with dots for the days that have items, and
 Items come from three places:
 
 1. **Due dates** for returns, tax payments and company filings, worked out from your country's rules and your compliance profile.
-2. **Reminders from the books**: bills falling due, vouchers dated after today, and (India) supplier bills near the 45-day MSME limit. Saudi companies also see documents waiting in the ZATCA queue.
+2. **Reminders from the books**: bills falling due, vouchers dated after today, and (India) supplier bills near the MSME limit of 45 days. Saudi companies also see documents waiting in the ZATCA queue.
 3. **Your own to-dos and notes.**
 
 > Due dates are estimates from the published rules. Governments extend deadlines, and holidays aren't counted. Check the official portal before you file.
@@ -75,6 +75,6 @@ When you mark a return filed, keep the acknowledgement from the portal: KhataOS 
 
 ## Good to know
 
-- **Notes, to-dos, filed marks and the profile stay in this company file on this computer.** They don't sync to your co-workers or your accountant yet, and they aren't in accountant files (`.khatapkg`). They do travel with a copy of the company file.
-- **There are no pop-up reminders** or system notifications. Check the Desk and the home screen's Due soon line. `Ctrl+Alt+N` (notifications) isn't built yet.
-- Reading the Desk needs any sign-in. Adding notes and marking items needs Data Entry or above. Deleting someone else's note needs an Accountant.
+- **Notes, to-dos, filed marks and the profile stay in this company file on this computer.** They don't sync to your colleagues or your accountant yet, and they aren't in accountant files (`.khatapkg`). They do travel with a copy of the company file.
+- **There are no reminders that pop up**, and no system notifications. Check the Desk and the home screen's Due soon line. `Ctrl+Alt+N` (notifications) isn't built yet.
+- Anyone who has signed in can read the Desk. Adding notes and marking items needs Data Entry or above. Deleting someone else's note needs an Accountant.

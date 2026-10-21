@@ -26,7 +26,7 @@ body:
       label: Country
       description: Only if it is about one country's rules or practice.
       options:
-        - Not country-specific
+        - Not about one country
         - India
         - United Arab Emirates
         - Saudi Arabia

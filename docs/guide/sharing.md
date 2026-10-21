@@ -1,16 +1,16 @@
 # Sharing
 
-**What you'll do:** choose how to share a company's books, then set it up: with co-workers on the office network, with your accountant over the internet through the encrypted relay, or by sending an encrypted accountant file. You'll also see how roles work.
+**What you'll do:** choose how to share a company's books, then set it up: with colleagues on the office network, with your accountant over the internet through the encrypted relay, or by sending an encrypted accountant file. You'll also see how roles work.
 
 Everyone works on their own copy of the books, and KhataOS keeps the copies in step. Every entry is checked by the same rules on every computer. The full guide, with every option, is [Sharing your books](../sharing.md).
 
 | Where are the people? | Use |
 |---|---|
 | Same office network | **Office server**: one PC holds the books |
-| Anywhere, every day | **Relay**: over the internet, end-to-end encrypted |
-| Anywhere, now and then (month-end, audit) | **Accountant file** (`.khatapkg`) |
+| Anywhere, every day | **Relay**: over the internet, encrypted so only you and the people you share with can read it |
+| Anywhere, now and then (month end, audit) | **Accountant file** (`.khatapkg`) |
 
-## Co-workers on the office network
+## Colleagues on the office network
 
 **On the PC that holds the books:**
 
@@ -22,13 +22,13 @@ Everyone works on their own copy of the books, and KhataOS keeps the copies in s
 
 Keep KhataOS open on this PC while others work.
 
-**Invite a co-worker:**
+**Invite a colleague:**
 
 1. On the server PC, press `Alt+K`, then **Remote Access**.
 2. Press `Alt+C` (Invite). Pick **Accountant** (can enter and change vouchers) or **Viewer** (reports only), who it's for, and an expiry in days if you want one.
 3. Press `Enter` to copy the invite code (it starts with `khata1:`). It is shown only once, and anyone who has it can open the books, so send it only to that person.
 
-**On the co-worker's PC:**
+**On your colleague's PC:**
 
 1. Press `Alt+Z`, then **Connect to company…**.
 2. Paste the code and press `Enter`. The books are copied and opened.
@@ -40,7 +40,7 @@ The books then sync on opening, after each save, and every 2 minutes. `Ctrl+Alt+
 The relay passes changes between computers but **can't read your books**: each entry is encrypted on your computer first.
 
 1. Get a relay address from whoever runs one (your CA firm or IT person), or [host your own](../deploy-relay.md). KhataOS has no relay switched on by default.
-2. Press `Alt+K`, then **Configure Online Access**. Set **Sync via** to **Relay (internet)** and type the relay address. A private relay asks once for its sign-up key.
+2. Press `Alt+K`, then **Configure Online Access**. Set **Sync via** to **Relay (internet)** and type the relay address. A private relay asks once for its signup key.
 3. Invite your accountant from **Remote Access** as above. They connect with **Connect to company…**.
 
 **Move to another relay…** (in `Alt+Z`) moves a company to a new relay with a new key; invite people again afterwards.
@@ -70,7 +70,7 @@ There are two kinds of role.
 **Sharing roles**, chosen on an invite:
 
 - **Accountant**: can enter and change vouchers.
-- **Viewer**: read-only. Every report works, but nothing can be entered or changed. A Viewer on the office network can also read reports in a web browser: see **Browser Access** in the Company menu (`Alt+K`).
+- **Viewer**: can only read. Every report works, but nothing can be entered or changed. A Viewer on the office network can also read reports in a web browser: see **Browser Access** in the Company menu (`Alt+K`).
 
 **Users and passwords inside the company** (`Alt+K`, **Users and passwords**): Owner, Accountant, Data Entry and Auditor. See [Your first company](first-company.md#6-add-users-optional). Users sync with the books.
 
@@ -80,4 +80,4 @@ If you run a KhataOS sync server, put its address, the company id and the access
 
 ## What isn't shared yet
 
-Desk notes and to-dos, the compliance profile, the invoice design, UK VAT scheme settings and sync settings stay on the computer where they were made. E-mail and WhatsApp sending aren't built yet.
+Desk notes and to-dos, the compliance profile, the invoice design, UK VAT scheme settings and sync settings stay on the computer where they were made. Sending by email and WhatsApp isn't built yet.

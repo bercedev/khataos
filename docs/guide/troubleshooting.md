@@ -7,7 +7,7 @@
 KhataOS saves a short crash note on your computer. Nothing is sent by itself.
 
 1. Next time you start KhataOS, it asks "KhataOS closed unexpectedly last time. Send a report?".
-2. Choose **Review & report** to see the text first. It contains the version, your system, the country pack, the language, the error and the last screens you used. Names, paths, tax IDs, e-mail addresses and amounts are removed.
+2. Choose **Review & report** to see the text first. It contains the version, your system, the country pack, the language, the error and the last screens you used. Names, paths, tax IDs, email addresses and amounts are removed.
 3. Choose **Open on GitHub**. The issue opens in your browser, filled in. Check it and submit it.
 
 Choose **Don't ask again** to stop the question and stop saving crash notes on this computer.
@@ -26,12 +26,12 @@ Crash notes are in the `crashes` folder in KhataOS's data folder (the last 20 ar
 
 | Message | What it means | What to do |
 |---|---|---|
-| "… isn't available in this version yet." | The key is reserved for a Tally-compatible feature that isn't built yet | See the [key reference](keyboard.md#key-reference) |
+| "… isn't available in this version yet." | The key is reserved for a feature Tally users know that isn't built yet | See the [key reference](keyboard.md#key-reference) |
 | "… vouchers aren't available yet." | Orders, notes, rejections, payroll and physical stock aren't built | Use the voucher types that exist ([Vouchers](vouchers.md)) |
 | "Sign in first, or press Esc to go back to the company list." | The company has users and nobody has signed in | Sign in |
 | "… is signed in as …, which can't do this; it needs …" | Your role isn't allowed to do this | Ask an Owner or Accountant, or sign in as one |
 | "Open a company first …" | The menu needs an open company | Open one from the company list |
-| "This company was shared with you as a Viewer …" | Your copy is read-only | Ask the owner for an Accountant invite |
+| "This company was shared with you as a Viewer …" | Your copy can only be read | Ask the owner for an Accountant invite |
 | "GSTIN … is invalid: …" (or TRN, VAT number…) | The tax ID failed its check | Correct it, or (as an Accountant) give a reason to keep it |
 | "voucher number … is already used for this voucher type" | The number is taken in this series | Check the [numbering](vouchers.md#numbering) settings |
 | "invoice number … is already used in financial year …" | An invoice number must be unique in the year | As above |

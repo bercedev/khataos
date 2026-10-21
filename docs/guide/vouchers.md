@@ -50,7 +50,7 @@ Journals use double entry only.
 
 ### Sales, Purchase, Credit Note and Debit Note (item invoice)
 
-If the company has stock items, these open as an **item invoice**. Otherwise they open as a double-entry voucher.
+If the company has stock items, these open as an **item invoice**. Otherwise they open as a double entry voucher.
 
 1. **Party:** pick the customer or supplier. For a cash sale, pick a cash or bank ledger.
 2. **Sales ledger** (or Purchase ledger).
@@ -121,7 +121,7 @@ A saved voucher keeps its type: to change the type, delete it and enter a new on
 1. Open the voucher, or put the cursor on its row in the Day Book.
 2. Press `Alt+X` and answer `Y`.
 
-A cancelled voucher shows in the Day Book as "(Cancelled)" and opens read-only.
+A cancelled voucher shows in the Day Book as "(Cancelled)" and opens for reading only.
 
 **Delete** removes the voucher. The audit trail keeps a full copy.
 
@@ -168,4 +168,4 @@ Use it to move stock between godowns, or to record consumption and production.
 
 ## Not built yet
 
-These Tally-compatible keys are reserved, and pressing them says so: post-dated (`Ctrl+T`) and optional (`Ctrl+L`) vouchers, repeat narration (`Ctrl+R`, `Alt+R`), stock query (`Alt+S`), tax analysis (`Alt+A`), related reports (`Ctrl+O`), unused numbers (`Ctrl+Alt+U`), the edit log (`Alt+Q`) and statutory adjustment (`Alt+J`). `PgUp` and `PgDn` don't move between saved vouchers yet, and `Ctrl+F` (autofill) does nothing. E-mail and WhatsApp aren't available yet. Memorandum and reversing journals, voucher classes, custom voucher types and cost centres aren't there either.
+These keys that Tally users know are reserved, and pressing them says so: postdated (`Ctrl+T`) and optional (`Ctrl+L`) vouchers, repeat narration (`Ctrl+R`, `Alt+R`), stock query (`Alt+S`), tax analysis (`Alt+A`), related reports (`Ctrl+O`), unused numbers (`Ctrl+Alt+U`), the edit log (`Alt+Q`) and statutory adjustment (`Alt+J`). `PgUp` and `PgDn` don't move between saved vouchers yet, and `Ctrl+F` (autofill) does nothing. Email and WhatsApp aren't available yet. Memorandum and reversing journals, voucher classes, custom voucher types and cost centres aren't there either.

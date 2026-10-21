@@ -2,15 +2,15 @@
 
 **What you'll do:** learn how keys work in KhataOS, and look up any key.
 
-KhataOS uses Tally-compatible shortcuts: the keys a TallyPrime user already knows do the same job here, such as `F8` for a sales voucher, `Alt+G` for Go To and `Ctrl+A` to accept. A few keys are KhataOS additions, and they are marked below.
+KhataOS uses the shortcuts Tally users know: the keys a TallyPrime user already knows do the same job here, such as `F8` for a sales voucher, `Alt+G` for Go To and `Ctrl+A` to accept. A few keys are KhataOS additions, and they are marked below.
 
 ## How keys work
 
 - **The same key can mean different things on different screens.** For example, `Ctrl+L` is bound to "optional voucher" in a voucher and to "save view" in a report. The screen you are on decides.
-- **The bars show what works here.** The right-hand bar shows the function keys (`F2` to `F10`, and their `Alt` and `Ctrl` variants) for the screen. The bottom bar shows the screen's other keys. Greyed-out buttons don't apply on this screen. You can also click or tap any button.
+- **The bars show what works here.** The bar on the right shows the function keys (`F2` to `F10`, and their `Alt` and `Ctrl` variants) for the screen. The bottom bar shows the screen's other keys. Grey buttons don't apply on this screen. You can also click or tap any button.
 - **Home menu letters.** On the home menu, each item has one highlighted letter. Press the letter, or move with `↑` `↓` and press `Enter`. The letters follow the physical key, so they also work on an Arabic keyboard layout.
 - **Keys you type while a screen opens are kept.** KhataOS replays them once the screen is ready, so you can type ahead.
-- **Not built yet.** Some Tally-compatible keys are reserved but have nothing behind them yet. Pressing most of them shows "… isn't available in this version yet". They are marked **Not yet** below.
+- **Not built yet.** Some keys that Tally users know are reserved but have nothing behind them yet. Pressing most of them shows "… isn't available in this version yet". They are marked **Not yet** below.
 - **Messages never block.** A message at the corner of the screen goes away with your next key.
 
 ## On a Mac
@@ -18,7 +18,7 @@ KhataOS uses Tally-compatible shortcuts: the keys a TallyPrime user already know
 - **`Ctrl` means the Control key**, not Command. `Alt` means the Option key. So `Alt+G` is Option+G, and `Ctrl+A` is Control+A.
 - **Command shortcuts belong to macOS.** KhataOS ignores keys pressed with Command, so Cmd+C, Cmd+V and Cmd+Q work as usual.
 - **Function keys need `fn`** on most Mac keyboards: press fn+F8 for a sales voucher. To use F1 to F12 without fn, turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard (under Keyboard Shortcuts > Function Keys on recent macOS).
-- **macOS may take some keys first.** By default, macOS uses some Control+function-key combinations, F11 and Control+Space for its own shortcuts. If a key does nothing in KhataOS, check System Settings > Keyboard > Keyboard Shortcuts and turn off the one that clashes.
+- **macOS may take some keys first.** By default, macOS uses some combinations of Control and a function key, F11 and Control+Space for its own shortcuts. If a key does nothing in KhataOS, check System Settings > Keyboard > Keyboard Shortcuts and turn off the one that clashes.
 
 ## On Windows and Linux
 

@@ -14,7 +14,7 @@ Please include:
 - the steps to reproduce it, or a proof of concept;
 - what an attacker could do with it, and what they need first (network access, a token, a file the victim opens).
 
-Never include real company files, real customer data or real credentials. Use a test company and made-up data.
+Never include real company files, real customer data or real credentials. Use a test company and invented data.
 
 What to expect:
 - we acknowledge the report within 7 days;
@@ -35,19 +35,19 @@ KhataOS is a volunteer project in alpha, so these are aims, not guarantees.
 
 In scope, and the areas we most want reviewed:
 
-- **The sync server** (`crates/khata-server`): authentication and the owner, accountant and viewer tokens; access across companies; push validation; the accountant portal (`/portal`) and its read-only endpoints; request limits and denial of service.
-- **The relay** (`khata-server` `/v1/relay`, `crates/khata-seal`, `crates/khata-sync`): anything that lets the relay or another party read sealed entries, forge or replay them, or keep access after a relay move or a token revocation. Invite codes and the company key. Open-relay sign-up limits.
-- **Credential stores**: the owner-only files where the desktop app keeps credentials for ZATCA, HMRC MTD, the India IRP, the Mexico PAC and Peppol Access Points. Anything that leaks them into a company file, a backup, a log, the audit trail or the UI, or that lets another local user read them. Leaks of sync tokens, relay keys and invite codes are in scope too.
-- **Audit-trail integrity** (`crates/khata-core`, `crates/khata-store`): any way to change or delete history without the hash chain breaking, to get an entry past `Book::apply_entry`, or to get around the append-only triggers.
+- **The sync server** (`crates/khata-server`): authentication and the owner, accountant and viewer tokens; access across companies; push validation; the accountant portal (`/portal`) and its endpoints, which only read; request limits and denial of service.
+- **The relay** (`khata-server` `/v1/relay`, `crates/khata-seal`, `crates/khata-sync`): anything that lets the relay or another party read sealed entries, forge or replay them, or keep access after a relay move or a token revocation. Invite codes and the company key. Signup limits on an open relay.
+- **Credential stores**: the files, readable only by their owner, where the desktop app keeps credentials for ZATCA, HMRC MTD, the India IRP, the Mexico PAC and Peppol Access Points. Anything that leaks them into a company file, a backup, a log, the audit trail or the UI, or that lets another local user read them. Leaks of sync tokens, relay keys and invite codes are in scope too.
+- **Audit trail integrity** (`crates/khata-core`, `crates/khata-store`): any way to change or delete history without the hash chain breaking, to get an entry past `Book::apply_entry`, or to get around the triggers that stop history being changed.
 - **Accountant files** (`crates/khata-package`, `.khatapkg`): decrypting without the passphrase, or applying a tampered or partial package.
 - **Untrusted input**: Tally XML imports, bank statement CSV files, GSTR-2B JSON and server responses. Parsing bugs that crash the app, corrupt the books or run code.
-- **The desktop and mobile app**: the Tauri command surface, the content security policy, and the office-server (LAN) mode.
+- **The desktop and mobile app**: the Tauri command surface, the content security policy, and the office server (LAN) mode.
 
 Out of scope:
 
 - A wrong tax rule or figure: report it with the "Tax rule" issue form. It is a correctness bug, not a vulnerability, unless it can be triggered by someone else.
 - Attacks that need full control of the victim's unlocked device or user account.
 - Problems in a tax authority's or provider's own service.
-- Missing hardening on a self-hosted server that the operator controls, such as TLS or rate limiting at the reverse proxy (see [`docs/deploy-relay.md`](docs/deploy-relay.md)).
+- Missing hardening on a server that its operator hosts and controls, such as TLS or rate limiting at the reverse proxy (see [`docs/deploy-relay.md`](docs/deploy-relay.md)).
 
 The security model is described in [`docs/architecture.md`](docs/architecture.md#security-model).

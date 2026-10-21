@@ -41,8 +41,8 @@ Who can do what: a Data Entry user can create masters; altering and deleting nee
 - **Currency**: leave blank for the company's own currency, or type an ISO code such as `USD` for a party you bill in another currency. See [Invoices](invoices.md#foreign-currency).
 - **Default credit period**: days until a new bill is due.
 - **Tax ID** (GSTIN, TRN, VAT number… named for your country). It is checked as you type. If it is invalid, you can't save until you fix it or type a **Reason to keep it**, which goes into the audit trail. Keeping a reason needs an Accountant.
-- **India:** PAN, TDS and TCS details, and for a party abroad the non-resident terms.
-- **Mailing details**: address, country, state, postal code, phone and e-mail. A **Country** other than your company's makes the party "abroad", so sales to it count as exports. India asks whether the party is an SEZ unit; the UAE asks about designated zones.
+- **India:** PAN, TDS and TCS details, and for a party abroad the terms for non-residents.
+- **Mailing details**: address, country, state, postal code, phone and email. A **Country** other than your company's makes the party "abroad", so sales to it count as exports. India asks whether the party is an SEZ unit; the UAE asks about designated zones.
 - **Opening balance** and `Dr` or `Cr`. Press `D` or `C`, or `Space`, to switch sides.
 
 **Cash and bank ledgers:** name, group, currency and opening balance.
@@ -68,8 +68,8 @@ The new group takes its nature (asset, liability, income or expense) from its pa
 - **You can't create a new primary group** (one directly at the top). Create it under one of the standard groups.
 - **You can rename any group**, including the standard ones. KhataOS finds them by an internal id, not by name. A primary group can be renamed but not moved.
 - When altering, you can add an **Alias** (other names, separated by commas).
-- A sub-group can move only under a group of the same nature.
-- A primary group, or one with sub-groups or ledgers, can't be deleted.
+- A subgroup can move only under a group of the same nature.
+- A primary group, or one with subgroups or ledgers, can't be deleted.
 
 ## Units
 

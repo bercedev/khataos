@@ -2,7 +2,7 @@
 
 **What you'll do:** create a company file, pick the country it keeps its books in, add its tax registration and address, and set up the compliance profile that drives your due dates.
 
-> Use a **test company** with made-up data while KhataOS is in alpha.
+> Use a **test company** with invented data while KhataOS is in alpha.
 
 ## 1. Create the company
 
@@ -54,7 +54,7 @@ A new company has the standard groups (Capital Account, Current Assets, Sundry D
 5. India only: choose how many **HSN/SAC digits** go on invoices (4 up to ₹5 crore turnover, 6 above it).
 6. Press `Ctrl+A`.
 
-Only an Owner can change these. For your logo, bank details and invoice terms, see [Invoices](invoices.md). For country-specific set-up (e-invoicing, MTD, ZATCA…), see your [country page](README.md#your-country).
+Only an Owner can change these. For your logo, bank details and invoice terms, see [Invoices](invoices.md). For the setup that depends on your country (e-invoicing, MTD, ZATCA…), see your [country page](README.md#your-country).
 
 ## 5. Set up the compliance profile on the Desk
 
@@ -74,7 +74,7 @@ The profile is kept in this company file only. It doesn't sync to other computer
 
 ## 6. Add users (optional)
 
-With no users, anyone who opens the file can do everything. To require a sign-in:
+With no users, anyone who opens the file can do everything. To make people sign in:
 
 1. Press `Alt+K` and choose **Users and passwords**.
 2. Press `Alt+C` (Add User). The first user must be an **Owner**.

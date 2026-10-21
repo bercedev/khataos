@@ -1,6 +1,10 @@
+---
+description: "Moving from TallyPrime to KhataOS, a free and open source Tally alternative: the same keys, what works differently, and how to import your Tally data."
+---
+
 # Coming from Tally
 
-**What you'll do:** see which of your TallyPrime habits work in KhataOS as they are, which work a little differently, and what isn't there yet, so the first week holds no surprises.
+**What you'll do:** see how KhataOS, a free and open source alternative to TallyPrime, compares with what you know: which of your habits work as they are, which work a little differently, and what isn't there yet, so the first week holds no surprises.
 
 KhataOS is an independent project, not a copy of Tally. It reproduces the *behaviour* Tally users rely on, such as the keys and the workflow, and it can [import your Tally data](import-from-tally.md). Nothing here comes from Tally's code, screens or text.
 
@@ -32,18 +36,18 @@ The full list is in the [key reference](keyboard.md#key-reference).
 - **Your company is one file.** Each company is a single `.khata` file on your computer. Copy it to back it up (see [Backup](backup.md)). There is no data folder with many files.
 - **One company open at a time.** `F3` closes the company and shows the company list, rather than switching between several loaded companies.
 - **The country is picked once.** When a company is opened for the first time, you pick its country. That sets the currency, the financial year and the tax rules. See [Your first company](first-company.md).
-- **No year-end closing or split.** The books are one continuous record, so balances carry forward by themselves. Move to the new year with `Alt+F2`.
-- **The edit log is the database.** Every change is a linked, tamper-evident entry, and it can't be switched off or edited. There is no screen to browse it yet (`Alt+Q` is reserved).
-- **`V` on the home menu opens a Payment voucher.** Press `F4` to `F9` to switch type. The voucher-type keys work inside voucher entry, not on the home menu.
+- **No closing or splitting at the year end.** The books are one continuous record, so balances carry forward by themselves. Move to the new year with `Alt+F2`.
+- **The edit log is the database.** Every change is a linked entry that shows any tampering, and it can't be switched off or edited. There is no screen to browse it yet (`Alt+Q` is reserved).
+- **`V` on the home menu opens a Payment voucher.** Press `F4` to `F9` to switch type. The keys for voucher types work inside voucher entry, not on the home menu.
 - **Voucher numbers always come from the series.** You can't type a number by hand on the voucher screen. Set prefixes, suffixes and restarts per voucher type instead (`A`, **Voucher Type**).
 - **Payment, Receipt and Contra open in single entry**, and Sales and Purchase open as an item invoice when the company has stock items. `Ctrl+H` switches. There is no separate "accounting invoice" mode: use the voucher mode with a sales ledger line.
 - **Changing saved vouchers needs the Accountant role.** A Data Entry user can only enter new ones.
 - **Find (`Alt+F`) searches ledgers** by any part of the name. Go To (`Alt+G`) searches everything else.
-- **Every party line asks for bill-wise details.** There is no per-ledger switch to turn bill-wise off.
-- **The Trial Balance is a flat list of ledgers**, with no group-wise or detailed view yet. Profit & Loss and the Balance Sheet drill into groups.
+- **Every party line asks for bill-wise details.** There is no switch on a ledger to turn bill-wise off.
+- **The Trial Balance is a flat list of ledgers**, with no view by group or detailed view yet. Profit & Loss and the Balance Sheet drill into groups.
 - **Printing goes through your system's print dialog**, on A4. Choose "Save as PDF" there for a PDF. Export is CSV, not Excel.
 - **On a Mac**, `Ctrl` is the Control key and `Alt` is Option, function keys need `fn`, and Command shortcuts stay with macOS. See [Keyboard](keyboard.md#on-a-mac).
-- **Sharing works without remote-desktop tools.** Co-workers connect to the office PC over the network, your accountant connects through an encrypted relay, or you send a sealed file. See [Sharing](sharing.md).
+- **Sharing works without remote desktop tools.** Colleagues connect to the office PC over the network, your accountant connects through an encrypted relay, or you send a sealed file. See [Sharing](sharing.md).
 - **A few keys are KhataOS's own:** `T` on the home menu opens the [Desk](desk.md) (to-dos and due dates), `Alt+W` adds a note to the record under the cursor, and `Ctrl+Alt+S` syncs now.
 - **Tax returns are prepared, not filed**, in most countries. KhataOS builds the return figures and files from your books. Direct filing exists only where the country page says so.
 
@@ -54,7 +58,7 @@ Pressing a reserved key for one of these says "isn't available in this version y
 **Vouchers**
 
 - Sales and Purchase Orders, Delivery and Receipt Notes, Rejections In and Out, Physical Stock, Payroll (`Ctrl+F8`, `Ctrl+F9`, `Alt+F8`, `Alt+F9`, `Ctrl+F6`, `Ctrl+F5`, `Ctrl+F7`, `Ctrl+F4`).
-- Optional, post-dated, memorandum and reversing vouchers (`Ctrl+L`, `Ctrl+T`).
+- Optional, postdated, memorandum and reversing vouchers (`Ctrl+L`, `Ctrl+T`).
 - Duplicate or insert a voucher from the Day Book (`Alt+2`, `Alt+I`).
 - Repeat the last narration (`Ctrl+R`, `Alt+R`), unused voucher numbers (`Ctrl+Alt+U`), stock query (`Alt+S`).
 - Custom voucher types with their own series (imported custom types become their base type), and manual voucher numbers.
@@ -63,28 +67,28 @@ Pressing a reserved key for one of these says "isn't available in this version y
 **Masters**
 
 - Cost categories and cost centres, budgets and scenarios.
-- New primary groups (sub-groups work), group options such as "behave like a sub-ledger".
+- New primary groups (subgroups work), and group options such as making a group behave like a subledger.
 - Opening balances bill by bill on party ledgers.
 - Compound and alternate units, price lists, standard rates, reorder levels, batch expiry dates, bill of materials.
 - Bank details and cheque books on bank ledgers.
-- A currencies master, a rates-of-exchange table and year-end revaluation (foreign-currency ledgers and vouchers do work; see [Invoices](invoices.md#foreign-currency)).
+- A currencies master, a table of exchange rates and revaluation at the year end (ledgers and vouchers in a foreign currency do work; see [Invoices](invoices.md#foreign-currency)).
 
 **Reports**
 
 - Filters (`Ctrl+F`), extra columns and comparisons (`Alt+C`, `Alt+N`), saved views (`Ctrl+L`), `F4` change report, `Ctrl+B`, `Ctrl+J`, hide lines.
-- Group-wise and detailed Trial Balance, Balance Sheet and P&L (`Alt+F5` works on Stock Summary only).
+- Trial Balance, Balance Sheet and P&L by group and in detail (`Alt+F5` works on Stock Summary only).
 - Sales, purchase and journal registers, ledger monthly summary, cash and bank books, cash flow and funds flow.
-- Exception reports, the edit-log viewer (`Alt+Q`), statistics.
+- Exception reports, the edit log viewer (`Alt+Q`), statistics.
 - Order, stock ageing, movement and reorder reports.
 
 **Everything else**
 
 - Backup and restore commands, and scheduled backups. Copy the company file for now (see [Backup](backup.md)).
 - Help (`F1`), company features (`F11`), configuration (`F12`), Switch To (`Ctrl+G`), notifications.
-- E-mail and WhatsApp (`Ctrl+M`, `Ctrl+Alt+W`), the print and export menus (`Alt+P`, `Alt+E` outside the Day Book), print preview and paper sizes other than A4.
+- Email and WhatsApp (`Ctrl+M`, `Ctrl+Alt+W`), the print and export menus (`Alt+P`, `Alt+E` outside the Day Book), print preview and paper sizes other than A4.
 - Import from Excel, export to Excel or XML, live import from a running Tally.
 - Several companies open at once, and group companies.
-- Custom security levels, per-voucher-type rights, locking the books up to a date, and encrypting the company file.
+- Custom security levels, rights for each voucher type, locking the books up to a date, and encrypting the company file.
 - Payroll, PF, ESI and PT.
 - Live connection to the GST portal for filing.
 

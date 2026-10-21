@@ -43,18 +43,18 @@ The "next" list is built from the ranked top-15 lists in the three Tally gap stu
 
 ### Countries
 
-The status labels are those in the [README](../README.md#countries): **live-tested** against the authority's test service, **mock-only** (built, tested against a mock of the published API), and **needs official validation** (the file is generated but not yet checked with the official validator).
+The status labels are those in the [README](../README.md#countries): **tested live** against the authority's test service, **tested against a test server only** (built, and tested against our own server that imitates the published API), and **needs official validation** (the file is generated but not yet checked with the official validator).
 
 | Country | Works in the app | Connection | Still open |
 |---|---|---|---|
-| India | GSTIN checks, place of supply, CGST/SGST/IGST; Rule 46 numbering; GSTR-1 (with draft JSON) and GSTR-3B; GSTR-2B reconciliation; reverse charge, ITC, blocked credit, Rule 37 and GSTR-1A; e-invoice and e-way bill JSON; IRN through an IRP; TDS and TCS with payable reports, quarterly statements and the FVU text file; salary TDS estimate; Schedule III statements, notes and mapping; MSME overdue | IRP: mock-only. JSON and FVU files: need official validation | GSP filing, GSTR-9/9C, composition, several GSTINs per company, Rule 53 checks on notes, e-way bill API (Part B, cancel, extend), TDS certificates, payroll |
-| UAE | TRN checks, 5% VAT, reverse charge and imports, VAT 201, PINT AE XML | Peppol access point: mock-only. PINT AE: needs validation | Input-tax blocking, FTA audit file, Corporate Tax, WPS |
-| Saudi Arabia | VAT number checks, 15% VAT, VAT return, bilingual invoices, ZATCA Phase 2 (hash chain, QR, XAdES, CSID onboarding, clearance and reporting, queue) | Live-tested on ZATCA's developer sandbox | Simulation and production runs, ZATCA SDK checks, Zakat |
-| Singapore | GST number checks, GST rate history, reverse charge and import GST, GST F5, PINT SG (InvoiceNow) | Access point: mock-only. PINT SG: needs validation | F5 e-filing, IRAS audit file, MES, A3PL and IGDS schemes |
-| UK | VAT number check digits, 20/5/0%, reverse charge, import VAT, VAT schemes (cash, flat rate, annual), 9-box return, MTD submission with fraud-prevention headers | MTD: mock-only | A live HMRC test with a registered developer application |
+| India | GSTIN checks, place of supply, CGST/SGST/IGST; Rule 46 numbering; GSTR-1 (with draft JSON) and GSTR-3B; GSTR-2B reconciliation; reverse charge, ITC, blocked credit, Rule 37 and GSTR-1A; e-invoice and e-way bill JSON; IRN through an IRP; TDS and TCS with payable reports, quarterly statements and the FVU text file; salary TDS estimate; Schedule III statements, notes and mapping; MSME overdue | IRP: tested against a test server only. JSON and FVU files: need official validation | GSP filing, GSTR-9/9C, composition, several GSTINs per company, Rule 53 checks on notes, e-way bill API (Part B, cancel, extend), TDS certificates, payroll |
+| UAE | TRN checks, 5% VAT, reverse charge and imports, VAT 201, PINT AE XML | Peppol access point: tested against a test server only. PINT AE: needs validation | Input-tax blocking, FTA audit file, Corporate Tax, WPS |
+| Saudi Arabia | VAT number checks, 15% VAT, VAT return, bilingual invoices, ZATCA Phase 2 (hash chain, QR, XAdES, CSID onboarding, clearance and reporting, queue) | Tested live on ZATCA's developer sandbox | Simulation and production runs, ZATCA SDK checks, Zakat |
+| Singapore | GST number checks, GST rate history, reverse charge and import GST, GST F5, PINT SG (InvoiceNow) | Access point: tested against a test server only. PINT SG: needs validation | F5 e-filing, IRAS audit file, MES, A3PL and IGDS schemes |
+| UK | VAT number check digits, 20/5/0%, reverse charge, import VAT, VAT schemes (cash, flat rate, annual), 9 box VAT return, MTD submission with fraud-prevention headers | MTD: tested against a test server only | A live HMRC test with a registered developer application |
 | Germany, France, Netherlands, Spain | Tax ID checks, rates, reverse charge, UStVA, CA3, aangifte, modelo 303; XRechnung, Factur-X, VeriFactu records | None (nothing is sent). Files: need validation | Filing, Peppol BIS export, VeriFactu settings and QR on prints, French legal mentions, ViDA |
 | US | EIN formats, company-defined jurisdictions, nexus note, use tax, exemption certificates, Form 1099 list | None | Address-based rates, state filing |
-| Mexico | RFC checks, IVA and withholdings, CFDI 4.0 with the CSD seal, payment receipts, IVA summary, PAC stamping and cancellation | PAC: mock-only. CFDI: needs validation | DIOT, electronic accounting, payroll CFDI |
+| Mexico | RFC checks, IVA and withholdings, CFDI 4.0 with the CSD seal, payment receipts, IVA summary, PAC stamping and cancellation | PAC: tested against a test server only. CFDI: needs validation | DIOT, electronic accounting, payroll CFDI |
 | Others | | | Brazil (NF-e) and other LatAm packs |
 
 ## Next

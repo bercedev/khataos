@@ -2,7 +2,7 @@
 
 **What you'll do:** set up a Mexican company, charge IVA and withholdings, and issue CFDI 4.0 invoices stamped by a PAC.
 
-> The PAC connection has been tested **only against a mock** so far, and the CFDI XML hasn't been checked with SAT's tools. KhataOS also has a built-in "Mock PAC" for practice: its stamps have **no fiscal validity**, and invoices stamped with it say so ("SIN VALIDEZ FISCAL").
+> The PAC connection has been tested **only against our own test server** so far, and the CFDI XML hasn't been checked with SAT's tools. KhataOS also has a "Mock PAC" built in, for practice: its stamps have **no fiscal validity**, and invoices stamped with it say so ("SIN VALIDEZ FISCAL").
 
 ## Set up
 

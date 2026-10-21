@@ -1,10 +1,16 @@
+---
+description: "Documentation for KhataOS, free open source accounting software for GST, VAT and ZATCA e-invoicing that works offline on Windows, macOS, Linux and Android."
+---
+
 # KhataOS documentation
 
-KhataOS is open-source, local-first, keyboard-first accounting with Tally-compatible shortcuts. This page lists all the documentation.
+KhataOS is free, open source accounting software. It works offline, keeps your books on your own computer, is built for the keyboard, and uses the keys Tally users know. It handles GST in India, VAT and ZATCA e-invoicing in the UAE and Saudi Arabia, and UK Making Tax Digital, and runs on Windows, macOS, Linux and Android. This page lists all the documentation.
+
+![KhataOS home screen with the company summary and the keyboard menu](images/keyboard-accounting-home-menu.webp)
 
 ## For people using KhataOS
 
-The **[user guide](guide/README.md)** has short, task-based pages with the exact keys:
+The **[user guide](guide/README.md)** has short pages, one for each task, with the exact keys:
 
 - Getting started: [Install](guide/install.md) · [Your first company](guide/first-company.md) · [Coming from Tally](guide/coming-from-tally.md) · [Keyboard](guide/keyboard.md)
 - Everyday work: [Masters](guide/masters.md) · [Vouchers](guide/vouchers.md) · [Reports](guide/reports.md) · [Invoices](guide/invoices.md) · [Desk](guide/desk.md) · [Calculator](guide/calculator.md)
@@ -36,8 +42,8 @@ Detailed notes on each compliance pack: the rules, the sources behind them, what
 ## Features in depth
 
 - [Invoice design](invoice-design.md): templates, logos, the PDF writer.
-- [Multi-currency](multi-currency.md): foreign-currency ledgers, vouchers and forex gain or loss.
-- [Languages](i18n.md): Arabic, right-to-left layout, Hijri dates, adding a language.
+- [Multiple currencies](multi-currency.md): ledgers and vouchers in foreign currencies, and forex gain or loss.
+- [Languages](i18n.md): Arabic, the right to left layout, Hijri dates, adding a language.
 - [Sharing your books](sharing.md): office server, relay, accountant files.
 - [Android and iOS](mobile.md): building and running the phone apps.
 - [Crash reporting](crash-reporting.md): what a report contains and how it is sent.

@@ -9,7 +9,7 @@
 
 The whole window turns right to left. The bars, menus and the screen you're on change at once; other screens already open change when you open them again.
 
-The choice is saved on this computer for each signed-in user, so two people sharing a PC can each have their own language. It doesn't sync. Saudi and UAE companies show a one-time hint that Arabic is available.
+The choice is saved on this computer for each user who signs in, so two people sharing a PC can each have their own language. It doesn't sync. Saudi and UAE companies show a hint, once, that Arabic is available.
 
 ## Show Hijri dates
 
@@ -33,7 +33,7 @@ Saudi Arabia and UAE invoices, credit notes and debit notes always print in **En
 ## What stays in English
 
 - Names in your books, including the standard group names, stay as typed.
-- Some screens are still in English, including the ZATCA, MTD, e-invoice portal, XRechnung, US and Mexico screens, Schedule III, TDS report bodies, and cheque and return prints. Some country-specific messages are also in English.
-- The data-entry language (`Ctrl+W`) isn't built yet.
+- Some screens are still in English, including the ZATCA, MTD, e-invoice portal, XRechnung, US and Mexico screens, Schedule III, TDS report bodies, and cheque and return prints. Some messages for particular countries are also in English.
+- The language for data entry (`Ctrl+W`) isn't built yet.
 
 Translators: see [Languages](../i18n.md).

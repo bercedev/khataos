@@ -38,7 +38,7 @@ All in Go To (`Alt+G`), under Sales tax:
 | **Exemption certificates (US)** | Customers' resale and exemption certificates | `Ctrl+Alt+A` adds one, `Ctrl+Alt+D` removes one |
 | **Form 1099 vendors (US)** | Vendors you may need to send a Form 1099 | |
 
-`Ctrl+P` prints and `Ctrl+E` saves a CSV. There is no nexus set-up: the nexus note is a reminder to check.
+`Ctrl+P` prints and `Ctrl+E` saves a CSV. There is no nexus setup: the nexus note is a reminder to check.
 
 The [Desk](desk.md) shows federal and sales tax due dates. List your states and their filing frequency in the compliance profile, for example `CA:Q, TX:M`.
 

@@ -2,13 +2,18 @@
 # Local preview:
 #   python3 -m venv .venv && .venv/bin/pip install mkdocs-material==9.5.49
 #   .venv/bin/mkdocs serve
-site_name: KhataOS documentation
-site_description: Open-source, local-first, keyboard-first accounting.
+site_name: "KhataOS: open source accounting"
+site_description: "Free, open source accounting software that works offline: GST for India, VAT and ZATCA e-invoicing for the Gulf, UK Making Tax Digital, and a Tally alternative."
+# site_url gives the site canonical links and a sitemap.xml once Pages is on.
+site_url: https://khataos.github.io/khataos/
 repo_url: https://github.com/khataos/khataos
 repo_name: khataos/khataos
 edit_uri: edit/main/docs/
 docs_dir: docs
 site_dir: site
+# Notes for maintainers, kept out of the published site.
+exclude_docs: |
+  seo-checklist.md
 copyright: Copyright © 2026 the KhataOS contributors. AGPL-3.0-or-later.
 
 theme:
@@ -66,9 +71,9 @@ nav:
       - Troubleshooting: guide/troubleshooting.md
       - FAQ: guide/faq.md
       - Countries:
-          - India (GST): guide/gst-india.md
-          - UAE and Saudi Arabia: guide/vat-gulf.md
-          - UK: guide/uk.md
+          - "India: GST, TDS and TCS": guide/gst-india.md
+          - "UAE and Saudi Arabia: VAT and ZATCA": guide/vat-gulf.md
+          - "UK: VAT and Making Tax Digital": guide/uk.md
           - Singapore: guide/singapore.md
           - Europe: guide/europe.md
           - US: guide/us.md
@@ -92,7 +97,7 @@ nav:
       - Peppol: peppol.md
   - Features:
       - Invoice design: invoice-design.md
-      - Multi-currency: multi-currency.md
+      - Multiple currencies: multi-currency.md
       - Languages: i18n.md
       - Sharing and sync: sharing.md
       - Mobile builds: mobile.md

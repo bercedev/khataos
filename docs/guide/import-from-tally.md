@@ -7,7 +7,7 @@
 ## Before you start
 
 - Create the KhataOS company and pick its country first. The import menu works only in an open company with a country set. See [Create your first company](first-company.md).
-- If the company has users, sign in as Owner, Accountant or Data Entry. An Auditor can't import, and neither can anyone on a company shared with them read-only (as a Viewer).
+- If the company has users, sign in as Owner, Accountant or Data Entry. An Auditor can't import, and neither can anyone a company was shared with as a Viewer, who can only read.
 - There is no undo. The import is saved as soon as it finishes, and it is recorded in the audit trail. A fresh test company is the easy way to try again.
 
 ## 1. Export from Tally
@@ -61,7 +61,7 @@ Fix skipped items in Tally and import again, or create them in KhataOS by hand. 
 - **Ledger details:** GSTIN or other tax ID, address, state, credit period, bank details and the bill-wise setting. Add the tax ID and state on each party ledger after the import (see [Masters](masters.md)).
 - **Bill-wise allocations:** outstanding bills don't come across, so **Outstanding and Ageing reports start empty**. Opening bills on ledgers can't be entered yet either.
 - **Cost centres and categories**, bank allocations (cheque details) and the GST or other tax detail stored on vouchers.
-- **Foreign currency:** only the base-currency amount is kept.
+- **Foreign currency:** only the amount in the base currency is kept.
 - **Custom groups placed directly under Primary.** Recreate them under one of the default groups.
 - **Compound units**, and the stock items that use them.
 - **Opening stock by godown or batch:** it comes in as one total at the main location, with a note.
@@ -87,6 +87,6 @@ Fix skipped items in Tally and import again, or create them in KhataOS by hand. 
 | Duplicate ledger / stock item | That name already exists here | Nothing, or rename one of them |
 | Duplicate number | The number is already used in that series | Check the series, or renumber in Tally |
 | Unbalanced | The voucher's debits and credits differ | Fix it in Tally |
-| Contra uses a non-cash ledger | A Contra must use only cash and bank ledgers | Change it to a Journal in Tally |
+| Contra uses a ledger that isn't cash or bank | A Contra must use only cash and bank ledgers | Change it to a Journal in Tally |
 
 Developers: the importer is the [`khata-import-tally`](../../crates/khata-import-tally) crate.

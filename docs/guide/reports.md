@@ -27,11 +27,11 @@
 ## Move around a report
 
 1. `↑` `↓` move one row. `PgUp` `PgDn` move ten rows. `Home` and `End` (or `Ctrl+Home`, `Ctrl+End`) go to the first and last row.
-2. In two-column reports (Profit & Loss, Balance Sheet, Ratio Analysis), `←` `→` move to the other side.
+2. In reports with two sides (Profit & Loss, Balance Sheet, Ratio Analysis), `←` `→` move to the other side.
 3. `Enter` opens the row: a group opens its ledgers, a ledger opens its statement, and a voucher opens for alteration.
 4. `Esc` goes back. The report you came from keeps your place.
 
-You can also click a row to select it and double-click to open it.
+You can also click a row to select it and double click to open it.
 
 ## Change the date or period of a report
 
@@ -49,7 +49,7 @@ Dates are always **day first**. Anything you leave out comes from the date alrea
 |---|---|
 | `19` | the 19th of the same month and year |
 | `19-10` or `19/10` | 19 October, same year |
-| `1-4-25` | 1 April 2025 (two-digit years are 20xx) |
+| `1-4-25` | 1 April 2025 (years with two digits are 20xx) |
 | `19 oct 2026`, `19-Oct` | 19 October 2026, 19 October |
 | `19.10.2026` | 19 October 2026 |
 | `2026-10-19` | 19 October 2026 |
@@ -83,19 +83,19 @@ With nothing set, the period runs from the start of the financial year to the cu
 
 **Day Book.** Every voucher in the period, one day by default. `Enter` opens a voucher. `Alt+X` cancels the voucher on the row after asking: it keeps its number but no longer counts. Cancelled vouchers stay in the list, marked "(Cancelled)", with no amounts. `Alt+E` saves a PDF of the period's invoices and notes, or of the one voucher on the row. To delete a voucher, open it with `Enter` and press `Alt+D` there.
 
-**Trial Balance.** Every ledger's balance as at a date, with Opening Stock, and a "Difference in opening balances" row if the opening balances don't agree. It is a flat list of ledgers: there is no group-wise or detailed view yet.
+**Trial Balance.** Every ledger's balance as at a date, with Opening Stock, and a "Difference in opening balances" row if the opening balances don't agree. It is a flat list of ledgers: there is no view by group or detailed view yet.
 
 **Profit & Loss A/c.** Expenses and income for the period, with gross profit, opening and closing stock, and net profit or loss. `Enter` on a group lists its ledgers (Group Summary).
 
 **Balance Sheet.** Liabilities and assets as at a date, with the Profit & Loss A/c balance and closing stock. `Enter` on a group lists its ledgers, and on Profit & Loss A/c opens the P&L. The P&L balance is one figure since the books began; it isn't split into brought forward and current year yet.
 
-**Group Summary.** The ledgers under a group (sub-groups are flattened into one list). You reach it by opening a group from another report.
+**Group Summary.** The ledgers under a group (subgroups are flattened into one list). You reach it by opening a group from another report.
 
 **Ledger statement.** One ledger's vouchers with the opening balance, running balance and closing balance. A ledger in a foreign currency also shows the foreign amount. A ✎ mark shows vouchers that have a note.
 
 **Outstanding Receivables and Payables.** Every open bill, with its due date, pending amount and days overdue. Overdue days count from the due date, or from the bill date when there is no due date. These need bill-wise details on your vouchers (see [Vouchers](vouchers.md)).
 
-**Ageing.** Open bills per party in fixed bands: 0–30, 31–60, 61–90 and over 90 days overdue. The bands can't be changed yet.
+**Ageing.** Open bills per party in fixed bands: 0 to 30, 31 to 60, 61 to 90 and over 90 days overdue. The bands can't be changed yet.
 
 **MSME overdue payables (India).** Supplier bills unpaid more than 45 days after the bill date.
 
@@ -132,11 +132,11 @@ The file opens in Excel or any spreadsheet. Amounts are saved without digit grou
 
 ## Not built yet
 
-These Tally-compatible report keys are reserved but not built. See the [key reference](keyboard.md#key-reference).
+These report keys that Tally users know are reserved but not built. See the [key reference](keyboard.md#key-reference).
 
 - Filters (`Ctrl+F`), extra columns and period comparison (`Alt+C`, `Alt+N`), saved views (`Ctrl+L`).
 - Detailed view (`Alt+F5`) anywhere except Stock Summary, and expand one line (`Shift+Enter`).
 - Change the report's subject (`F4`), basis of values (`Ctrl+B`), exception reports (`Ctrl+J`).
 - Duplicate or insert a voucher from the Day Book (`Alt+2`, `Alt+I`), hide and show rows (`Ctrl+R`, `Ctrl+U`).
 - Sales, purchase and journal registers, ledger monthly summaries, cash and bank books, cash flow and funds flow.
-- E-mail and WhatsApp (`Ctrl+M`, `Ctrl+Alt+W`).
+- Email and WhatsApp (`Ctrl+M`, `Ctrl+Alt+W`).

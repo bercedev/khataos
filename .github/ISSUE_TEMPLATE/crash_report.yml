@@ -9,7 +9,7 @@ body:
         KhataOS filled in this form on your device. Nothing was sent until you submit it here. The app took company data out of the error text first; see [what a report holds](https://github.com/khataos/khataos/blob/main/docs/crash-reporting.md).
 
         > [!WARNING]
-        > **Issues are public. Never attach a company file (`.khata`, `.khatapkg`), a Tally export, a screenshot of real books, or customer, supplier or employee details.** Read the text below once more and delete anything that looks like a name, GSTIN/VAT number, PAN, phone number, email or amount.
+        > **Issues are public. Never attach a company file (`.khata`, `.khatapkg`), a Tally export, a screenshot of real books, or customer, supplier or employee details.** Read the text below once more and delete anything that looks like a name, GSTIN or VAT number, PAN, phone number, email or amount.
   - type: input
     id: version
     attributes:

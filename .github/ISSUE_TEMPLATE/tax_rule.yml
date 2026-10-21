@@ -7,7 +7,7 @@ body:
       value: |
         Tax rules in KhataOS must rest on a **primary source**: the law, a regulation, a notification or circular, or the tax authority's own guidance, form or API specification. Blog posts and forum answers are useful leads, but they can't be the only source.
 
-        Use made-up figures in examples. Never paste real invoices, tax IDs or customer data.
+        Use invented figures in examples. Never paste real invoices, tax IDs or customer data.
   - type: dropdown
     id: country
     attributes:
@@ -59,7 +59,7 @@ body:
     id: current
     attributes:
       label: What KhataOS does now
-      description: The screen, report or file, and what it shows. A small worked example with made-up figures helps.
+      description: The screen, report or file, and what it shows. A small worked example with invented figures helps.
     validations:
       required: true
   - type: textarea

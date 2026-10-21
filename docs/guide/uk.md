@@ -1,8 +1,12 @@
+---
+description: "Prepare your UK VAT return in KhataOS and submit it to HMRC through Making Tax Digital (MTD), with cash accounting and the flat rate scheme."
+---
+
 # UK: VAT and Making Tax Digital
 
-**What you'll do:** set up a UK company for VAT, pick your VAT scheme, prepare the 9-box return, and submit it to HMRC through Making Tax Digital (MTD).
+**What you'll do:** set up a UK company for VAT, pick your VAT scheme, prepare the 9 box VAT return, and submit it to HMRC through UK Making Tax Digital (MTD).
 
-> The return is a preparation aid. Check it before you submit. The MTD connection has been tested **only against a mock** of HMRC's API so far: it needs a tester with a registered HMRC developer application.
+> The return is a preparation aid. Check it before you submit. The MTD connection has been tested **only against our own test server**, which imitates HMRC's API, so far: it needs a tester with a registered HMRC developer application.
 
 ## Set up
 
@@ -12,13 +16,13 @@
 4. Create **Output VAT** and **Input VAT** ledgers under Duties & Taxes, with Type of tax **VAT**.
 5. On party ledgers, add customers' and suppliers' VAT numbers. A party in another **Country** counts as abroad.
 
-Reverse charge (imported services, the domestic reverse charge and construction), import VAT and postponed import VAT are handled through tax classes. A reverse-charge sale prints "Reverse charge: Customer to pay the VAT to HMRC." Detail: [UK VAT](../uk-vat.md).
+Reverse charge (imported services, the domestic reverse charge and construction), import VAT and postponed import VAT are handled through tax classes. A sale under reverse charge prints "Reverse charge: Customer to pay the VAT to HMRC." Detail: [UK VAT](../uk-vat.md).
 
 ## Choose your VAT scheme
 
 1. `Alt+G`, **VAT Return (UK, 9 boxes)**.
 2. Press `Ctrl+Alt+F` (VAT Schemes).
-3. Choose standard accounting, **cash accounting** or the **flat rate scheme** (with your sector, percentage and the first-year 1% discount), and set limited cost business, turnover basis and annual accounting as they apply.
+3. Choose standard accounting, **cash accounting** or the **flat rate scheme** (with your sector, percentage and the 1% discount in your first year), and set limited cost business, turnover basis and annual accounting as they apply.
 4. Accept.
 
 The scheme settings stay in this company file on this computer; they don't sync.
@@ -43,7 +47,7 @@ The scheme settings stay in this company file on this computer; they don't sync.
 3. Tick the declaration, and press `Ctrl+Alt+T` to submit.
 4. Keep the receipt HMRC sends back.
 
-`Ctrl+Alt+L` shows your VAT liabilities. In the sandbox, `Ctrl+Alt+H` tests the fraud-prevention headers.
+`Ctrl+Alt+L` shows your VAT liabilities. In the sandbox, `Ctrl+Alt+H` tests the fraud prevention headers.
 
 The [Desk](desk.md) shows VAT, Corporation Tax, accounts and confirmation statement due dates once you set your stagger in the compliance profile.
 

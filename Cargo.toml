@@ -34,3 +34,20 @@ serde_json = "1"
 sha2 = "0.10"
 thiserror = "2"
 uuid = { version = "1", features = ["v4", "v5", "v7", "serde"] }
+
+# Smaller installers and APKs (measured October 2026, arm64 APK and Apple
+# silicon .dmg; docs/mobile.md, "Download size"):
+# - strip: the symbol tables were about 30% of the Android library. Panic
+#   messages keep their file and line, so crash reports are unchanged.
+# - lto = true with one codegen unit: smaller and slightly faster than the
+#   default, but a clean release build takes about twice as long (2 to 5.5
+#   minutes for the desktop app, 3 to 5 for one Android APK, on an M5 Max).
+#   "thin" built about a fifth faster on the desktop, but its .dmg came out
+#   larger, and on Android it was no smaller.
+# - opt-level stays 3: "s" saved another 2 MB per platform but made opening a
+#   50,000 voucher company about 25% slower.
+# Debug builds and tests don't use this profile.
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1

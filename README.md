@@ -25,7 +25,7 @@ Direct links. They always get the newest release:
 
 | Your system | Download |
 |---|---|
-| Android 7 or later (Xiaomi, Redmi, Samsung and others) | [KhataOS-Android.apk](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk) |
+| Android 7 or later (Xiaomi, Redmi, Samsung and others) | [KhataOS-Android.apk](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk) for most phones, or [the one for older 32 bit phones](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-32bit.apk) |
 | Windows 10 or 11 | [KhataOS-Windows-Setup.exe](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows-Setup.exe), or the [.msi](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows.msi) for IT teams |
 | Mac (Apple silicon and Intel) | [KhataOS-macOS.dmg](https://github.com/khataos/khataos/releases/latest/download/KhataOS-macOS.dmg) |
 | Linux | [AppImage](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.AppImage), [.deb](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.deb) (Ubuntu, Debian, Mint) or [.rpm](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.rpm) (Fedora, openSUSE) |

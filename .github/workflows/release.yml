@@ -15,7 +15,8 @@ name: release
 #   desktop    windows-latest  NSIS .exe and .msi (x64)
 #              macos-latest    one universal .dmg (Apple silicon and Intel)
 #              ubuntu-22.04    .AppImage, .deb and .rpm (x64)
-#   android    ubuntu-latest   universal release .apk (arm64, armv7, x86_64)
+#   android    ubuntu-latest   one release .apk per phone type (arm64, armv7,
+#                              x86_64), and a universal .apk with all three
 #   checksums  ubuntu-latest   copies with stable names (below) and
 #                              SHA256SUMS.txt for every file on the draft
 #
@@ -25,8 +26,12 @@ name: release
 # README.md link to these):
 #   KhataOS-Windows-Setup.exe  KhataOS-Windows.msi  KhataOS-macOS.dmg
 #   KhataOS-Linux.AppImage     KhataOS-Linux.deb    KhataOS-Linux.rpm
-#   KhataOS-Android.apk        only when the APK is signed; an unsigned APK
-#                              can't be installed, so it gets no stable link.
+#   KhataOS-Android.apk            arm64: almost every phone since 2017
+#   KhataOS-Android-32bit.apk      armeabi-v7a: older 32 bit phones
+#   KhataOS-Android-x86_64.apk     x86_64: emulators and some Chromebooks
+#   KhataOS-Android-universal.apk  all three in one, for any phone, but larger
+#   The Android names are made only when the APKs are signed; an unsigned APK
+#   can't be installed, so it gets no stable link.
 # "latest" skips drafts and pre-releases, so releases are never marked as
 # pre-releases, even alphas.
 # iOS is not built here: it needs an Apple Developer account (docs/mobile.md).
@@ -165,12 +170,19 @@ jobs:
             echo "| macOS (Apple silicon and Intel) | \`KhataOS_${LABEL}_universal.dmg\` |"
             echo "| Linux (64-bit) | \`.AppImage\`, \`.deb\` (Debian, Ubuntu) or \`.rpm\` (Fedora) |"
             if [[ "$SIGNED_ANDROID" == "true" ]]; then
-              echo "| Android 7.0 or later | \`KhataOS_${LABEL}_android_universal.apk\` |"
+              echo "| Android 7.0 or later, most phones | \`KhataOS_${LABEL}_android_arm64.apk\` |"
+              echo "| Android, older 32 bit phones | \`KhataOS_${LABEL}_android_armv7.apk\` |"
+              echo "| Android emulators and Chromebooks | \`KhataOS_${LABEL}_android_x86_64.apk\` |"
+              echo "| Android, any phone (larger file) | \`KhataOS_${LABEL}_android_universal.apk\` |"
             else
               echo "| Android 7.0 or later | Not installable yet: see below. |"
             fi
             echo "| iPhone and iPad | Not available yet. [Build from source](https://github.com/khataos/khataos/blob/main/docs/mobile.md). |"
             echo
+            if [[ "$SIGNED_ANDROID" == "true" ]]; then
+              echo "**Which Android file?** Most phones need the \`arm64\` one. If your phone says the app isn't compatible, try the \`armv7\` one, for older 32 bit phones."
+              echo
+            fi
             echo "\`SHA256SUMS.txt\` lists the SHA-256 checksum of every file, so you can check your download."
             echo
             echo "KhataOS is in alpha. [Back up your company files](https://github.com/khataos/khataos/blob/main/docs/guide/backup.md) before you update."
@@ -187,7 +199,7 @@ jobs:
                 echo "- **macOS:** the app is not notarised by Apple, so macOS won't open it the first time. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**."
               fi
               if [[ "$SIGNED_ANDROID" != "true" ]]; then
-                echo "- **Android:** \`KhataOS_${LABEL}_android_universal-unsigned.apk\` is **unsigned**, and Android won't install an unsigned APK. It is here for people who sign it themselves with \`apksigner\`. A signed APK comes in a later release."
+                echo "- **Android:** the files ending in \`-unsigned.apk\` are **unsigned**, and Android won't install an unsigned APK. They are here for people who sign them with \`apksigner\`. Signed APKs come in a later release."
               fi
             fi
           } > "$notes"
@@ -401,42 +413,68 @@ jobs:
             echo "KHATAOS_ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
-      - name: Build the APK
+      - name: Build the APKs
         working-directory: apps/desktop
         run: |
           set -euo pipefail
           export NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          # One APK for every phone (arm64 and armv7) and x86_64 (Chromebooks,
-          # emulators). Smaller per-ABI APKs: add --split-per-abi.
+          # One APK per phone type, each about a third of the size of one APK
+          # with all three: arm64 (almost every phone since 2017), armv7 (older
+          # 32 bit phones) and x86_64 (emulators, some Chromebooks).
+          pnpm tauri android build --apk --ci --split-per-abi --target aarch64 armv7 x86_64
+          # And one universal APK with all three, for anyone unsure. Cargo
+          # reuses the dependencies, but links the app again for each ABI (a
+          # few minutes with LTO).
           pnpm tauri android build --apk --ci --target aarch64 armv7 x86_64
 
-      - name: Upload the APK to the draft release
+      - name: Upload the APKs to the draft release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_ID: ${{ needs.prepare.outputs.release_id }}
           LABEL: ${{ needs.prepare.outputs.label }}
         run: |
           set -euo pipefail
-          out=apps/desktop/src-tauri/gen/android/app/build/outputs/apk/universal/release
-          ls -l "$out"
-          if [[ "$HAS_KEYSTORE" == "true" ]]; then
-            apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_universal.apk"
-            cp "$out/app-universal-release.apk" "$apk"
-            "$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner" verify --print-certs "$apk"
-          else
-            apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_universal-unsigned.apk"
-            cp "$out/app-universal-release-unsigned.apk" "$apk"
-          fi
-          name=$(basename "$apk")
-          old=$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets" --paginate \
-            --jq ".[] | select(.name == \"$name\") | .id")
-          if [[ -n "$old" ]]; then gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old"; fi
-          curl --fail-with-body -sS -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Content-Type: application/vnd.android.package-archive" \
-            --data-binary @"$apk" \
-            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$name" > /dev/null
-          echo "Uploaded $name ($(du -h "$apk" | cut -f1))"
+          out=apps/desktop/src-tauri/gen/android/app/build/outputs/apk
+          apksigner="$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner"
+          ls -l "$out"/*/release
+          # Gradle flavour, then the end of the file name on the release.
+          apks=(
+            "arm64      arm64"
+            "arm        armv7"
+            "x86_64     x86_64"
+            "universal  universal"
+          )
+          signer=""
+          for entry in "${apks[@]}"; do
+            read -r flavour abi <<< "$entry"
+            if [[ "$HAS_KEYSTORE" == "true" ]]; then
+              apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_${abi}.apk"
+              cp "$out/$flavour/release/app-$flavour-release.apk" "$apk"
+              "$apksigner" verify --print-certs "$apk"
+              # Every APK must carry the same certificate, or one couldn't
+              # update another.
+              cert=$("$apksigner" verify --print-certs "$apk" | grep 'certificate SHA-256 digest')
+              if [[ -z "$signer" ]]; then
+                signer="$cert"
+              elif [[ "$cert" != "$signer" ]]; then
+                echo "::error::$(basename "$apk") is signed with a different certificate: $cert"
+                exit 1
+              fi
+            else
+              apk="$RUNNER_TEMP/KhataOS_${LABEL}_android_${abi}-unsigned.apk"
+              cp "$out/$flavour/release/app-$flavour-release-unsigned.apk" "$apk"
+            fi
+            name=$(basename "$apk")
+            old=$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets" --paginate \
+              --jq ".[] | select(.name == \"$name\") | .id")
+            if [[ -n "$old" ]]; then gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old"; fi
+            curl --fail-with-body -sS -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Content-Type: application/vnd.android.package-archive" \
+              --data-binary @"$apk" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$name" > /dev/null
+            echo "Uploaded $name ($(du -h "$apk" | cut -f1))"
+          done
 
   # Runs even when one platform failed, so the draft's checksums always match
   # what is on it. Re-running the failed jobs re-runs this one too.
@@ -466,11 +504,18 @@ jobs:
             "KhataOS-Linux.deb          .deb"
             "KhataOS-Linux.rpm          .rpm"
           )
-          # The unsigned APK ends in -unsigned.apk, so it never matches this.
+          # Unsigned APKs end in -unsigned.apk, so they never match these.
+          # KhataOS-Android.apk is the arm64 build: the download page, the QR
+          # code and older links all point to it, and it suits most phones.
           if [[ "$SIGNED_ANDROID" == "true" ]]; then
-            stable+=("KhataOS-Android.apk        _android_universal.apk")
+            stable+=(
+              "KhataOS-Android.apk            android_arm64.apk"
+              "KhataOS-Android-32bit.apk      android_armv7.apk"
+              "KhataOS-Android-x86_64.apk     android_x86_64.apk"
+              "KhataOS-Android-universal.apk  android_universal.apk"
+            )
           fi
-          generated=" SHA256SUMS.txt KhataOS-Windows-Setup.exe KhataOS-Windows.msi KhataOS-macOS.dmg KhataOS-Linux.AppImage KhataOS-Linux.deb KhataOS-Linux.rpm KhataOS-Android.apk "
+          generated=" SHA256SUMS.txt KhataOS-Windows-Setup.exe KhataOS-Windows.msi KhataOS-macOS.dmg KhataOS-Linux.AppImage KhataOS-Linux.deb KhataOS-Linux.rpm KhataOS-Android.apk KhataOS-Android-32bit.apk KhataOS-Android-x86_64.apk KhataOS-Android-universal.apk "
 
           upload() {  # upload FILE: attach FILE to the draft under its own name
             local name type

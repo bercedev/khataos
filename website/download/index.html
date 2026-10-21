@@ -276,12 +276,13 @@
             <h2 id="h-android">Android <span class="tag tag-brand you-badge">Your device</span></h2>
             <p>Phones and tablets with Android 7 or later: Xiaomi, Redmi, POCO, Samsung, Vivo, Oppo, Realme and others</p>
             <p class="dl-meta" data-meta="KhataOS-Android.apk" hidden></p>
+            <p class="dl-which"><strong>Which one do I need?</strong> Most phones need the main download. If your phone says the app isn't compatible, try the one for older 32 bit phones, under Other formats.</p>
           </div>
           <div class="dl-cta">
             <a class="btn btn-primary btn-lg" href="https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk">
-              <svg aria-hidden="true"><use href="../assets/icons.svg#download"/></svg>Download for Android
+              <svg aria-hidden="true"><use href="../assets/icons.svg#download"/></svg>Download for Android<span class="btn-size" data-size="KhataOS-Android.apk" hidden></span>
             </a>
-            <span class="file">App file, .apk</span>
+            <span class="file">App file, .apk, for most phones</span>
           </div>
         </div>
         <div class="dl-more">
@@ -302,14 +303,19 @@
               <p class="muted small">Once KhataOS is installed, you can turn <strong>Allow from this source</strong> off again. KhataOS keeps working.</p>
               <div class="callout">
                 <svg aria-hidden="true"><use href="../assets/icons.svg#warn"/></svg>
-                <p><strong>Uninstalling deletes your books.</strong> On Android, company files live inside the app. <a href="../docs/guide/backup/">Copy them off the phone</a> before you uninstall. To update, install the new version over the old one: that keeps your books.</p>
+                <p><strong>Uninstalling deletes your books.</strong> Back up each company first with <strong>Alt+Y</strong> → <strong>Backup</strong>, and save the file outside the app (<a href="../docs/guide/backup/">how to back up</a>). To update, install the new version over the old one: that keeps your books.</p>
               </div>
             </div>
           </details>
           <details>
-            <summary>Other formats</summary>
+            <summary>Other formats <span class="count">3</span></summary>
             <div class="dl-body">
-              <p class="muted small" style="margin:0">One APK works on most phones. A file ending in <strong>-unsigned.apk</strong> is for people who sign apps themselves: Android can't install it as it is. Every file is on the <a href="https://github.com/khataos/khataos/releases">releases page</a>.</p>
+              <ul class="formats">
+                <li><a href="https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-32bit.apk">Older 32 bit phones</a><span data-size="KhataOS-Android-32bit.apk" hidden></span></li>
+                <li><a href="https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-x86_64.apk">Emulators and Chromebooks (x86_64)</a><span data-size="KhataOS-Android-x86_64.apk" hidden></span></li>
+                <li><a href="https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-universal.apk">Any phone, in one larger file</a><span data-size="KhataOS-Android-universal.apk" hidden></span></li>
+              </ul>
+              <p class="muted small" style="margin:14px 0 0">The main download suits almost every phone made since 2017. A file ending in <strong>-unsigned.apk</strong> is for people who sign apps themselves: Android can't install it as it is. Every file is on the <a href="https://github.com/khataos/khataos/releases">releases page</a>.</p>
             </div>
           </details>
         </div>

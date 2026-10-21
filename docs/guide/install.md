@@ -17,7 +17,7 @@ You can also use these direct links. They always get the newest release:
 | Windows 10 or 11 | [`KhataOS-Windows-Setup.exe`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows-Setup.exe), or [`KhataOS-Windows.msi`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows.msi) if your IT team prefers it |
 | macOS, on Apple silicon or Intel | [`KhataOS-macOS.dmg`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-macOS.dmg) |
 | Linux | [`KhataOS-Linux.AppImage`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.AppImage) (any distribution), [`KhataOS-Linux.deb`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.deb) (Debian, Ubuntu, Mint) or [`KhataOS-Linux.rpm`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.rpm) (Fedora, openSUSE) |
-| Android 7.0 or later | [`KhataOS-Android.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk) |
+| Android 7.0 or later | [`KhataOS-Android.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk) for most phones. Older 32 bit phones: [`KhataOS-Android-32bit.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-32bit.apk). Emulators and Chromebooks: [`KhataOS-Android-x86_64.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-x86_64.apk). Any phone, in one larger file: [`KhataOS-Android-universal.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-universal.apk) |
 | iPhone and iPad | Not available yet: [build from source](#android-and-ios) |
 
 Every release, including older ones, is on the [releases page](https://github.com/khataos/khataos/releases). There the same files also have the version in their names, for example `KhataOS_0.1.0-alpha.1_x64-setup.exe`. If a direct link says **Not Found**, that file isn't in the newest release yet.
@@ -88,9 +88,11 @@ On **Xiaomi, Redmi and POCO** phones (HyperOS or MIUI), the phone's security app
 
 The exact wording differs between phone makers and Android versions.
 
-If the Android link says **Not Found**, the newest release has no Android app you can install yet. A release may have only a file ending in `-unsigned.apk`: Android can't install that, because it installs only signed apps. That file is for people who sign APKs themselves. Use a later release, or [build from source](#android-and-ios).
+**Which one do I need?** Most phones need the main download, `KhataOS-Android.apk`. It suits almost every phone made since 2017. If your phone says the app isn't compatible, try [`KhataOS-Android-32bit.apk`](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android-32bit.apk), for older 32 bit phones. The other files are for emulators and Chromebooks (`KhataOS-Android-x86_64.apk`), or hold every version in one larger file (`KhataOS-Android-universal.apk`). Any of them installs over an earlier KhataOS and keeps your books.
 
-Your company files live in the app's own storage on the phone. **Uninstalling KhataOS deletes them**, so [make a backup](backup.md) and copy it off the phone first. Installing a newer release over the old one keeps them.
+If the Android link says **Not Found**, the newest release has no Android app you can install yet. A release may have only files ending in `-unsigned.apk`: Android can't install those, because it installs only signed apps. Those files are for people who sign APKs themselves. Use a later release, or [build from source](#android-and-ios).
+
+Your company files live in the app's own storage on the phone. **Uninstalling KhataOS deletes them**, and its automatic backups too. Before you uninstall or change phones, back up each company with `Alt+Y` → **Backup** (the Data menu) and save the file outside the app, to Downloads or a cloud drive; **Restore** brings it back ([Backup](backup.md#phones-android-and-iphone)). Installing a newer release over the old one keeps them.
 
 ### iPhone and iPad
 

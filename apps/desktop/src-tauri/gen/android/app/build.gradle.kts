@@ -78,6 +78,14 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    // Compress the Rust library inside the APK: the arm64 APK drops from about
+    // 25 MB to about 12.5 MB. Android unpacks it once, at install. Without this,
+    // AGP stores it uncompressed (docs/mobile.md, "Download size").
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 kotlin {

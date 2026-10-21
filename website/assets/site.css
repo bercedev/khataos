@@ -994,6 +994,11 @@ figure { margin: 0; }
 .dl-cta { grid-column: 1 / -1; display: grid; gap: 8px; }
 .dl-cta .btn { width: 100%; }
 .dl-cta .file { font-size: 0.82rem; color: var(--muted); text-align: center; }
+.btn-size { margin-inline-start: -0.25em; font-weight: 500; opacity: 0.85; font-variant-numeric: tabular-nums; }
+.btn-size::before { content: "· "; }
+.btn-size[hidden] { display: none; }
+.dl-title .dl-which { margin-top: 8px; font-size: 0.88rem; }
+.dl-which strong { color: var(--ink); font-weight: 600; }
 @media (max-width: 759px) {
   .dl-main { align-items: start; }
   .dl-icon { width: 48px; height: 48px; border-radius: 14px; }

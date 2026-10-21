@@ -172,6 +172,61 @@ adb exec-out screencap -p > khataos-android.png
 The emulator needs emulator 31.2.7 or newer for the API 31 arm64 image. Install
 it with Android Studio → SDK Manager → Android Emulator.
 
+#### Release APKs
+
+The release workflow (`.github/workflows/release.yml`) builds one APK per phone
+type, then one universal APK with all three:
+
+```sh
+pnpm tauri android build --apk --split-per-abi --target aarch64 armv7 x86_64
+pnpm tauri android build --apk --target aarch64 armv7 x86_64
+```
+
+The second command reuses the compiled dependencies from the first, but the
+Tauri CLI makes cargo build and link the app crate again for each ABI, which
+takes a few minutes with LTO. The APKs are written to
+`src-tauri/gen/android/app/build/outputs/apk/<flavour>/release/app-<flavour>-release.apk`
+(`-release-unsigned.apk` without the signing key, see "Android: Google Play"):
+
+| Flavour | ABI | For | Stable download name |
+|---|---|---|---|
+| `arm64` | arm64-v8a | almost every phone since 2017 | `KhataOS-Android.apk` |
+| `arm` | armeabi-v7a | older 32 bit phones | `KhataOS-Android-32bit.apk` |
+| `x86_64` | x86_64 | emulators and some Chromebooks | `KhataOS-Android-x86_64.apk` |
+| `universal` | all three | any phone, in one larger file | `KhataOS-Android-universal.apk` |
+
+All four have the same package name, version code and signing key, so any of
+them installs over another.
+
+#### Download size
+
+Measured in October 2026 on an Apple silicon Mac:
+
+| Build | APK | Rust library (arm64) |
+|---|---|---|
+| Universal APK of v0.1.0 alpha 1 (all three ABIs) | 101 MB | 37.9 MB, stored (28 to 38.5 MB for each ABI) |
+| Split per ABI, old profile | 39.6 MB | 37.9 MB, stored |
+| Plus `[profile.release]` in the root `Cargo.toml` (strip, LTO, one codegen unit) | 24.6 MB | 22.9 MB, stored |
+| Plus compressed native libraries (`useLegacyPackaging`) | 12.5 MB | 10.9 MB compressed |
+
+- **Symbols.** Without `strip = true` the library kept its symbol table
+  (about 11.7 MB of the 37.9 MB): the Android Gradle plugin's own stripping
+  doesn't remove it.
+- **Compressed libraries.** `app/build.gradle.kts` sets
+  `packaging.jniLibs.useLegacyPackaging = true`. For apps that support only
+  Android 6 and later, the Android Gradle plugin otherwise stores native
+  libraries uncompressed, so they can run straight from the APK. Compressed, the
+  download is half the size. Android unpacks the library once at install, so the
+  app takes about 35 MB on the phone instead of 25 MB. Google Play
+  makes its own split APKs from the `.aab`, and compresses them for download
+  either way.
+- **opt-level "s"** would save another 2 MB, but made opening a 50,000 voucher
+  company about 25% slower, so the profile keeps `opt-level = 3`.
+- **Fonts.** The PDF fonts in `crates/khata-print/assets` are deflated into the
+  library at build time: about 0.9 MB in all (DejaVu Sans 0.38 MB, the ten Noto
+  fonts 0.5 MB). Trimming them would save little and risk missing characters in
+  PDFs, so they stay as they are.
+
 ### iOS
 
 A Simulator build needs no signing team:

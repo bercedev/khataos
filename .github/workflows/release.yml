@@ -130,6 +130,7 @@ jobs:
               echo "::error::Release $TAG is already published. Make a new tag instead."
               exit 1
             fi
+            [[ -n "$id" ]] || { echo "::error::Draft release for $TAG has no id"; exit 1; }
             echo "Reusing draft release $id"
             echo "id=$id" >> "$GITHUB_OUTPUT"
             exit 0
@@ -172,12 +173,17 @@ jobs:
             fi
           } > "$notes"
 
-          args=(--draft --title "KhataOS $TAG" --notes-file "$notes" --target "$GITHUB_SHA")
-          if [[ "$TAG" == *-* ]]; then args+=(--prerelease); fi
-          gh release create "$TAG" "${args[@]}"
-          id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
-            --jq ".[] | select(.tag_name == \"$TAG\" and .draft) | .id")
-          id=${id%%$'\n'*}
+          prerelease=false
+          if [[ "$TAG" == *-* ]]; then prerelease=true; fi
+          # Take the id from the create call itself: the release list can lag
+          # behind a release created a moment ago.
+          id=$(gh api "repos/$GITHUB_REPOSITORY/releases" \
+            -f tag_name="$TAG" -f target_commitish="$GITHUB_SHA" -f name="KhataOS $TAG" \
+            -F body=@"$notes" -F draft=true -F prerelease="$prerelease" --jq .id)
+          if [[ -z "$id" ]]; then
+            echo "::error::Could not create the draft release for $TAG"
+            exit 1
+          fi
           echo "Created draft release $id"
           echo "id=$id" >> "$GITHUB_OUTPUT"
 

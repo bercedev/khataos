@@ -16,7 +16,19 @@ name: release
 #              macos-latest    one universal .dmg (Apple silicon and Intel)
 #              ubuntu-22.04    .AppImage, .deb and .rpm (x64)
 #   android    ubuntu-latest   universal release .apk (arm64, armv7, x86_64)
-#   checksums  ubuntu-latest   SHA256SUMS.txt for every file on the draft
+#   checksums  ubuntu-latest   copies with stable names (below) and
+#                              SHA256SUMS.txt for every file on the draft
+#
+# Stable names. Each installer is also uploaded under a name without the
+# version, so https://github.com/khataos/khataos/releases/latest/download/<name>
+# always serves the newest release (the download page, docs/download.md, and
+# README.md link to these):
+#   KhataOS-Windows-Setup.exe  KhataOS-Windows.msi  KhataOS-macOS.dmg
+#   KhataOS-Linux.AppImage     KhataOS-Linux.deb    KhataOS-Linux.rpm
+#   KhataOS-Android.apk        only when the APK is signed; an unsigned APK
+#                              can't be installed, so it gets no stable link.
+# "latest" skips drafts and pre-releases, so releases are never marked as
+# pre-releases, even alphas.
 # iOS is not built here: it needs an Apple Developer account (docs/mobile.md).
 #
 # Signing is optional. Each platform is signed only when its secrets exist;
@@ -54,6 +66,7 @@ concurrency:
 
 env:
   INSTALL_GUIDE: https://github.com/khataos/khataos/blob/main/docs/guide/install.md
+  DOWNLOAD_PAGE: https://khataos.github.io/khataos/download/
 
 jobs:
   prepare:
@@ -138,6 +151,12 @@ jobs:
 
           notes="$RUNNER_TEMP/notes.md"
           {
+            if [[ "$TAG" == *-* ]]; then
+              echo "**This is an early test release (${TAG#*-}).** Try it with a test company first."
+              echo
+            fi
+            echo "**Easiest way to download:** the [download page]($DOWNLOAD_PAGE) picks the right file for your device."
+            echo
             echo "**How to install:** see the [install guide]($INSTALL_GUIDE)."
             echo
             echo "| Your system | Download |"
@@ -173,13 +192,15 @@ jobs:
             fi
           } > "$notes"
 
-          prerelease=false
-          if [[ "$TAG" == *-* ]]; then prerelease=true; fi
+          # Never a pre-release, even for an alpha tag: GitHub's "latest" release
+          # skips pre-releases, and the download page links to
+          # releases/latest/download/<stable name>. The tag, and so the title,
+          # still says alpha.
           # Take the id from the create call itself: the release list can lag
           # behind a release created a moment ago.
           id=$(gh api "repos/$GITHUB_REPOSITORY/releases" \
             -f tag_name="$TAG" -f target_commitish="$GITHUB_SHA" -f name="KhataOS $TAG" \
-            -F body=@"$notes" -F draft=true -F prerelease="$prerelease" --jq .id)
+            -F body=@"$notes" -F draft=true -F prerelease=false --jq .id)
           if [[ -z "$id" ]]; then
             echo "::error::Could not create the draft release for $TAG"
             exit 1
@@ -426,36 +447,92 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Write SHA256SUMS.txt
+      - name: Stable names and SHA256SUMS.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_ID: ${{ needs.prepare.outputs.release_id }}
           TAG: ${{ needs.prepare.outputs.tag }}
+          LABEL: ${{ needs.prepare.outputs.label }}
+          SIGNED_ANDROID: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         run: |
           set -euo pipefail
+          # Stable name, then the end of the versioned name it copies. Every
+          # versioned name starts with KhataOS_<label>_.
+          stable=(
+            "KhataOS-Windows-Setup.exe  -setup.exe"
+            "KhataOS-Windows.msi        .msi"
+            "KhataOS-macOS.dmg          .dmg"
+            "KhataOS-Linux.AppImage     .AppImage"
+            "KhataOS-Linux.deb          .deb"
+            "KhataOS-Linux.rpm          .rpm"
+          )
+          # The unsigned APK ends in -unsigned.apk, so it never matches this.
+          if [[ "$SIGNED_ANDROID" == "true" ]]; then
+            stable+=("KhataOS-Android.apk        _android_universal.apk")
+          fi
+          generated=" SHA256SUMS.txt KhataOS-Windows-Setup.exe KhataOS-Windows.msi KhataOS-macOS.dmg KhataOS-Linux.AppImage KhataOS-Linux.deb KhataOS-Linux.rpm KhataOS-Android.apk "
+
+          upload() {  # upload FILE: attach FILE to the draft under its own name
+            local name type
+            name=$(basename "$1")
+            case "$name" in
+              *.apk) type=application/vnd.android.package-archive ;;
+              *.txt) type=text/plain ;;
+              *) type=application/octet-stream ;;
+            esac
+            curl --fail-with-body -sS -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: $type" \
+              --data-binary @"$1" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$name" > /dev/null
+          }
+
           dir="$RUNNER_TEMP/assets"
           mkdir -p "$dir"
           cd "$dir"
           gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets" --paginate \
             --jq '.[] | "\(.id) \(.name)"' > "$RUNNER_TEMP/assets.txt"
           while read -r id name; do
-            if [[ "$name" == "SHA256SUMS.txt" ]]; then
+            # Files this step makes are made again from scratch.
+            if [[ "$generated" == *" $name "* ]]; then
               gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$id"
               continue
             fi
             curl --fail -sSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/octet-stream" \
               -o "$name" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/assets/$id"
           done < "$RUNNER_TEMP/assets.txt"
+
+          made=()
+          for entry in "${stable[@]}"; do
+            read -r name suffix <<< "$entry"
+            shopt -s nullglob
+            matches=("KhataOS_${LABEL}_"*"$suffix")
+            shopt -u nullglob
+            if (( ${#matches[@]} == 0 )); then
+              echo "::warning::No file ending in $suffix on the draft, so no $name."
+              continue
+            fi
+            if (( ${#matches[@]} > 1 )); then
+              echo "::error::More than one file ending in $suffix (${matches[*]}): can't choose one for $name."
+              exit 1
+            fi
+            cp -- "${matches[0]}" "$name"
+            upload "$name"
+            made+=("$name <- ${matches[0]}")
+          done
+
           sha256sum -- * | sort -k2 > "$RUNNER_TEMP/SHA256SUMS.txt"
           cat "$RUNNER_TEMP/SHA256SUMS.txt"
-          curl --fail-with-body -sS -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: text/plain" \
-            --data-binary @"$RUNNER_TEMP/SHA256SUMS.txt" \
-            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=SHA256SUMS.txt" > /dev/null
+          upload "$RUNNER_TEMP/SHA256SUMS.txt"
           {
             echo "### Draft release $TAG"
             echo
             echo "Review the files and notes, then publish: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
+            echo
+            echo "Stable names for releases/latest/download/:"
+            echo
+            echo '```'
+            if (( ${#made[@]} > 0 )); then printf '%s\n' "${made[@]}"; else echo "(none)"; fi
+            echo '```'
             echo
             echo '```'
             cat "$RUNNER_TEMP/SHA256SUMS.txt"

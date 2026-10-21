@@ -110,7 +110,7 @@ Releases are built by [`.github/workflows/release.yml`](.github/workflows/releas
 
 **The version.** The app version is `version` in `apps/desktop/src-tauri/tauri.conf.json`. The installers and the Android version code come from it. Two other files carry the same number and must match it: `version` under `[workspace.package]` in the root `Cargo.toml` (the app reports it in crash reports and tax filing headers) and `version` in `apps/desktop/package.json`. The release workflow stops if the three differ, or if the tag doesn't match them.
 
-Keep the version a plain `X.Y.Z`. A label such as `alpha.1` goes only in the tag: the Windows `.msi` refuses text labels in the version. So `v0.1.0-alpha.1` and `v0.1.0-alpha.2` are both builds of version `0.1.0`. A tag with a label (anything after a `-`) is marked as a pre-release.
+Keep the version a plain `X.Y.Z`. A label such as `alpha.1` goes only in the tag: the Windows `.msi` refuses text labels in the version. So `v0.1.0-alpha.1` and `v0.1.0-alpha.2` are both builds of version `0.1.0`. Releases are never marked as pre-releases, even alphas: GitHub's "latest" release skips pre-releases, and the [download page](https://khataos.github.io/khataos/download/) links to the latest one. The tag in the title says it is an alpha.
 
 To cut a release:
 
@@ -126,7 +126,9 @@ To cut a release:
    You can also start it from **Actions → release → Run workflow** and type the tag. Run it from the tag if the tag exists; otherwise the draft points at the branch you picked, and GitHub creates the tag when you publish.
 3. **Wait** for the release workflow. The run summary lists the checksums.
 4. **Review the draft** under **Releases**: the files (`-setup.exe`, `.msi`, `.dmg`, `.app.tar.gz`, `.AppImage`, `.deb`, `.rpm`, `.apk`, `SHA256SUMS.txt`) and the notes. Install it on at least one machine. Add what changed to the notes.
-5. **Publish** the draft.
+
+   The draft also has a copy of each installer under a name without the version: `KhataOS-Windows-Setup.exe`, `KhataOS-Windows.msi`, `KhataOS-macOS.dmg`, `KhataOS-Linux.AppImage`, `KhataOS-Linux.deb`, `KhataOS-Linux.rpm`, and `KhataOS-Android.apk` when the APK is signed. Links such as `https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk` always get the newest published release, and the download page and the README use them. Keep these names: renaming one breaks the links.
+5. **Publish** the draft. Leave **Set as the latest release** ticked, so the download links point to it.
 
 If a job fails, fix the cause and use **Re-run failed jobs**: the workflow reuses the draft, replaces its files and rewrites `SHA256SUMS.txt`. It never changes a release that is already published. To start over, delete the draft and the tag (`git push origin :refs/tags/v0.1.0-alpha.1`).
 

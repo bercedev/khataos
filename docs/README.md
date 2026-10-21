@@ -2,6 +2,17 @@
 description: "Documentation for KhataOS, free open source accounting software for GST, VAT and ZATCA e-invoicing that works offline on Windows, macOS, Linux and Android."
 ---
 
+<div class="kd-hero" markdown>
+
+![KhataOS](images/brand/lockup-horizontal.svg#gh-light-mode-only)
+![KhataOS](images/brand/lockup-horizontal-dark.svg#gh-dark-mode-only)
+
+**Open source accounting that works offline.**
+
+[Download KhataOS](download.md)
+
+</div>
+
 # KhataOS documentation
 
 KhataOS is free, open source accounting software. It works offline, keeps your books on your own computer, is built for the keyboard, and uses the keys Tally users know. It handles GST in India, VAT and ZATCA e-invoicing in the UAE and Saudi Arabia, and UK Making Tax Digital, and runs on Windows, macOS, Linux and Android. This page lists all the documentation.
@@ -12,7 +23,7 @@ KhataOS is free, open source accounting software. It works offline, keeps your b
 
 The **[user guide](guide/README.md)** has short pages, one for each task, with the exact keys:
 
-- Getting started: [Install](guide/install.md) · [Your first company](guide/first-company.md) · [Coming from Tally](guide/coming-from-tally.md) · [Keyboard](guide/keyboard.md)
+- Getting started: [Download](download.md) · [Install](guide/install.md) · [Your first company](guide/first-company.md) · [Coming from Tally](guide/coming-from-tally.md) · [Keyboard](guide/keyboard.md)
 - Everyday work: [Masters](guide/masters.md) · [Vouchers](guide/vouchers.md) · [Reports](guide/reports.md) · [Invoices](guide/invoices.md) · [Desk](guide/desk.md) · [Calculator](guide/calculator.md)
 - Countries: [India](guide/gst-india.md) · [UAE and Saudi Arabia](guide/vat-gulf.md) · [UK](guide/uk.md) · [Singapore](guide/singapore.md) · [Germany, France, Netherlands, Spain](guide/europe.md) · [US](guide/us.md) · [Mexico](guide/mexico.md)
 - Working with others: [Sharing](guide/sharing.md) · [Import from Tally](guide/import-from-tally.md)

@@ -22,7 +22,7 @@ This guide covers:
 
 ## 2. Installing
 
-There are no ready-made installers yet. Until there are, KhataOS has to be built from source. If you're not comfortable with that, ask a developer friend, or watch the [releases page](https://github.com/khataos/khataos/releases) for the first installers.
+Once the first release is out, get the installer for your system from the [download page](https://khataos.github.io/khataos/download/) and follow its steps. Until then, or to test the newest code, build KhataOS from source. If you're not comfortable with that, ask a developer friend.
 
 1. Install [Rust](https://rustup.rs) (1.85 or newer), Node 22 and [pnpm](https://pnpm.io).
    - Windows: also install the Microsoft C++ Build Tools and WebView2, as Tauri's prerequisites page explains.

@@ -15,9 +15,21 @@ It works like TallyPrime and uses the same keys, so it makes an easy Tally alter
 
 ## Download
 
-The first builds for Windows, macOS, Linux and Android are coming soon on the [releases page](https://github.com/khataos/khataos/releases). They will be unsigned at first, so Windows and macOS will warn you the first time you open the app. The [install guide](docs/guide/install.md) explains what to do about that warning.
+**[Download KhataOS](https://khataos.github.io/khataos/download/)** for Android, Windows, Mac or Linux. The download page picks the right file for your device and shows how to install it.
 
-Until the first release, [build KhataOS from source](#build-from-source). It takes a few commands.
+The first release is an **alpha**, an early test version. The files aren't signed yet, so your phone or computer warns you before it installs KhataOS. The [download page](https://khataos.github.io/khataos/download/) and the [install guide](docs/guide/install.md) show what to tap or click.
+
+Direct links. They always get the newest release:
+
+| Your system | Download |
+|---|---|
+| Android 7 or later (Xiaomi, Redmi, Samsung and others) | [KhataOS-Android.apk](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Android.apk) |
+| Windows 10 or 11 | [KhataOS-Windows-Setup.exe](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows-Setup.exe), or the [.msi](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Windows.msi) for IT teams |
+| Mac (Apple silicon and Intel) | [KhataOS-macOS.dmg](https://github.com/khataos/khataos/releases/latest/download/KhataOS-macOS.dmg) |
+| Linux | [AppImage](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.AppImage), [.deb](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.deb) (Ubuntu, Debian, Mint) or [.rpm](https://github.com/khataos/khataos/releases/latest/download/KhataOS-Linux.rpm) (Fedora, openSUSE) |
+| iPhone and iPad | Not available yet |
+
+Older versions and checksums are on the [releases page](https://github.com/khataos/khataos/releases). Developers can also [build KhataOS from source](#build-from-source).
 
 ## Screenshots
 

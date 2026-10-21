@@ -18,6 +18,9 @@ copyright: Copyright © 2026 the KhataOS contributors. AGPL-3.0-or-later.
 
 theme:
   name: material
+  # The Spine mark: the dark colourway, because the header is indigo.
+  logo: images/brand/symbol-dark.svg
+  favicon: images/brand/favicon.svg
   features:
     - navigation.sections
     - navigation.top
@@ -26,17 +29,30 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Light mode
 
+# Brand colours (branding/README.md) and the download page's buttons and
+# device detection. The page works without the script: it only reorders.
+extra_css:
+  - stylesheets/khataos.css
+extra_javascript:
+  - javascripts/download.js
+
 markdown_extensions:
   - tables
+  - attr_list
+  - md_in_html
   - toc:
       permalink: true
   - admonition
@@ -50,6 +66,7 @@ validation:
     unrecognized_links: info
 
 nav:
+  - Download: download.md
   - Home: README.md
   - User guide:
       - guide/README.md

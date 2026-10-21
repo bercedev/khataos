@@ -221,7 +221,7 @@ fn english(style: WordsStyle, code: &str, whole: u64, frac: u64, decimals: u32, 
                 let minor = format!("{} {}", british(frac), unit(frac, cur.minor));
                 s = if s.is_empty() { minor } else { format!("{s} and {minor}") };
             }
-            format!("{} only", capitalize(&s))
+            format!("{s} only")
         }
         WordsStyle::Singapore => {
             let mut s = format!("{} {}", title_case(intl.1), words(whole));
@@ -241,6 +241,10 @@ fn english(style: WordsStyle, code: &str, whole: u64, frac: u64, decimals: u32, 
         }
     };
     let out = out.trim().to_owned();
+    if style == WordsStyle::Uk {
+        // Sentence case, like a British cheque: one capital at the start, after "minus" when there is one.
+        return capitalize(&if negative { format!("minus {out}") } else { out });
+    }
     if negative { format!("Minus {out}") } else { out }
 }
 
@@ -934,6 +938,9 @@ mod tests {
             (dec!(0.50), "Fifty pence only"),
             (dec!(1000021), "One million and twenty-one pounds only"),
             (dec!(105000), "One hundred and five thousand pounds only"),
+            (dec!(-4500.25), "Minus four thousand five hundred pounds and twenty-five pence only"),
+            (dec!(-0.50), "Minus fifty pence only"),
+            (dec!(-1), "Minus one pound only"),
         ]);
         check(WordsStyle::Uk, "EUR", &[(dec!(2), "Two euros only")]);
         check(WordsStyle::Uk, "USD", &[(dec!(1), "One US dollar only")]);

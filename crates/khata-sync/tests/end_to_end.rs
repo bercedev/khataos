@@ -63,7 +63,7 @@ fn pay(book: &mut Book, number: &str, amount: rust_decimal::Decimal) {
             number: number.into(),
             date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
             entries: vec![Entry::dr(rent, amount), Entry::cr(bank, amount)],
-            narration: String::new(), cancelled: false, stock: Vec::new(),
+            narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
         },
     )
     .unwrap();
@@ -208,7 +208,7 @@ fn foreign_currency_vouchers_sync_between_devices() {
     let acme = a.create_ledger(now(), "owner", "Acme Inc", a.group_by_name("Sundry Debtors").unwrap().id).unwrap();
     a.alter_ledger(now(), "owner", Ledger { currency: Some("USD".into()), ..a.ledger(acme).unwrap().clone() }).unwrap();
     let sales = a.create_ledger(now(), "owner", "Export Sales", a.group_by_name("Sales Accounts").unwrap().id).unwrap();
-    let v = |kind, number: &str, entries| Voucher { id: VoucherId::new(), kind, number: number.into(), date: d(4, 10), entries, narration: String::new(), cancelled: false, stock: Vec::new() };
+    let v = |kind, number: &str, entries| Voucher { id: VoucherId::new(), kind, number: number.into(), date: d(4, 10), entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() };
     a.post_voucher(now(), "clerk", v(VoucherKind::Sales, "1", vec![
         Entry::dr(acme, dec!(80000)).fx("USD", dec!(1000), dec!(80)).fx_bill(BillKind::New, "EXP-1", dec!(80000), dec!(1000), None),
         Entry::cr(sales, dec!(80000)),

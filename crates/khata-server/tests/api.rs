@@ -65,7 +65,7 @@ fn device_books() -> Book {
             number: "1".into(),
             date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
             entries: vec![Entry::dr(rent, dec!(25000)), Entry::cr(bank, dec!(25000))],
-            narration: String::new(), cancelled: false, stock: Vec::new(),
+            narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
         },
     )
     .unwrap();
@@ -186,7 +186,7 @@ async fn tampered_client_cannot_push_unbalanced_voucher() {
         number: "2".into(),
         date: NaiveDate::from_ymd_opt(2026, 4, 2).unwrap(),
         entries: vec![Entry::dr(rent, dec!(500)), Entry::cr(bank, dec!(5))],
-        narration: String::new(), cancelled: false, stock: Vec::new(),
+        narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
     };
     let mut log = book.audit().clone();
     log.record(now(), "mallory", AuditAction::Create, format!("voucher:{}", bad.id.0), None, Some(json!(bad)));
@@ -262,7 +262,7 @@ async fn forged_reference_is_rejected_and_server_keeps_serving() {
         number: "1".into(),
         date: NaiveDate::from_ymd_opt(2026, 4, 2).unwrap(),
         entries: vec![Entry::dr(ghost_a, dec!(1)), Entry::cr(ghost_b, dec!(1))],
-        narration: String::new(), cancelled: false, stock: Vec::new(),
+        narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
     };
     let mut log = book.audit().clone();
     log.record(now(), "mallory", AuditAction::Create, format!("voucher:{}", v.id.0), None, Some(json!(v)));
@@ -282,7 +282,7 @@ async fn forged_reference_is_rejected_and_server_keeps_serving() {
         number: "2".into(),
         date: NaiveDate::from_ymd_opt(2026, 4, 3).unwrap(),
         entries: vec![Entry::dr(rent, dec!(10)), Entry::cr(bank, dec!(10))],
-        narration: String::new(), cancelled: false, stock: Vec::new(),
+        narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
     }).unwrap();
     let (s, v) = call(&app, "POST", &format!("/v1/companies/{company}/push"), &owner, Some(push_body(3, &book))).await;
     assert_eq!(s, StatusCode::OK, "{v}");
@@ -342,7 +342,7 @@ fn party_books() -> Book {
     b.set_opening_balance(now(), "clerk", bank, dec!(100000)).unwrap();
     b.set_opening_balance(now(), "clerk", capital, dec!(-100000)).unwrap();
     let mut post = |kind, number: &str, date, entries| {
-        let v = Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, stock: Vec::new() };
+        let v = Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() };
         b.post_voucher(now(), "clerk", v).unwrap();
     };
     post(VoucherKind::Payment, "1", d(2026, 4, 1), vec![Entry::dr(rent, dec!(25000)), Entry::cr(bank, dec!(25000))]);
@@ -765,7 +765,7 @@ async fn audit_trail_export_lists_every_entry_with_its_pusher() {
         date: d(2026, 5, 1),
         entries: vec![Entry::dr(rent, dec!(1000)), Entry::cr(bank, dec!(1000))],
         narration: String::new(),
-        cancelled: false, stock: Vec::new(),
+        cancelled: false, series: None, stock: Vec::new(),
     })
     .unwrap();
     let (s, v) = call(&app, "POST", &format!("{base}/push"), &accountant, Some(push_body(first_len as u64, &book))).await;
@@ -820,7 +820,7 @@ async fn foreign_currency_vouchers_sync_and_wrong_currencies_are_rejected() {
     let bank = book.create_ledger(now(), "owner", "HDFC Bank", book.group_by_name("Bank Accounts").unwrap().id).unwrap();
     let sales = book.create_ledger(now(), "owner", "Export Sales", book.group_by_name("Sales Accounts").unwrap().id).unwrap();
     let gl = book.create_ledger(now(), "owner", khata_core::forex::FOREX_LEDGER, book.group_by_name("Indirect Expenses").unwrap().id).unwrap();
-    let v = |kind, date, entries| Voucher { id: VoucherId::new(), kind, number: "1".into(), date, entries, narration: String::new(), cancelled: false, stock: Vec::new() };
+    let v = |kind, date, entries| Voucher { id: VoucherId::new(), kind, number: "1".into(), date, entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() };
     book.post_voucher(now(), "clerk", v(VoucherKind::Sales, d(4, 10), vec![
         Entry::dr(acme, dec!(80000)).fx("USD", dec!(1000), dec!(80)).fx_bill(BillKind::New, "EXP-1", dec!(80000), dec!(1000), None),
         Entry::cr(sales, dec!(80000)),

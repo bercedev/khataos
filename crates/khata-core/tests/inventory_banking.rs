@@ -37,7 +37,7 @@ fn ledger(book: &mut Book, name: &str, group: &str) -> LedgerId {
 }
 
 fn voucher(kind: VoucherKind, number: &str, date: NaiveDate, entries: Vec<Entry>) -> Voucher {
-    Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, stock: Vec::new() }
+    Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() }
 }
 
 /// 10 widgets in stock at 100 each; capital 50,000 in the bank.

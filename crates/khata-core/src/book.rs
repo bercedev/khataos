@@ -90,6 +90,8 @@ pub enum BookError {
     InvalidStatementSetting(String),
     #[error("{0}")]
     Currency(String),
+    #[error("an opening bill needs a name of at most 100 characters, an amount, and a due date on or after its date")]
+    InvalidOpeningBill,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -274,6 +276,15 @@ impl Book {
                     self.check_tcs(&l, t)?;
                 }
                 crate::forex::check_ledger(self, &l)?;
+                let bad_bill = |b: &crate::chart::OpeningBill| {
+                    b.reference.trim().is_empty()
+                        || b.reference.chars().count() > crate::chart::MAX_BILL_REFERENCE
+                        || b.amount.is_zero()
+                        || b.date.zip(b.due).is_some_and(|(d, due)| due < d)
+                };
+                if l.opening_bills.iter().any(bad_bill) {
+                    return Err(BookError::InvalidOpeningBill);
+                }
                 // Contra vouchers and bank dates need a cash or bank ledger;
                 // moving one out of those groups would invalidate them.
                 if e.action == AuditAction::Alter && !self.group_is_cash_or_bank(l.group) {
@@ -613,7 +624,7 @@ impl Book {
         }
         let mut seen = std::collections::BTreeSet::new();
         for v in self.vouchers.values() {
-            let key = (v.kind, Self::series_key(Some(p), v.kind, v.date), v.number.to_lowercase());
+            let key = (v.kind, series_name(v), Self::series_key(Some(p), v.kind, v.date), v.number.to_lowercase());
             if !seen.insert(key) {
                 return Err(BookError::InvalidNumbering(format!(
                     "{:?} number {:?} is used more than once in the same period",
@@ -795,6 +806,7 @@ impl Book {
             tds: None,
             tcs: None,
             currency: None,
+            opening_bills: Vec::new(),
         };
         let id = ledger.id;
         self.commit(at, user, AuditAction::Create, format!("ledger:{}", id.0), None, Some(json(&ledger)))?;
@@ -937,10 +949,15 @@ impl Book {
         }
         // Unique within the type's series period (the whole life of the
         // company unless numbering restarts).
+        if voucher.series.as_deref().is_some_and(|s| s.trim().is_empty() || s.chars().count() > MAX_SERIES_NAME) {
+            return Err(BookError::InvalidNumbering(format!("a series name has 1 to {MAX_SERIES_NAME} characters")));
+        }
         let key = Self::series_key(self.profile.as_ref(), voucher.kind, voucher.date);
+        let series = series_name(voucher);
         let clash = self.vouchers_numbered(voucher.kind, &voucher.number).any(|v| {
             Some(v.id) != replacing
                 && v.number.eq_ignore_ascii_case(&voucher.number)
+                && series_name(v) == series
                 && Self::series_key(self.profile.as_ref(), v.kind, v.date) == key
         });
         if clash {
@@ -949,16 +966,26 @@ impl Book {
         Ok(())
     }
 
-    /// Whether a ledger sits under a cash-in-hand or bank group.
+    /// Whether a ledger sits under a cash-in-hand or bank group, including
+    /// Bank OD A/c and Bank OCC A/c (see [`Self::group_is_cash_or_bank`]).
     pub fn is_cash_or_bank(&self, ledger: LedgerId) -> bool {
         self.ledgers.get(&ledger).is_some_and(|l| self.group_is_cash_or_bank(l.group))
     }
 
-    fn group_is_cash_or_bank(&self, group: GroupId) -> bool {
+    /// Whether a group is, or sits under, a group whose ledgers count as
+    /// cash or bank: Contra vouchers, payment and receipt accounts and bank
+    /// dates may use them. Besides the groups flagged `is_cash_or_bank`
+    /// (Cash-in-Hand, Bank Accounts), the default Bank OD A/c and Bank OCC
+    /// A/c count too, as they do in Tally: an overdraft or cash credit
+    /// account is a bank account that runs a credit balance. Those two keep
+    /// their Loans (Liability) nature and their stored flag, so company
+    /// files written before stay exactly as they were.
+    pub fn group_is_cash_or_bank(&self, group: GroupId) -> bool {
+        let bank_loans = [GroupId::default_named("Bank OD A/c"), GroupId::default_named("Bank OCC A/c")];
         let mut group = Some(group);
         for _ in 0..=self.groups.len() {
             let Some(g) = group.and_then(|id| self.groups.get(&id)) else { return false };
-            if g.is_cash_or_bank {
+            if g.is_cash_or_bank || bank_loans.contains(&g.id) {
                 return true;
             }
             group = g.parent;
@@ -1047,6 +1074,24 @@ impl Book {
             }
         }
         self.save_profile(at, user, p)
+    }
+
+    /// Set the rates of several tax classes at once, as `(class, from,
+    /// percent)`, in one audited change (an import sets hundreds).
+    pub fn set_tax_rates(&mut self, at: DateTime<Utc>, user: &str, rates: &[(String, NaiveDate, Amount)]) -> Result<(), BookError> {
+        let mut p = self.profile.clone().ok_or(BookError::InvalidTax("set the country first".into()))?;
+        if rates.is_empty() {
+            return Ok(());
+        }
+        for (class, from, percent) in rates {
+            p.tax_rates.entry(normalise_tax_class(class)).or_default().insert(*from, *percent);
+        }
+        self.save_profile(at, user, p)
+    }
+
+    /// The rate of a tax class set from exactly `from`, if any.
+    pub fn tax_rate_from(&self, class: &str, from: NaiveDate) -> Option<Amount> {
+        self.profile.as_ref()?.tax_rates.get(&normalise_tax_class(class))?.get(&from).copied()
     }
 
     /// Digits of HSN/SAC the company must show (4, 6 or 8; `None` unsets).
@@ -1428,6 +1473,15 @@ impl Book {
     }
 }
 
+/// Longest name of a voucher's number series ([`Voucher::series`]).
+pub const MAX_SERIES_NAME: usize = 60;
+
+/// A voucher's named series as compared for duplicate numbers: ignoring
+/// case, `None` for the type's own series.
+fn series_name(v: &Voucher) -> Option<String> {
+    v.series.as_deref().map(|s| s.trim().to_lowercase())
+}
+
 /// Tax classes compare without spaces and case ("8471 30" is "847130").
 pub fn normalise_tax_class(class: &str) -> String {
     class.chars().filter(|c| !c.is_whitespace()).flat_map(char::to_uppercase).collect()
@@ -1466,7 +1520,7 @@ mod tests {
             number: number.into(),
             date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
             entries,
-            narration: String::new(), cancelled: false, stock: Vec::new(),
+            narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
         }
     }
 

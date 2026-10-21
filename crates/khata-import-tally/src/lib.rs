@@ -8,11 +8,20 @@
 //! for interoperability and migration; it works from Tally's published XML
 //! envelope only.
 //!
+//! Bill-wise details come too: bill allocations on voucher lines and the
+//! opening bills of party ledgers, so outstandings and ageing match Tally.
+//! So do party GSTINs, states and PANs, the tax of GST duty ledgers, HSN/SAC
+//! codes and their rates, and bank reconciliation dates. Each custom
+//! voucher type ("Sales GST", "Cash Sales") keeps its name as the voucher's
+//! number series, so types that Tally numbers on their own don't clash.
+//!
 //! Import is forgiving by design. A bad voucher (unknown ledger, unbalanced,
 //! duplicate number, …) is recorded in [`ImportReport::skipped`] and the
-//! import carries on; only input that is not a Tally envelope at all aborts
-//! with an [`ImportError`]. Nothing is written to the book until the whole
-//! document has parsed.
+//! import carries on; anything imported with a caveat is a [`Note`], and
+//! checks of the result (the Day Book's dates, the opening difference,
+//! closing balances against Tally's) are in the report too. Only input that
+//! is not a Tally envelope at all aborts with an [`ImportError`]. Nothing is
+//! written to the book until every document has parsed.
 //!
 //! Sign convention: Tally amounts are signed **negative = debit**
 //! (`ISDEEMEDPOSITIVE` is `Yes` on those entries). KhataOS is debit
@@ -24,20 +33,24 @@
 
 mod apply;
 pub mod parse;
+mod report;
 pub mod request;
 mod text;
 
 #[cfg(feature = "http")]
 pub mod http;
 
-use chrono::{DateTime, Utc};
+use std::collections::BTreeMap;
+
+use chrono::{DateTime, NaiveDate, Utc};
 use khata_core::{Amount, Book, BookError};
 use thiserror::Error;
 
 pub use parse::{
-    TallyBatch, TallyData, TallyEntry, TallyGodown, TallyGroup, TallyLedger, TallyStockGroup, TallyStockItem,
-    TallyStockLine, TallyUnit, TallyVoucher, TallyVoucherType, parse,
+    TallyBalance, TallyBatch, TallyBill, TallyData, TallyEntry, TallyGodown, TallyGroup, TallyGst, TallyLedger,
+    TallyParty, TallyStockGroup, TallyStockItem, TallyStockLine, TallyUnit, TallyVoucher, TallyVoucherType, parse,
 };
+pub use report::{BalanceCheck, BalanceDifference, BillCounts, GstCounts, Note, NoteKind, TypeCount, voucher_kind_label};
 pub use request::ExportRequest;
 
 /// Why a whole document could not be imported.
@@ -94,6 +107,8 @@ pub enum SkipReason {
     Cancelled,
     #[error("optional voucher")]
     Optional,
+    #[error("the export marks it as deleted")]
+    Deleted,
     #[error("ledger {0:?} is not in the import or the book")]
     UnknownLedger(String),
     #[error("voucher has no ledger amounts")]
@@ -102,6 +117,8 @@ pub enum SkipReason {
     Unbalanced { dr: Amount, cr: Amount },
     #[error("voucher number {0:?} is already used for this voucher type")]
     DuplicateNumber(String),
+    #[error("voucher number {0:?} of this type is already in the company, from before this import; it looks imported already")]
+    AlreadyInBooks(String),
     #[error("contra vouchers may only use cash and bank ledgers")]
     ContraNonCash,
     #[error("compound units aren't imported yet; only simple units are")]
@@ -134,6 +151,46 @@ pub enum SkipReason {
     Rejected(BookError),
 }
 
+impl SkipReason {
+    /// The reason without names or amounts, for a shareable summary.
+    pub fn summary(&self) -> &'static str {
+        match self {
+            Self::UnknownParentGroup(_) => "parent group not found",
+            Self::CustomPrimaryGroup => "custom primary group",
+            Self::NoParentGroup => "no parent group",
+            Self::DuplicateLedger => "ledger already exists",
+            Self::InvalidAmount(_) => "amount is not a number",
+            Self::InvalidDate(_) => "date is not valid",
+            Self::MissingDate => "no date",
+            Self::UnknownVoucherType(_) => "voucher type unknown",
+            Self::UnsupportedVoucherType(_) => "voucher type not imported",
+            Self::Cancelled => "cancelled",
+            Self::Optional => "optional voucher",
+            Self::Deleted => "marked as deleted",
+            Self::UnknownLedger(_) => "ledger not found",
+            Self::NoEntries => "no ledger amounts",
+            Self::Unbalanced { .. } => "debits and credits differ",
+            Self::DuplicateNumber(_) => "voucher number already used",
+            Self::AlreadyInBooks(_) => "voucher already in the company",
+            Self::ContraNonCash => "contra with a ledger that is not cash or bank",
+            Self::CompoundUnit => "compound unit",
+            Self::CompoundItemUnit(_) => "item with a compound unit",
+            Self::NoUnit => "no unit",
+            Self::UnknownParentStockGroup(_) => "stock group not found",
+            Self::StockGroupCycle(_) => "stock groups form a loop",
+            Self::DuplicateStockItem => "stock item already exists",
+            Self::NegativeOpeningStock(_) => "negative opening stock",
+            Self::InventoryVoucherType(_) => "stock voucher type not imported yet",
+            Self::StockLinesDropped(_) => "posted without stock lines",
+            Self::GodownCycle(_) => "godowns form a loop",
+            Self::UnknownParentGodown(_) => "parent godown not found",
+            Self::OpeningByGodownMerged => "opening stock by godown merged",
+            Self::BatchDetailMerged => "batch detail merged",
+            Self::Rejected(_) => "refused by the books",
+        }
+    }
+}
+
 /// One object that was not imported, and why.
 #[derive(Debug, PartialEq, Eq)]
 pub struct Skipped {
@@ -162,6 +219,25 @@ pub struct ImportReport {
     pub godowns_created: usize,
     /// Stock item lines posted on vouchers.
     pub inventory_lines: usize,
+    /// Vouchers posted as cancelled, keeping their numbers (not counted in
+    /// `vouchers_posted`).
+    pub vouchers_cancelled: usize,
+    /// Vouchers by Tally voucher type name, as written in the files.
+    pub by_type: BTreeMap<String, TypeCount>,
+    pub bills: BillCounts,
+    pub gst: GstCounts,
+    /// First and last date of the vouchers posted.
+    pub first_date: Option<NaiveDate>,
+    pub last_date: Option<NaiveDate>,
+    /// [`Book::opening_difference`] after the import: zero when the opening
+    /// balances tally.
+    pub opening_difference: Amount,
+    /// Closing balances compared with those in the files, when the files
+    /// carry any (a Trial Balance exported as XML, or `CLOSINGBALANCE` on
+    /// ledger masters).
+    pub balances: BalanceCheck,
+    /// Things imported with a caveat, and checks to look at.
+    pub notes: Vec<Note>,
     pub skipped: Vec<Skipped>,
 }
 
@@ -169,6 +245,16 @@ impl ImportReport {
     /// Skipped objects of one kind.
     pub fn skipped_of(&self, kind: ItemKind) -> impl Iterator<Item = &Skipped> {
         self.skipped.iter().filter(move |s| s.kind == kind)
+    }
+
+    /// Notes of one kind.
+    pub fn notes_of(&self, kind: NoteKind) -> impl Iterator<Item = &Note> {
+        self.notes.iter().filter(move |n| n.kind == kind)
+    }
+
+    /// Whether anything suggests balances may differ from Tally's.
+    pub fn balance_warnings(&self) -> usize {
+        self.notes.iter().filter(|n| n.kind.affects_balances()).count()
     }
 }
 

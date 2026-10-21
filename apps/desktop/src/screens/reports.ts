@@ -945,7 +945,34 @@ export class MsmeOverdueReport extends Report {
 
 // ------------------------------------------------ import and rebase results
 
-/** What a Tally import created and what it skipped, with reasons. */
+/** Labels for the importer's notes (NoteKind names), in plain English. */
+const IMPORT_NOTE: Record<string, string> = {
+  DayBookStartsLate: "Day Book starts late",
+  NoLedgerMasters: "No ledger masters",
+  NoOpeningBalances: "No opening balances",
+  OpeningDifference: "Opening balances don't agree",
+  BalanceDiffers: "Closing balance differs from Tally",
+  BalanceNotFound: "Tally balance with no match here",
+  Renumbered: "Voucher given a new number",
+  YearlyNumbering: "Numbering now restarts each year",
+  PostDated: "Post-dated voucher",
+  BillsDropped: "Bills not kept on a voucher line",
+  OpeningBills: "Opening bills to check",
+  GstinInvalid: "GSTIN fails the check",
+  StateUnknown: "Unknown state",
+  PanInvalid: "PAN not valid",
+  TaxSideGuessed: "Tax ledger side guessed",
+  DutyLedgerNotTagged: "Tax ledger not tagged",
+  TaxRateConflict: "Different GST rates for one code",
+  TaxRatesNotKept: "GST rates not kept",
+  GstClassification: "GST classification not read",
+  DetailNotKept: "Detail not kept",
+  CostCentres: "Cost centres not imported",
+  BankDateDropped: "Bank dates not kept",
+  DetailRefused: "Ledger detail refused",
+};
+
+/** What a Tally import created, what it skipped and why, and checks against Tally. */
 export class ImportReportScreen extends Report {
   title = "Tally Import";
   constructor(shell: Shell, private r: import("../types").ImportSummary) {
@@ -958,10 +985,66 @@ export class ImportReportScreen extends Report {
     this.resetPicks();
     // `label` is English, shown through tr().
     const count = (label: string, n: number) => this.pick(h("tr", h("td", tr(label)), h("td.num", String(n))));
+    const section = (title: string) => h("div.tside-title", title);
+    const noteLabel = (kind: string) => (IMPORT_NOTE[kind] ? tr(IMPORT_NOTE[kind]) : kind);
+
+    // Balances first: what may make the books differ from Tally.
+    const warnings = r.notes.filter((n) => n.warning);
+    const warnBlock: HTMLElement[] = [];
+    if (r.balance_warnings > 0 || warnings.length) {
+      const list = h("tbody");
+      for (const n of warnings) list.append(this.pick(h("tr", h("td.strong", noteLabel(n.kind)), h("td", { dir: "auto" }, n.name), h("td.wrap", { dir: "auto" }, n.detail))));
+      warnBlock.push(
+        h("div.note.warn", tr("Balances may not match Tally. Check these before relying on the books.")),
+        h("table.rtable", h("thead", h("tr", h("th", tr("Warning")), h("th", tr("Name")), h("th", tr("Detail")))), list),
+      );
+    }
+
+    const types = h("tbody");
+    for (const x of r.by_type) {
+      types.append(
+        this.pick(
+          h(
+            "tr",
+            h("td", { dir: "auto" }, x.name),
+            h("td", x.kind ? tr(x.kind) : tr("Not imported")),
+            h("td.num", String(x.posted)),
+            h("td.num", String(x.cancelled)),
+            h("td.num", String(x.skipped)),
+          ),
+        ),
+      );
+    }
+    if (!r.by_type.length) types.append(h("tr.empty", h("td", { colSpan: 5 }, tr("No vouchers in the files."))));
+
+    const dates = r.first_date && r.last_date ? tr("{from} to {to}", { from: D.show(r.first_date), to: D.show(r.last_date) }) : tr("No vouchers posted");
+    const diff = M.of(r.opening_difference);
+    const checks = h(
+      "tbody",
+      this.pick(h("tr", h("td", tr("Day Book dates")), h("td.num", dates))),
+      this.pick(h("tr", h("td", tr("Difference in opening balances")), h("td.num", diff === 0n ? tr("None") : M.drCr(diff)))),
+      count("Closing balances compared with Tally", r.balances.compared),
+      count("Closing balances that match", r.balances.matched),
+      count("Closing balances that differ", r.balances.differences.length),
+    );
+    const differences = h("tbody");
+    for (const d of r.balances.differences) {
+      differences.append(this.pick(h("tr", h("td", { dir: "auto" }, d.name), h("td.num", M.drCr(M.of(d.tally))), h("td.num", M.drCr(M.of(d.khataos))))));
+    }
+
+    const notes = h("tbody");
+    const others = r.notes.filter((n) => !n.warning);
+    for (const n of others) {
+      notes.append(this.pick(h("tr", h("td", noteLabel(n.kind)), h("td", { dir: "auto" }, n.name), h("td.wrap", { dir: "auto" }, n.detail), h("td.num", String(n.count)))));
+    }
+    if (!others.length) notes.append(h("tr.empty", h("td", { colSpan: 4 }, tr("No notes."))));
+
     const skipped = h("tbody");
     for (const s of r.skipped) skipped.append(this.pick(h("tr", h("td", tr(s.kind)), h("td.strong", s.name), h("td.wrap", { dir: "auto" }, s.reason))));
     if (!r.skipped.length) skipped.append(h("tr.empty", h("td", { colSpan: 3 }, tr("Nothing was skipped."))));
+
     this.bodyEl.replaceChildren(
+      ...warnBlock,
       h(
         "table.rtable",
         h("thead", h("tr", h("th", tr("Imported")), h("th.num", tr("Count")))),
@@ -972,6 +1055,7 @@ export class ImportReportScreen extends Report {
           count("Ledgers created", r.ledgers_created),
           count("Opening balances set", r.opening_balances),
           count("Vouchers posted", r.vouchers_posted),
+          count("Vouchers posted as cancelled, keeping their numbers", r.vouchers_cancelled),
           count("Vouchers numbered by KhataOS", r.vouchers_numbered),
           count("Units created", r.units_created),
           count("Stock groups created", r.stock_groups_created),
@@ -980,11 +1064,104 @@ export class ImportReportScreen extends Report {
           count("Stock lines on vouchers", r.inventory_lines),
         ),
       ),
-      h("div.tside-title", tr("Skipped ({n})", { n: r.skipped.length })),
+      section(tr("Vouchers by Tally voucher type")),
+      h(
+        "table.rtable",
+        h("thead", h("tr", h("th", tr("Tally voucher type")), h("th", tr("Posted as")), h("th.num", tr("Posted")), h("th.num", tr("Cancelled")), h("th.num", tr("Skipped")))),
+        types,
+      ),
+      section(tr("Bills")),
+      h(
+        "table.rtable",
+        h("thead", h("tr", h("th", tr("Bill-wise details")), h("th.num", tr("Count")))),
+        h(
+          "tbody",
+          count("New bills (New Ref)", r.bills.new_ref),
+          count("Settlements (Agst Ref)", r.bills.against),
+          count("Advances", r.bills.advance),
+          count("On account", r.bills.on_account),
+          count("Opening bills", r.bills.opening),
+          count("Ledgers with opening bills", r.bills.opening_ledgers),
+        ),
+      ),
+      section(tr("GST and party details")),
+      h(
+        "table.rtable",
+        h("thead", h("tr", h("th", tr("Details")), h("th.num", tr("Count")))),
+        h(
+          "tbody",
+          count("GSTINs", r.gst.gstins),
+          count("States", r.gst.states),
+          count("PANs", r.gst.pans),
+          count("Addresses", r.gst.addresses),
+          count("Tax ledgers tagged with their tax", r.gst.duty_ledgers),
+          count("Ledgers given an HSN or SAC code", r.gst.ledger_classes),
+          count("HSN or SAC codes given a rate", r.gst.rates),
+        ),
+      ),
+      section(tr("Checks")),
+      h("table.rtable", h("thead", h("tr", h("th", tr("Check")), h("th.num", tr("Result")))), checks),
+      ...(r.balances.differences.length
+        ? [h("table.rtable", h("thead", h("tr", h("th", tr("Ledger or group")), h("th.num", tr("Tally")), h("th.num", tr("KhataOS")))), differences)]
+        : []),
+      ...(r.balances.compared === 0
+        ? [h("div.note", tr("The files had no closing balances to compare. Compare the Trial Balance and Outstandings with Tally yourself, or import Tally's Trial Balance exported as XML with the other files."))]
+        : []),
+      section(tr("Notes ({n})", { n: others.length })),
+      h("table.rtable", h("thead", h("tr", h("th", tr("Note")), h("th", tr("Name")), h("th", tr("Detail")), h("th.num", tr("Count")))), notes),
+      section(tr("Skipped ({n})", { n: r.skipped.length })),
       h("table.rtable", h("thead", h("tr", h("th", tr("Kind")), h("th", tr("Name")), h("th", tr("Reason")))), skipped),
       h("div.note", tr("Everything imported is saved and recorded in the audit trail. Fix the skipped items in Tally, or create them here.")),
+      h("div.note", tr("Save report keeps this report as CSV or text. Save shareable summary keeps counts only, with no names, amounts or dates, so it is safe to send to the KhataOS maintainers.")),
       ...(r.backup ? [h("div.note", tr("The company was backed up before the import: {file}. Data → Restore brings it back.", { file: ltr(r.backup) }))] : []),
     );
+  }
+
+  override handles(a: string): boolean {
+    return a === "SaveView" || a === "ExportMenu" || super.handles(a);
+  }
+
+  override bottom() {
+    const ctx = this.contexts();
+    const own = [this.shell.btn("SaveView", ctx, "Save report"), this.shell.btn("ExportMenu", ctx, "Save shareable summary")];
+    const rest = super.bottom();
+    const back = rest.pop();
+    return [...rest, ...own.filter((b): b is NonNullable<typeof b> => b !== null), ...(back ? [back] : [])];
+  }
+
+  override action(a: string): boolean {
+    if (a === "SaveView") {
+      void this.saveReport(false);
+      return true;
+    }
+    if (a === "ExportMenu") {
+      void this.saveReport(true);
+      return true;
+    }
+    return super.action(a);
+  }
+
+  /** Save the report as CSV or text, by the extension chosen; `shareable`: counts only. */
+  private async saveReport(shareable: boolean): Promise<void> {
+    try {
+      const path = await save({
+        defaultPath: shareable ? "tally-import-summary.txt" : "tally-import-report.csv",
+        filters: [
+          { name: "CSV", extensions: ["csv"] },
+          { name: tr("Text"), extensions: ["txt"] },
+        ],
+      });
+      if (!path) return;
+      const lower = path.toLowerCase();
+      const file = lower.endsWith(".txt") || lower.endsWith(".csv") ? path : `${path}${shareable ? ".txt" : ".csv"}`;
+      const text = file.toLowerCase().endsWith(".txt");
+      const r = this.r;
+      const contents = shareable ? (text ? r.shareable_text : r.shareable_csv) : text ? r.report_text : r.report_csv;
+      await api.saveImportReport(file, contents);
+      this.shell.info(tr("Saved to {path}", { path: ltr(file) }));
+    } catch (e) {
+      this.shell.error(e);
+    }
   }
 }
 

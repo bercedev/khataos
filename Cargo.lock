@@ -2493,6 +2493,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "khata-core",
+ "khata-in",
  "quick-xml 0.41.0",
  "rust_decimal",
  "rust_decimal_macros",

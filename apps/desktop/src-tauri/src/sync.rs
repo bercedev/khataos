@@ -427,7 +427,7 @@ mod tests {
                         khata_core::Entry::cr(b_bank, 200.into()),
                     ],
                     narration: String::new(),
-                    cancelled: false, stock: Vec::new(),
+                    cancelled: false, series: None, stock: Vec::new(),
                 },
             )
             .unwrap();

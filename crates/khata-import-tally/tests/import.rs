@@ -108,17 +108,24 @@ fn full() -> (Book, ImportReport) {
 #[test]
 fn vouchers_post_and_trial_balance_is_correct() {
     let (book, report) = full();
-    assert_eq!(report.vouchers_posted, 6);
+    assert_eq!(report.vouchers_posted, 7, "the repeated Receipt 1 is posted as 1 (2)");
+    assert_eq!(report.vouchers_cancelled, 1, "Sales GST INV-2 keeps its number as a cancelled voucher");
     assert_eq!(report.vouchers_numbered, 1);
+    let renumbered: Vec<_> = report.notes_of(khata_import_tally::NoteKind::Renumbered).map(|n| n.name.as_str()).collect();
+    assert_eq!(renumbered, ["Receipt 1 on 2024-04-18"]);
+    assert!(book.vouchers().any(|v| v.number == "1 (2)" && v.kind == VoucherKind::Receipt));
+    let cancelled = book.vouchers().find(|v| v.number == "INV-2").unwrap();
+    assert!(cancelled.cancelled);
+    assert_eq!(cancelled.series.as_deref(), Some("Sales GST"));
 
     let tb = book.trial_balance();
     let row = |name: &str| {
         let r = tb.iter().find(|r| r.name == name).unwrap_or_else(|| panic!("no row for {name}"));
         r.debit - r.credit
     };
-    assert_eq!(row("Cash"), dec!(13000));
+    assert_eq!(row("Cash"), dec!(13100));
     assert_eq!(row("HDFC Bank"), dec!(115000));
-    assert_eq!(row("Ramesh Traders"), dec!(21800));
+    assert_eq!(row("Ramesh Traders"), dec!(21700));
     assert_eq!(row("Suresh Suppliers"), dec!(-28500));
     assert_eq!(row("Capital A/c"), dec!(-130000));
     assert_eq!(row("Profit & Loss A/c"), dec!(10000));
@@ -157,13 +164,11 @@ fn voucher_skip_reasons() {
         reasons(&report, ItemKind::Voucher),
         [
             ("Journal J-BAD on 20241345", &SkipReason::InvalidDate("20241345".into())),
-            ("Sales GST INV-2 on 2024-04-11", &SkipReason::Cancelled),
             ("Journal J-OPT on 2024-04-12", &SkipReason::Optional),
             ("Payment 2 on 2024-04-13", &SkipReason::UnknownLedger("Electricity".into())),
             ("Payment 3 on 2024-04-14", &SkipReason::Unbalanced { dr: dec!(300), cr: dec!(299) }),
             ("Mystery 1 on 2024-04-16", &SkipReason::UnknownVoucherType("Mystery".into())),
             ("Customer Order SO-1 on 2024-04-17", &SkipReason::UnsupportedVoucherType("Customer Order".into())),
-            ("Receipt 1 on 2024-04-18", &SkipReason::DuplicateNumber("1".into())),
             ("Contra 2 on 2024-04-19", &SkipReason::ContraNonCash),
         ]
     );

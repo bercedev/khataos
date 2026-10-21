@@ -36,9 +36,88 @@ pub struct ImportSummary {
     /// Stock item lines posted on vouchers.
     pub inventory_lines: usize,
     pub skipped: Vec<SkippedItem>,
+    /// Vouchers posted as cancelled, keeping their numbers.
+    pub vouchers_cancelled: usize,
+    /// Vouchers by Tally voucher type, as named in the files.
+    pub by_type: Vec<ImportTypeCount>,
+    pub bills: ImportBills,
+    pub gst: ImportGst,
+    /// First and last date of the vouchers posted (ISO).
+    pub first_date: Option<String>,
+    pub last_date: Option<String>,
+    /// Zero when the opening balances agree.
+    pub opening_difference: String,
+    pub balances: ImportBalances,
+    pub notes: Vec<ImportNote>,
+    /// Notes that mean balances may not match Tally's.
+    pub balance_warnings: usize,
+    /// The whole report, to save as text or CSV.
+    pub report_text: String,
+    pub report_csv: String,
+    /// Counts only: no names, amounts, dates or file names.
+    pub shareable_text: String,
+    pub shareable_csv: String,
     /// The automatic backup taken before importing into a company that
     /// already had books (src/backup.rs).
     pub backup: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportTypeCount {
+    /// The Tally voucher type.
+    pub name: String,
+    /// The KhataOS type it was posted as ("Sales"); `None` when not imported.
+    pub kind: Option<String>,
+    pub posted: usize,
+    pub cancelled: usize,
+    pub skipped: usize,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportBills {
+    pub new_ref: usize,
+    pub against: usize,
+    pub advance: usize,
+    pub on_account: usize,
+    pub opening: usize,
+    pub opening_ledgers: usize,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportGst {
+    pub gstins: usize,
+    pub states: usize,
+    pub pans: usize,
+    pub addresses: usize,
+    pub duty_ledgers: usize,
+    pub ledger_classes: usize,
+    pub rates: usize,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportBalances {
+    pub compared: usize,
+    pub matched: usize,
+    pub differences: Vec<ImportBalanceDifference>,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportBalanceDifference {
+    pub name: String,
+    /// Debit positive.
+    pub tally: String,
+    pub khataos: String,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct ImportNote {
+    /// Stable code: the importer's `NoteKind` name ("DayBookStartsLate").
+    pub kind: String,
+    /// It means balances may not match Tally's.
+    pub warning: bool,
+    pub name: String,
+    pub detail: String,
+    pub count: usize,
 }
 
 fn kind_label(kind: khata_import_tally::ItemKind) -> &'static str {
@@ -62,23 +141,38 @@ pub fn import_tally(slot: &mut Slot, paths: &[String]) -> ApiResult<ImportSummar
     if paths.is_empty() {
         return Err("choose at least one Tally XML file".into());
     }
-    let docs = paths
+    // Each file is parsed and its bytes dropped before the next is read, so
+    // a large Day Book isn't held twice. A file that isn't Tally XML aborts
+    // here, before the books change.
+    let mut data = khata_import_tally::TallyData::default();
+    for p in paths {
+        let bytes = std::fs::read(p).map_err(|e| format!("cannot read {p}: {e}"))?;
+        data.extend(khata_import_tally::parse(&bytes).map_err(err)?);
+    }
+    // Should saving fail, the books go back to how they were, so the open
+    // company never holds an import that isn't on disk.
+    let before = book.clone();
+    let report = khata_import_tally::import_data(data, book, now(), &os_user());
+    if let Err(e) = store.save(book) {
+        *book = before;
+        return Err(err(e));
+    }
+    drop(before);
+    let files: Vec<String> = paths
         .iter()
-        .map(|p| std::fs::read(p).map_err(|e| format!("cannot read {p}: {e}")))
-        .collect::<ApiResult<Vec<_>>>()?;
-    let report =
-        khata_import_tally::import_all(docs.iter().map(Vec::as_slice), book, now(), &os_user())
-            .map_err(err)?;
-    store.save(book).map_err(err)?;
+        .map(|p| {
+            Path::new(p)
+                .file_name()
+                .map_or(p.clone(), |f| f.to_string_lossy().into_owned())
+        })
+        .collect();
+    let money = |a: Amount| format!("{:.2}", a);
     Ok(ImportSummary {
-        files: paths
-            .iter()
-            .map(|p| {
-                Path::new(p)
-                    .file_name()
-                    .map_or(p.clone(), |f| f.to_string_lossy().into_owned())
-            })
-            .collect(),
+        report_text: report.to_text(&files, false),
+        report_csv: report.to_csv(&files, false),
+        shareable_text: report.to_text(&files, true),
+        shareable_csv: report.to_csv(&files, true),
+        files,
         groups_created: report.groups_created,
         groups_matched: report.groups_matched,
         ledgers_created: report.ledgers_created,
@@ -90,6 +184,64 @@ pub fn import_tally(slot: &mut Slot, paths: &[String]) -> ApiResult<ImportSummar
         stock_items_created: report.stock_items_created,
         godowns_created: report.godowns_created,
         inventory_lines: report.inventory_lines,
+        vouchers_cancelled: report.vouchers_cancelled,
+        by_type: report
+            .by_type
+            .iter()
+            .map(|(name, t)| ImportTypeCount {
+                name: name.clone(),
+                kind: t.kind.map(|k| khata_import_tally::voucher_kind_label(k).to_owned()),
+                posted: t.posted,
+                cancelled: t.cancelled,
+                skipped: t.skipped,
+            })
+            .collect(),
+        bills: ImportBills {
+            new_ref: report.bills.new_ref,
+            against: report.bills.against,
+            advance: report.bills.advance,
+            on_account: report.bills.on_account,
+            opening: report.bills.opening,
+            opening_ledgers: report.bills.opening_ledgers,
+        },
+        gst: ImportGst {
+            gstins: report.gst.gstins,
+            states: report.gst.states,
+            pans: report.gst.pans,
+            addresses: report.gst.addresses,
+            duty_ledgers: report.gst.duty_ledgers,
+            ledger_classes: report.gst.ledger_classes,
+            rates: report.gst.rates,
+        },
+        first_date: report.first_date.map(|d| d.to_string()),
+        last_date: report.last_date.map(|d| d.to_string()),
+        opening_difference: money(report.opening_difference),
+        balances: ImportBalances {
+            compared: report.balances.compared,
+            matched: report.balances.matched,
+            differences: report
+                .balances
+                .differences
+                .iter()
+                .map(|d| ImportBalanceDifference {
+                    name: d.name.clone(),
+                    tally: money(d.tally),
+                    khataos: money(d.khataos),
+                })
+                .collect(),
+        },
+        notes: report
+            .notes
+            .iter()
+            .map(|n| ImportNote {
+                kind: format!("{:?}", n.kind),
+                warning: n.kind.affects_balances(),
+                name: n.name.clone(),
+                detail: n.detail.clone(),
+                count: n.count,
+            })
+            .collect(),
+        balance_warnings: report.balance_warnings(),
         skipped: report
             .skipped
             .iter()
@@ -319,6 +471,18 @@ pub fn report_csv(slot: &Slot, spec: &ReportSpec) -> ApiResult<String> {
     }
 }
 
+/// Save a Tally import report chosen in the save dialog: `.csv` or `.txt`.
+pub fn save_import_report(path: &str, contents: &str) -> ApiResult<()> {
+    let p = Path::new(path);
+    let ok = p
+        .extension()
+        .is_some_and(|e| e.eq_ignore_ascii_case("csv") || e.eq_ignore_ascii_case("txt"));
+    if !ok {
+        return Err("save the report as a .csv or .txt file".into());
+    }
+    std::fs::write(p, contents).map_err(|e| format!("cannot write {path}: {e}"))
+}
+
 /// Write an exported CSV chosen in the save dialog. Only `.csv` files.
 pub fn write_csv(path: &str, contents: &str) -> ApiResult<()> {
     let p = Path::new(path);
@@ -363,6 +527,44 @@ mod tests {
             "the import was saved"
         );
         assert_eq!(list_ledgers(&reopened, "", "all").unwrap().len(), 10);
+    }
+
+    #[test]
+    fn shareable_import_summary_has_counts_only() {
+        let f = TempFile::new("import-share");
+        let mut slot = None;
+        create_company(&mut slot, &f.0, "Shah & Sons").unwrap();
+        let files = [
+            format!("{FIXTURES}/masters.xml"),
+            format!("{FIXTURES}/vouchers.xml"),
+        ];
+        let r = import_tally(&mut slot, &files).unwrap();
+        // Names and amounts the fixture puts in skip reasons and notes.
+        let private = ["Lost Ledger", "Electricity", "299", "Receipt 1 on", "masters.xml", "2024"];
+        for full in [&r.report_text, &r.report_csv] {
+            for p in private {
+                assert!(full.contains(p), "{p:?} missing from {full}");
+            }
+        }
+        for shared in [&r.shareable_text, &r.shareable_csv] {
+            for private in private.iter().chain(&["Ramesh", "Suresh", "HDFC", "Shah", "11800", "INV-"]) {
+                assert!(!shared.contains(private), "{private:?} in {shared}");
+            }
+            assert!(shared.contains("Ledgers created"));
+        }
+        assert!(r.report_csv.starts_with("Section,Item,Count,Name,Detail"));
+        assert!(r.by_type.iter().any(|t| t.name == "Sales GST" && t.kind.as_deref() == Some("Sales")));
+    }
+
+    #[test]
+    fn saves_import_reports_only_as_csv_or_text() {
+        let dir = std::env::temp_dir();
+        let txt = dir.join(format!("khataos-import-{}.txt", std::process::id()));
+        save_import_report(&txt.display().to_string(), "x").unwrap();
+        assert_eq!(std::fs::read_to_string(&txt).unwrap(), "x");
+        let _ = std::fs::remove_file(txt);
+        let html = dir.join("khataos-import.html").display().to_string();
+        assert!(save_import_report(&html, "x").is_err());
     }
 
     #[test]

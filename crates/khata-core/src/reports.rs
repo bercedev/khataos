@@ -338,8 +338,16 @@ pub fn outstanding_bills(book: &Book, as_at: NaiveDate) -> Vec<OutstandingBill> 
             slot.1 += signed;
         }
     };
-    for l in book.ledgers().filter(|l| !l.opening.is_zero() && is_party(book, l.id)) {
-        bills.insert((l.id, "Opening Balance".into()), (None, None, l.opening));
+    for l in book.ledgers().filter(|l| (!l.opening.is_zero() || !l.opening_bills.is_empty()) && is_party(book, l.id)) {
+        // Opening bills by name; the rest of the opening balance as one line.
+        for b in &l.opening_bills {
+            let slot = bills.entry((l.id, b.reference.clone())).or_insert((b.date, b.due, Amount::ZERO));
+            slot.2 += b.amount;
+        }
+        let rest = l.opening - l.opening_bills.iter().map(|b| b.amount).sum::<Amount>();
+        if !rest.is_zero() {
+            bills.insert((l.id, "Opening Balance".into()), (None, None, rest));
+        }
     }
     let mut vs: Vec<&Voucher> = book.active_vouchers().filter(|v| v.date <= as_at).collect();
     vs.sort_by_key(|v| (v.date, v.id));
@@ -470,7 +478,7 @@ mod tests {
             b.post_voucher(
                 now(),
                 "u",
-                Voucher { id: VoucherId::new(), kind, number: num.into(), date: d(day), entries, narration: String::new(), cancelled: false, stock: Vec::new() },
+                Voucher { id: VoucherId::new(), kind, number: num.into(), date: d(day), entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() },
             )
             .unwrap();
         };
@@ -553,7 +561,7 @@ mod tests {
         let supplier = b.create_ledger(now(), "u", "Gupta Steel (MSE)", g(&b, "Sundry Creditors")).unwrap();
         let date = |m, day| NaiveDate::from_ymd_opt(2026, m, day).unwrap();
         let mut post = |kind, num: &str, on, entries| {
-            b.post_voucher(now(), "u", Voucher { id: VoucherId::new(), kind, number: num.into(), date: on, entries, narration: String::new(), cancelled: false, stock: Vec::new() })
+            b.post_voucher(now(), "u", Voucher { id: VoucherId::new(), kind, number: num.into(), date: on, entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() })
                 .unwrap();
         };
         // Two invoices to the debtor, 30-day credit; one part-paid.
@@ -603,7 +611,7 @@ mod tests {
             number: "9".into(),
             date: d(5),
             entries: vec![Entry::dr(party, dec!(100)).bill(BillKind::New, "X", dec!(90), None), Entry::cr(sales, dec!(100))],
-            narration: String::new(), cancelled: false, stock: Vec::new(),
+            narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
         };
         assert_eq!(b.post_voucher(now(), "u", bad), Err(crate::BookError::Voucher(VoucherError::BillsMismatch { index: 0 })));
         let _ = bank;

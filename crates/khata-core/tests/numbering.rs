@@ -29,7 +29,7 @@ fn sale(book: &mut Book, party: LedgerId, sales: LedgerId, number: &str, date: N
         date,
         entries: vec![Entry::dr(party, dec!(100)), Entry::cr(sales, dec!(100))],
         narration: String::new(),
-        cancelled: false, stock: Vec::new(),
+        cancelled: false, series: None, stock: Vec::new(),
     })
 }
 

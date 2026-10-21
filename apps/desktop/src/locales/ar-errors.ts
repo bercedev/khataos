@@ -82,6 +82,7 @@ export const EXACT: Record<string, string> = {
   "Printing isn't available on phones yet": "الطباعة غير متاحة على الهواتف بعد.",
   "Printing isn't available on phones yet: use Export (CSV) here, or print from KhataOS on a computer": "الطباعة غير متاحة على الهواتف بعد: استخدم التصدير (⁦CSV⁩) هنا، أو اطبع من ⁦KhataOS⁩ على حاسوب.",
   "exports must be saved as .csv files": "يجب حفظ الملفات المصدَّرة بصيغة ⁦.csv⁩.",
+  "save the report as a .csv or .txt file": "احفظ التقرير بصيغة ⁦.csv⁩ أو ⁦.txt⁩.",
   "export this report as a table": "صدّر هذا التقرير كجدول.",
   "choose at least one Tally XML file": "اختر ملف ⁦Tally XML⁩ واحدًا على الأقل.",
   "pick a .csv or .txt file": "اختر ملف ⁦.csv⁩ أو ⁦.txt⁩.",

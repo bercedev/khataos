@@ -149,6 +149,22 @@ pub(crate) fn tally_date(raw: &str) -> Option<NaiveDate> {
         .find_map(|f| NaiveDate::parse_from_str(s, f).ok())
 }
 
+/// A due date from Tally's `BILLCREDITPERIOD`: a credit period in days
+/// after `from` ("30 Days", "30"), or a due date written out
+/// ("15-May-2024", "20240515"). `None` when blank or unreadable.
+pub(crate) fn tally_due(raw: &str, from: NaiveDate) -> Option<NaiveDate> {
+    let s = raw.trim();
+    if s.is_empty() {
+        return None;
+    }
+    if let Some(d) = tally_date(s) {
+        return Some(d);
+    }
+    let lower = s.to_ascii_lowercase();
+    let days = lower.trim_end_matches('s').trim_end_matches("day").trim();
+    days.parse::<u64>().ok().and_then(|n| from.checked_add_days(chrono::Days::new(n)))
+}
+
 /// Tally logical values are "Yes"/"No".
 pub(crate) fn tally_bool(raw: &str) -> bool {
     matches!(raw.trim().to_ascii_lowercase().as_str(), "yes" | "true" | "1")

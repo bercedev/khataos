@@ -384,6 +384,11 @@ html.zoomed:not(.mobile) .search {
   margin-top: 12px;
 }
 
+.note.warn {
+  color: var(--warn);
+  font-weight: 600;
+}
+
 .strong {
   font-weight: 600;
 }

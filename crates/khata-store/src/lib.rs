@@ -667,7 +667,7 @@ mod tests {
                 number: "1".into(),
                 date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
                 entries: vec![Entry::dr(rent, dec!(100)), Entry::cr(bank, dec!(100))],
-                narration: "April rent".into(), cancelled: false, stock: Vec::new(),
+                narration: "April rent".into(), cancelled: false, series: None, stock: Vec::new(),
             },
         )
         .unwrap();

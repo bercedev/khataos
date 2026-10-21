@@ -18,7 +18,12 @@ for s in &report.skipped {
 - **Groups:**
   - Tally's predefined groups are matched to the KhataOS defaults by `RESERVEDNAME`, by name, or by alias; for example, "Suspense A/c" becomes Suspense Account.
   - Custom groups are created under their parent, in dependency order, so a parent can appear after its children in the file.
-- **Ledgers:** name, aliases, parent, and `OPENINGBALANCE`. Tally's "Profit & Loss A/c", which sits at Primary, is filed under Reserves & Surplus.
+- **Ledgers:** name, aliases, parent, and `OPENINGBALANCE`. Tally's "Profit & Loss A/c", which sits at Primary, is filed under Reserves & Surplus. Also:
+  - opening bills (`BILLALLOCATIONS.LIST` with `BILLDATE`, `BILLCREDITPERIOD`, `OPENINGBALANCE`) become `Ledger.opening_bills`;
+  - party details: `PARTYGSTIN` (checked; a failing one is kept with an override reason and a note), state (`LEDSTATENAME`/`STATENAME`, as the GST state code), `INCOMETAXNUMBER`, `ADDRESS.LIST`, `PINCODE`, phone, email and `BILLCREDITPERIOD`, from the direct tags or the dated `LEDGSTREGDETAILS.LIST` and `LEDMAILINGDETAILS.LIST`;
+  - GST duty ledgers (`TAXTYPE` GST with `GSTDUTYHEAD`) get `Ledger.tax`: CGST, SGST, UTGST, IGST or cess, input or output from the name or from use;
+  - the HSN/SAC of a sales or service ledger becomes its tax class; GST rates from `GSTDETAILS.LIST` (latest `APPLICABLEFROM`) are set by HSN/SAC and date;
+  - `CLOSINGBALANCE`, when present, is compared with the imported closing balance.
 - **Inventory masters:**
   - `UNIT`: simple units become KhataOS units. The symbol is `NAME` and the formal name is `ORIGINALNAME`. Decimal places come from `DECIMALPLACES`; when Tally gives none, they come from the most decimals the data uses for that unit, capped at 4. Compound units are skipped. A unit that items name but that has no `UNIT` master is created from the data.
   - `STOCKGROUP`: created under their parent in dependency order. "Primary" is the top level. Parent loops are reported.
@@ -30,6 +35,11 @@ for s in &report.skipped {
   - Accounting voucher types are imported: Payment, Receipt, Contra, Journal, Sales, Purchase, Credit Note and Debit Note. Custom voucher types are followed through the `VOUCHERTYPE` masters to one of these.
   - The voucher fields read are `DATE` (YYYYMMDD), `VOUCHERNUMBER` and `NARRATION`, plus the ledger lines in `ALLLEDGERENTRIES.LIST` and `LEDGERENTRIES.LIST`. For invoice-mode vouchers, the sales or purchase ledger inside each inventory line's `ACCOUNTINGALLOCATIONS.LIST` is also used.
   - A voucher without a number gets the next free KhataOS number.
+  - A custom voucher type's name becomes the voucher's number series (`Voucher.series`), so "Sales GST 1" and "Cash Sales 1" can both exist. When numbers repeat across financial years and the company's numbering never restarts, it is set to restart yearly. A number Tally repeated in one series and year is posted as "12 (2)", with a note; one already in the company before the import is skipped as `AlreadyInBooks`.
+  - Bill allocations (`BILLALLOCATIONS.LIST`: New Ref, Agst Ref, Advance, On Account) become `Entry.bills`, with due dates from `BILLCREDITPERIOD`. `BANKERSDATE` becomes `Entry.bank_date` on cash and bank ledgers.
+  - Cancelled vouchers are posted as cancelled, keeping their numbers. Post-dated ones are posted on their date with a note. Optional vouchers and `ACTION="Delete"` ones are skipped.
+- **Trial Balance:** a Trial Balance exported as XML (`DSPACCNAME` / `DSPACCINFO` rows) is read for its closing balances, and each ledger or group is compared with the import.
+- **Report:** besides the counts and `skipped`, `ImportReport` has `notes` (things imported with a caveat, and warnings that balances may not match), counts by Tally voucher type, bills and GST details, the Day Book's dates, the opening difference and the balance comparison. `to_text` and `to_csv` render it, in full or as a shareable summary with counts only.
 - **Amounts:** exact decimals, never floats. Tally signs amounts **negative = debit** (those lines carry `ISDEEMEDPOSITIVE` = Yes), and they are negated into KhataOS's debit-positive convention. The parser also accepts:
   - digit grouping (`1,00,000.00`)
   - currency symbols
@@ -63,8 +73,7 @@ for s in &report.skipped {
 
 ## Limitations
 
-- **Some inventory and tax detail is skipped.** The importer skips compound units and stock vouchers (Stock Journal and the other non-invoice stock types). It keeps opening stock only as one total per item. It also ignores cost centres, bill-wise allocations, bank allocations, and all tax or statutory detail except the item's HSN code.
+- **Some inventory and tax detail is skipped.** The importer skips compound units and stock vouchers (Stock Journal and the other non-invoice stock types). It keeps opening stock only as one total per item. Cost centre allocations are counted in a note but not kept; instrument numbers, the tax analysis on vouchers, the registration type and GST classification masters are not kept.
 - **Some Tally objects have no KhataOS equivalent.** Vouchers from non-accounting types (orders, notes, stock journals, memorandum, reversing journals, payroll) are reported and skipped. So are custom groups placed directly under Primary.
-- **Repeated voucher numbers are skipped.** KhataOS needs voucher numbers to be unique within each voucher kind. If Tally restarts numbering each financial year, or two custom types that map to the same kind share numbers, the second voucher is skipped as a duplicate.
 - **Foreign-currency amounts are converted.** Only the base-currency amount is imported.
 - **The `http` client uses guessed defaults.** The request IDs ("List of Accounts" with `ACCOUNTTYPE` = All Masters or All Inventory Masters, and "Day Book") and the date format (`1-Apr-2024`) follow common practice. Confirm them against your Tally release.

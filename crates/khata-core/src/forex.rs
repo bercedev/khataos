@@ -472,6 +472,7 @@ pub fn revaluation_journal(as_at: NaiveDate, number: String, lines: &[Revaluatio
         entries,
         narration: format!("Revaluation of foreign currency balances at closing rates as at {as_at}"),
         cancelled: false,
+        series: None,
         stock: Vec::new(),
     })
 }

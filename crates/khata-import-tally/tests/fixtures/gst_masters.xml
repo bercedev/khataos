@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written sample in the shape of a TallyPrime "Export > Masters > All Masters > XML (Data Interchange)" file.
+     Every company, party, GSTIN and PAN here is invented. The GSTINs have valid check characters except Ojas Retail's.
+     Older and newer TallyPrime ledger layouts are both used: direct PARTYGSTIN / LEDSTATENAME tags, and the dated
+     LEDGSTREGDETAILS.LIST / LEDMAILINGDETAILS.LIST lists. -->
+<ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Saffron Lane Traders</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Sales GST" RESERVEDNAME="">
+      <PARENT>Sales</PARENT>
+      <NUMBERINGMETHOD>Automatic</NUMBERINGMETHOD>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Sales Export" RESERVEDNAME="">
+      <PARENT>Sales</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Cash Sales" RESERVEDNAME="">
+      <PARENT>Sales</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHERTYPE NAME="Bank Payment" RESERVEDNAME="">
+      <PARENT>Payment</PARENT>
+     </VOUCHERTYPE>
+    </TALLYMESSAGE>
+
+    <!-- Cash and banks: a current account, a cash credit (OCC) limit and an overdraft. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Cash" RESERVEDNAME="">
+      <PARENT>Cash-in-Hand</PARENT>
+      <OPENINGBALANCE>-25000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="SBI Current" RESERVEDNAME="">
+      <PARENT>Bank Accounts</PARENT>
+      <OPENINGBALANCE>-2,00,000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="SBI Cash Credit" RESERVEDNAME="">
+      <PARENT>Bank OCC A/c</PARENT>
+      <OPENINGBALANCE>3,00,000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="HDFC Overdraft" RESERVEDNAME="">
+      <PARENT>Bank OD A/c</PARENT>
+      <OPENINGBALANCE>50000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Furniture" RESERVEDNAME="">
+      <PARENT>Fixed Assets</PARENT>
+      <OPENINGBALANCE>-1,00,000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- A debtor in the older layout, bill-wise, with two opening bills. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Kavya Fabrics" RESERVEDNAME="">
+      <ADDRESS.LIST TYPE="String">
+       <ADDRESS>Shop 4, Cloth Market</ADDRESS>
+       <ADDRESS>Bhiwandi</ADDRESS>
+      </ADDRESS.LIST>
+      <PARENT>Sundry Debtors</PARENT>
+      <COUNTRYNAME>India</COUNTRYNAME>
+      <GSTREGISTRATIONTYPE>Regular</GSTREGISTRATIONTYPE>
+      <PARTYGSTIN>27AAKFK1234M1Z5</PARTYGSTIN>
+      <LEDSTATENAME>Maharashtra</LEDSTATENAME>
+      <PINCODE>421302</PINCODE>
+      <INCOMETAXNUMBER>AAKFK1234M</INCOMETAXNUMBER>
+      <BILLCREDITPERIOD JD="45383" P="30 Days">30 Days</BILLCREDITPERIOD>
+      <ISBILLWISEON>Yes</ISBILLWISEON>
+      <OPENINGBALANCE>-1,50,000.00</OPENINGBALANCE>
+      <BILLALLOCATIONS.LIST>
+       <BILLDATE>20240210</BILLDATE>
+       <NAME>OB/101</NAME>
+       <BILLCREDITPERIOD JD="45362" P="30 Days">30 Days</BILLCREDITPERIOD>
+       <ISADVANCE>No</ISADVANCE>
+       <OPENINGBALANCE>-100000.00</OPENINGBALANCE>
+      </BILLALLOCATIONS.LIST>
+      <BILLALLOCATIONS.LIST>
+       <BILLDATE>20240315</BILLDATE>
+       <NAME>OB/102</NAME>
+       <ISADVANCE>No</ISADVANCE>
+       <OPENINGBALANCE>-50000.00</OPENINGBALANCE>
+      </BILLALLOCATIONS.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- A debtor in the newer layout: GST registration and mailing details as dated lists. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Nilgiri Exports" RESERVEDNAME="">
+      <PARENT>Sundry Debtors</PARENT>
+      <ISBILLWISEON>Yes</ISBILLWISEON>
+      <OPENINGBALANCE></OPENINGBALANCE>
+      <LEDGSTREGDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <GSTREGISTRATIONTYPE>Regular</GSTREGISTRATIONTYPE>
+       <PLACEOFSUPPLY>Gujarat</PLACEOFSUPPLY>
+       <GSTIN>24AAGCN5678P1ZO</GSTIN>
+      </LEDGSTREGDETAILS.LIST>
+      <LEDMAILINGDETAILS.LIST>
+       <ADDRESS.LIST TYPE="String">
+        <ADDRESS>Plot 12, Industrial Estate</ADDRESS>
+       </ADDRESS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <PINCODE>380015</PINCODE>
+       <MAILINGNAME>Nilgiri Exports</MAILINGNAME>
+       <STATE>Gujarat</STATE>
+       <COUNTRY>India</COUNTRY>
+      </LEDMAILINGDETAILS.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- A creditor whose opening bills cover only part of its opening balance. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Sahyadri Supplies" RESERVEDNAME="">
+      <PARENT>Sundry Creditors</PARENT>
+      <GSTREGISTRATIONTYPE>Regular</GSTREGISTRATIONTYPE>
+      <PARTYGSTIN>29AABFS4321Q1ZS</PARTYGSTIN>
+      <LEDSTATENAME>Karnataka</LEDSTATENAME>
+      <ISBILLWISEON>Yes</ISBILLWISEON>
+      <OPENINGBALANCE>60000.00</OPENINGBALANCE>
+      <BILLALLOCATIONS.LIST>
+       <BILLDATE>20240301</BILLDATE>
+       <NAME>PB-9</NAME>
+       <ISADVANCE>No</ISADVANCE>
+       <OPENINGBALANCE>40000.00</OPENINGBALANCE>
+      </BILLALLOCATIONS.LIST>
+      <BILLALLOCATIONS.LIST>
+       <BILLDATE>20240320</BILLDATE>
+       <NAME>PB-12</NAME>
+       <BILLCREDITPERIOD>15-Apr-2024</BILLCREDITPERIOD>
+       <ISADVANCE>No</ISADVANCE>
+       <OPENINGBALANCE>15000.00</OPENINGBALANCE>
+      </BILLALLOCATIONS.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- Problem details: a GSTIN with a wrong check character, an unknown state, a short PAN. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Ojas Retail" RESERVEDNAME="">
+      <PARENT>Sundry Debtors</PARENT>
+      <COUNTRYNAME>India</COUNTRYNAME>
+      <PARTYGSTIN>27AAACP9876R1ZB</PARTYGSTIN>
+      <LEDSTATENAME>Gondwana</LEDSTATENAME>
+      <INCOMETAXNUMBER>ABC123</INCOMETAXNUMBER>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Lumen Trading LLC" RESERVEDNAME="">
+      <PARENT>Sundry Debtors</PARENT>
+      <COUNTRYNAME>United Arab Emirates</COUNTRYNAME>
+      <GSTREGISTRATIONTYPE>Unregistered</GSTREGISTRATIONTYPE>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Partners Capital" RESERVEDNAME="">
+      <PARENT>Capital Account</PARENT>
+      <OPENINGBALANCE>65000.00</OPENINGBALANCE>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- Sales and service ledgers with HSN/SAC codes and rates. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Sales Local" RESERVEDNAME="">
+      <PARENT>Sales Accounts</PARENT>
+      <GSTAPPLICABLE>&#4; Applicable</GSTAPPLICABLE>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <HSNCODE>5208</HSNCODE>
+       <TAXABILITY>Taxable</TAXABILITY>
+       <STATEWISEDETAILS.LIST>
+        <STATENAME>&#4; Any</STATENAME>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Central Tax</GSTRATEDUTYHEAD>
+         <GSTRATEVALUATIONTYPE>Based on Value</GSTRATEVALUATIONTYPE>
+         <GSTRATE> 2.50</GSTRATE>
+        </RATEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>State Tax</GSTRATEDUTYHEAD>
+         <GSTRATEVALUATIONTYPE>Based on Value</GSTRATEVALUATIONTYPE>
+         <GSTRATE> 2.50</GSTRATE>
+        </RATEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>
+         <GSTRATEVALUATIONTYPE>Based on Value</GSTRATEVALUATIONTYPE>
+         <GSTRATE> 5</GSTRATE>
+        </RATEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Cess</GSTRATEDUTYHEAD>
+         <GSTRATEVALUATIONTYPE>Not Applicable</GSTRATEVALUATIONTYPE>
+        </RATEDETAILS.LIST>
+       </STATEWISEDETAILS.LIST>
+      </GSTDETAILS.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Freight Charges" RESERVEDNAME="">
+      <PARENT>Indirect Incomes</PARENT>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <HSNCODE>996511</HSNCODE>
+       <STATEWISEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Central Tax</GSTRATEDUTYHEAD>
+         <GSTRATE>9</GSTRATE>
+        </RATEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>State Tax</GSTRATEDUTYHEAD>
+         <GSTRATE>9</GSTRATE>
+        </RATEDETAILS.LIST>
+       </STATEWISEDETAILS.LIST>
+      </GSTDETAILS.LIST>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Purchases" RESERVEDNAME="">
+      <PARENT>Purchase Accounts</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Rate Difference" RESERVEDNAME="">
+      <PARENT>Indirect Incomes</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Bank Charges" RESERVEDNAME="">
+      <PARENT>Indirect Expenses</PARENT>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <!-- GST duty ledgers. CGST serves both sales and purchases; the SGST pair says its side in the name;
+         IGST is used on sales only; the cess ledger is not under Duties & Taxes. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="CGST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+      <TAXTYPE>GST</TAXTYPE>
+      <GSTDUTYHEAD>Central Tax</GSTDUTYHEAD>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Output SGST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+      <TAXTYPE>GST</TAXTYPE>
+      <GSTDUTYHEAD>State Tax</GSTDUTYHEAD>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="Input SGST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+      <TAXTYPE>GST</TAXTYPE>
+      <GSTDUTYHEAD>State Tax</GSTDUTYHEAD>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="IGST" RESERVEDNAME="">
+      <PARENT>Duties &amp; Taxes</PARENT>
+      <TAXTYPE>GST</TAXTYPE>
+      <GSTDUTYHEAD>Integrated Tax</GSTDUTYHEAD>
+     </LEDGER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <LEDGER NAME="GST Cess" RESERVEDNAME="">
+      <PARENT>Current Liabilities</PARENT>
+      <TAXTYPE>GST</TAXTYPE>
+      <GSTDUTYHEAD>Cess</GSTDUTYHEAD>
+     </LEDGER>
+    </TALLYMESSAGE>
+
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="Mtr" RESERVEDNAME="">
+      <ORIGINALNAME>Metres</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+      <DECIMALPLACES>2</DECIMALPLACES>
+     </UNIT>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <UNIT NAME="Nos" RESERVEDNAME="">
+      <ORIGINALNAME>Numbers</ORIGINALNAME>
+      <ISSIMPLEUNIT>Yes</ISSIMPLEUNIT>
+     </UNIT>
+    </TALLYMESSAGE>
+
+    <!-- Stock items: one rate that clashes with Sales Local's for the same HSN, one with a later rate change,
+         one that takes its rate from a GST classification. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Cotton Fabric" RESERVEDNAME="">
+      <PARENT/>
+      <BASEUNITS>Mtr</BASEUNITS>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <HSNCODE>5208</HSNCODE>
+       <TAXABILITY>Taxable</TAXABILITY>
+       <STATEWISEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>
+         <GSTRATE>12</GSTRATE>
+        </RATEDETAILS.LIST>
+       </STATEWISEDETAILS.LIST>
+      </GSTDETAILS.LIST>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Silk Saree" RESERVEDNAME="">
+      <BASEUNITS>Nos</BASEUNITS>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <HSNCODE>5007</HSNCODE>
+       <STATEWISEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>
+         <GSTRATE>12</GSTRATE>
+        </RATEDETAILS.LIST>
+       </STATEWISEDETAILS.LIST>
+      </GSTDETAILS.LIST>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20220101</APPLICABLEFROM>
+       <HSNCODE>5007</HSNCODE>
+       <STATEWISEDETAILS.LIST>
+        <RATEDETAILS.LIST>
+         <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>
+         <GSTRATE>5</GSTRATE>
+        </RATEDETAILS.LIST>
+       </STATEWISEDETAILS.LIST>
+      </GSTDETAILS.LIST>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <STOCKITEM NAME="Gift Box" RESERVEDNAME="">
+      <BASEUNITS>Nos</BASEUNITS>
+      <GSTDETAILS.LIST>
+       <APPLICABLEFROM>20170701</APPLICABLEFROM>
+       <GSTCLASSIFICATIONNAME>Packaging 18</GSTCLASSIFICATIONNAME>
+      </GSTDETAILS.LIST>
+     </STOCKITEM>
+    </TALLYMESSAGE>
+   </REQUESTDATA>
+  </IMPORTDATA>
+ </BODY>
+</ENVELOPE>

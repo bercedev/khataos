@@ -2146,6 +2146,7 @@ mod tests {
                 entries,
                 narration: String::new(),
                 cancelled: false,
+                series: None,
                 stock: Vec::new(),
             };
             self.book.post_voucher(now(), "u", v).unwrap();
@@ -2384,6 +2385,7 @@ mod tests {
             ],
             narration: String::new(),
             cancelled: false,
+            series: None,
             stock: Vec::new(),
         };
         f.book.post_voucher(now(), "u", v).unwrap();

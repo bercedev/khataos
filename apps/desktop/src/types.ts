@@ -343,6 +343,25 @@ export interface ImportSummary {
   godowns_created: number;
   inventory_lines: number;
   skipped: { kind: string; name: string; reason: string }[];
+  /** Posted as cancelled, keeping their numbers. */
+  vouchers_cancelled: number;
+  /** By Tally voucher type; `kind` is the KhataOS type it was posted as (English), null when not imported. */
+  by_type: { name: string; kind: string | null; posted: number; cancelled: number; skipped: number }[];
+  bills: { new_ref: number; against: number; advance: number; on_account: number; opening: number; opening_ledgers: number };
+  gst: { gstins: number; states: number; pans: number; addresses: number; duty_ledgers: number; ledger_classes: number; rates: number };
+  first_date: string | null;
+  last_date: string | null;
+  /** Debit positive; "0.00" when the opening balances agree. */
+  opening_difference: string;
+  balances: { compared: number; matched: number; differences: { name: string; tally: string; khataos: string }[] };
+  /** `kind` is the importer's NoteKind name; `warning`: balances may not match Tally's. */
+  notes: { kind: string; warning: boolean; name: string; detail: string; count: number }[];
+  balance_warnings: number;
+  report_text: string;
+  report_csv: string;
+  /** Counts only: no names, amounts, dates or file names. */
+  shareable_text: string;
+  shareable_csv: string;
   /** The automatic backup taken before importing into a company that already had books. */
   backup: string | null;
 }

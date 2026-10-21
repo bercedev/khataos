@@ -46,7 +46,7 @@ fn relay_never_sees_the_books_and_cannot_be_read_without_the_key() {
         id: VoucherId::new(), kind: VoucherKind::Payment, number: "1".into(),
         date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
         entries: vec![Entry::dr(rent, dec!(98765)), Entry::cr(bank, dec!(98765))],
-        narration: "April".into(), cancelled: false, stock: Vec::new(),
+        narration: "April".into(), cancelled: false, series: None, stock: Vec::new(),
     }).unwrap();
     assert_eq!(sync_sealed(&mut store_a, &mut book_a, &remote, &key).unwrap(), SyncOutcome::Pushed(3));
 
@@ -81,7 +81,7 @@ fn payment(book: &Book, number: &str, amount: rust_decimal::Decimal) -> Voucher 
         id: VoucherId::new(), kind: VoucherKind::Payment, number: number.into(),
         date: NaiveDate::from_ymd_opt(2026, 4, 2).unwrap(),
         entries: vec![Entry::dr(rent, amount), Entry::cr(bank, amount)],
-        narration: String::new(), cancelled: false, stock: Vec::new(),
+        narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
     }
 }
 

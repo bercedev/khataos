@@ -157,6 +157,7 @@ pub fn run() {
             commands::print_window,
             commands::report_csv,
             commands::write_csv,
+            commands::save_import_report,
             commands::get_group,
             commands::alter_group,
             commands::delete_group,

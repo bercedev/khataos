@@ -42,6 +42,7 @@ fn sample() -> Book {
                 entries: vec![Entry::dr(rent, amount), Entry::cr(bank, amount)],
                 narration: narration.into(),
                 cancelled: false,
+                series: None,
                 stock: Vec::new(),
             },
         )

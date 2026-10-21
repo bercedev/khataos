@@ -931,7 +931,7 @@ mod tests {
                 number: "1".into(),
                 date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
                 entries: vec![Entry::dr(rent, dec!(25000)), Entry::cr(bank, dec!(25000))],
-                narration: String::new(), cancelled: false, stock: Vec::new(),
+                narration: String::new(), cancelled: false, series: None, stock: Vec::new(),
             },
         )
         .unwrap();
@@ -1879,6 +1879,7 @@ mod arabic_tests {
                 entries: vec![Entry::dr(rent, dec!(25000)), Entry::cr(bank, dec!(25000))],
                 narration: String::new(),
                 cancelled: false,
+                series: None,
                 stock: Vec::new(),
             },
         )

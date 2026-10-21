@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written sample in the shape of TallyPrime's "Trial Balance" report exported as XML (Export > Current > XML),
+     shown ledger-wise, with one group row. It goes with gst_masters.xml and late_daybook.xml: the closing balances are
+     Tally's full-year figures, so Cash differs where the Day Book export left out April to September.
+     Closing debits are negative, credits positive, in the DSPCLDRAMTA and DSPCLCRAMTA columns. All names are invented. -->
+<ENVELOPE>
+ <DSPACCNAME>
+  <DSPDISPNAME>Cash</DSPDISPNAME>
+ </DSPACCNAME>
+ <DSPACCINFO>
+  <DSPCLDRAMT>
+   <DSPCLDRAMTA>-31250.00</DSPCLDRAMTA>
+  </DSPCLDRAMT>
+  <DSPCLCRAMT>
+   <DSPCLCRAMTA></DSPCLCRAMTA>
+  </DSPCLCRAMT>
+ </DSPACCINFO>
+ <DSPACCNAME>
+  <DSPDISPNAME>Kavya Fabrics</DSPDISPNAME>
+ </DSPACCNAME>
+ <DSPACCINFO>
+  <DSPCLDRAMT>
+   <DSPCLDRAMTA>-1,45,000.00</DSPCLDRAMTA>
+  </DSPCLDRAMT>
+  <DSPCLCRAMT>
+   <DSPCLCRAMTA></DSPCLCRAMTA>
+  </DSPCLCRAMT>
+ </DSPACCINFO>
+ <DSPACCNAME>
+  <DSPDISPNAME>Sundry Creditors</DSPDISPNAME>
+ </DSPACCNAME>
+ <DSPACCINFO>
+  <DSPCLDRAMT>
+   <DSPCLDRAMTA></DSPCLDRAMTA>
+  </DSPCLDRAMT>
+  <DSPCLCRAMT>
+   <DSPCLCRAMTA>60000.00</DSPCLCRAMTA>
+  </DSPCLCRAMT>
+ </DSPACCINFO>
+ <DSPACCNAME>
+  <DSPDISPNAME>Bank Charges</DSPDISPNAME>
+ </DSPACCNAME>
+ <DSPACCINFO>
+  <DSPCLDRAMT>
+   <DSPCLDRAMTA>-250.00</DSPCLDRAMTA>
+  </DSPCLDRAMT>
+  <DSPCLCRAMT>
+   <DSPCLCRAMTA></DSPCLCRAMTA>
+  </DSPCLCRAMT>
+ </DSPACCINFO>
+ <DSPACCNAME>
+  <DSPDISPNAME>Opening Stock</DSPDISPNAME>
+ </DSPACCNAME>
+ <DSPACCINFO>
+  <DSPCLDRAMT>
+   <DSPCLDRAMTA>-1000.00</DSPCLDRAMTA>
+  </DSPCLDRAMT>
+  <DSPCLCRAMT>
+   <DSPCLCRAMTA></DSPCLCRAMTA>
+  </DSPCLCRAMT>
+ </DSPACCINFO>
+</ENVELOPE>

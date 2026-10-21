@@ -15,6 +15,81 @@ use quick_xml::XmlVersion;
 use quick_xml::events::{BytesStart, Event};
 
 use crate::text::{decode, normalize, sanitize, tally_amount, tally_bool, tally_date, tally_qty, tally_rate};
+
+/// One bill allocation (`BILLALLOCATIONS.LIST`): on a voucher's ledger line,
+/// or one bill of a party ledger's opening balance.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TallyBill {
+    /// `BILLTYPE` as written: "New Ref", "Agst Ref", "Advance" or "On
+    /// Account". Empty on a ledger master's opening bills.
+    pub kind: String,
+    /// `NAME`: the bill's reference.
+    pub name: String,
+    /// KhataOS sign, debit positive: from `AMOUNT` on a voucher line, from
+    /// `OPENINGBALANCE` on a ledger master.
+    pub amount: Amount,
+    /// `BILLDATE` (opening bills).
+    pub date: Option<NaiveDate>,
+    /// `BILLCREDITPERIOD` as given: days ("30 Days") or a due date.
+    pub credit_period: Option<String>,
+    /// `ISADVANCE` (opening bills).
+    pub advance: bool,
+}
+
+/// GST details of a ledger or stock item: the latest `GSTDETAILS.LIST` by
+/// `APPLICABLEFROM`.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct TallyGst {
+    /// HSN or SAC code.
+    pub hsn: Option<String>,
+    pub from: Option<NaiveDate>,
+    /// Integrated rate in percent: the IGST rate, or CGST plus SGST when
+    /// only those are given.
+    pub rate: Option<Amount>,
+    /// `TAXABILITY`: "Taxable", "Exempt", "Nil Rated"…
+    pub taxability: Option<String>,
+    /// A GST classification the details come from, when the master names
+    /// one instead of carrying its own rate.
+    pub classification: Option<String>,
+}
+
+/// Party and tax details of a ledger master, read from the direct tags
+/// (Tally.ERP 9 and older TallyPrime) or from the dated
+/// `LEDGSTREGDETAILS.LIST` and `LEDMAILINGDETAILS.LIST` (newer TallyPrime).
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct TallyParty {
+    /// `PARTYGSTIN` (or `GSTIN`).
+    pub gstin: Option<String>,
+    /// `GSTREGISTRATIONTYPE`: "Regular", "Composition", "Consumer", "Unregistered"…
+    pub registration: Option<String>,
+    /// State name (`LEDSTATENAME`, `STATENAME` or `STATE`).
+    pub state: Option<String>,
+    /// `COUNTRYNAME` or `COUNTRY`.
+    pub country: Option<String>,
+    pub address: Vec<String>,
+    pub pincode: Option<String>,
+    /// `INCOMETAXNUMBER`.
+    pub pan: Option<String>,
+    pub phone: Option<String>,
+    pub email: Option<String>,
+    /// A unit or developer in a special economic zone.
+    pub sez: bool,
+    /// `TAXTYPE` of a duty ledger ("GST", "TDS", "Others"…).
+    pub tax_type: Option<String>,
+    /// `GSTDUTYHEAD`: "Integrated Tax", "Central Tax", "State Tax", "Cess"…
+    pub duty_head: Option<String>,
+    /// `BILLCREDITPERIOD`: the party's default credit period.
+    pub credit_period: Option<String>,
+}
+
+/// A closing balance Tally gave: `CLOSINGBALANCE` on a ledger master, or a
+/// row of a Trial Balance exported as XML. KhataOS sign, debit positive.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TallyBalance {
+    /// A ledger's or, in a Trial Balance by group, a group's name.
+    pub name: String,
+    pub closing: Amount,
+}
 use crate::{ImportError, ItemKind, SkipReason, Skipped};
 
 /// A group master.
@@ -38,6 +113,14 @@ pub struct TallyLedger {
     pub reserved: Option<String>,
     /// Opening balance converted to KhataOS sign: debit positive.
     pub opening: Amount,
+    /// The bills the opening balance is made of.
+    pub opening_bills: Vec<TallyBill>,
+    /// Why some opening bills could not be read.
+    pub bill_problem: Option<String>,
+    pub party: TallyParty,
+    pub gst: Option<TallyGst>,
+    /// `CLOSINGBALANCE`, when the export carries it.
+    pub closing: Option<Amount>,
 }
 
 /// A voucher type master; custom types name their base type as `parent`.
@@ -58,6 +141,15 @@ pub struct TallyEntry {
     /// Tally's `ISDEEMEDPOSITIVE`, kept for reference. On ordinary lines
     /// `Some(true)` coincides with a debit.
     pub deemed_positive: Option<bool>,
+    /// Bill-wise allocations of the line.
+    pub bills: Vec<TallyBill>,
+    /// Why some bill allocations could not be read.
+    pub bill_problem: Option<String>,
+    /// `BANKERSDATE` of the line's bank allocation: the date the bank
+    /// cleared it.
+    pub bank_date: Option<NaiveDate>,
+    /// The line carries cost centre or cost category allocations.
+    pub cost_centres: bool,
 }
 
 /// A unit of measure master (`UNIT`).
@@ -105,6 +197,7 @@ pub struct TallyStockItem {
     pub hsn: Option<String>,
     /// `COSTINGMETHOD` ("Avg. Cost", "FIFO", "Last Purchase Cost"…), as given.
     pub costing: Option<String>,
+    pub gst: Option<TallyGst>,
 }
 
 /// A godown master (`GODOWN`). Tally's "Main Location" is not one: it is
@@ -179,6 +272,10 @@ pub struct TallyVoucher {
     pub narration: String,
     pub cancelled: bool,
     pub optional: bool,
+    /// `ISPOSTDATED`: Tally keeps it out of the books until its date.
+    pub post_dated: bool,
+    /// `ACTION="Delete"` or `ISDELETED`: an instruction to delete, not a voucher.
+    pub deleted: bool,
     pub entries: Vec<TallyEntry>,
     pub inventory: Vec<TallyStockLine>,
     /// Why the stock lines cannot be used (an unreadable quantity, rate or
@@ -197,8 +294,12 @@ pub struct TallyData {
     pub stock_items: Vec<TallyStockItem>,
     pub godowns: Vec<TallyGodown>,
     pub vouchers: Vec<TallyVoucher>,
+    /// Rows of a Trial Balance exported as XML, to check the import against.
+    pub balances: Vec<TallyBalance>,
     /// Objects that could not be read (bad amount or date).
     pub rejected: Vec<Skipped>,
+    /// A Trial Balance row's name, waiting for its amounts.
+    pending_balance: Option<String>,
 }
 
 impl TallyData {
@@ -212,6 +313,7 @@ impl TallyData {
         self.stock_items.extend(other.stock_items);
         self.godowns.extend(other.godowns);
         self.vouchers.extend(other.vouchers);
+        self.balances.extend(other.balances);
         self.rejected.extend(other.rejected);
     }
 }
@@ -219,6 +321,9 @@ impl TallyData {
 /// Elements that hold a list of Tally objects.
 const CONTAINERS: &[&str] = &["TALLYMESSAGE", "COLLECTION", "DATA", "REQUESTDATA"];
 const OBJECTS: &[&str] = &["GROUP", "LEDGER", "VOUCHERTYPE", "VOUCHER", "UNIT", "STOCKGROUP", "STOCKITEM", "GODOWN"];
+/// The rows of a report exported as XML (a Trial Balance): a name element
+/// followed by its amounts.
+const REPORT_ROWS: &[&str] = &["DSPACCNAME", "DSPACCINFO"];
 
 /// Tally's default godown and batch; allocations to them carry no detail.
 const DEFAULT_GODOWN: &str = "mainlocation";
@@ -253,8 +358,9 @@ pub fn parse(xml: &[u8]) -> Result<TallyData, ImportError> {
                     return Err(ImportError::NotTallyXml(name));
                 }
                 let starts_object = capture.is_empty()
-                    && OBJECTS.iter().any(|o| name.eq_ignore_ascii_case(o))
-                    && path.last().is_some_and(|p| CONTAINERS.iter().any(|c| p.eq_ignore_ascii_case(c)));
+                    && ((OBJECTS.iter().any(|o| name.eq_ignore_ascii_case(o))
+                        && path.last().is_some_and(|p| CONTAINERS.iter().any(|c| p.eq_ignore_ascii_case(c))))
+                        || REPORT_ROWS.iter().any(|o| name.eq_ignore_ascii_case(o)));
                 if !capture.is_empty() || starts_object {
                     let node = Node { attrs: attributes(e), name, ..Node::default() };
                     capture.push(node);
@@ -441,6 +547,14 @@ impl Node {
 }
 
 fn read_object(node: &Node, data: &mut TallyData) {
+    if node.is("DSPACCNAME") {
+        data.pending_balance = node.text_of("DSPDISPNAME").map(str::to_owned);
+        return;
+    }
+    if node.is("DSPACCINFO") {
+        read_report_row(node, data);
+        return;
+    }
     let (Some(name), aliases) = node.names() else {
         if node.is("VOUCHER") {
             read_voucher(node, data);
@@ -453,13 +567,22 @@ fn read_object(node: &Node, data: &mut TallyData) {
     } else if node.is("LEDGER") {
         let raw = node.text_of("OPENINGBALANCE").unwrap_or("");
         match tally_amount(raw) {
-            Some(opening) => data.ledgers.push(TallyLedger {
-                name,
-                aliases,
-                parent: node.parent_name(),
-                reserved,
-                opening: -opening,
-            }),
+            Some(opening) => {
+                let (opening_bills, bill_problem) = bills(node, "OPENINGBALANCE");
+                let closing = node.text_of("CLOSINGBALANCE").and_then(tally_amount).map(|c| -c);
+                data.ledgers.push(TallyLedger {
+                    name,
+                    aliases,
+                    parent: node.parent_name(),
+                    reserved,
+                    opening: -opening,
+                    opening_bills,
+                    bill_problem,
+                    party: party(node),
+                    gst: gst_details(node),
+                    closing,
+                })
+            }
             None => data.rejected.push(Skipped {
                 kind: ItemKind::Ledger,
                 name,
@@ -502,6 +625,16 @@ fn read_stock_item(node: &Node, name: String, aliases: Vec<String>, data: &mut T
     };
     let raw_qty = node.text_of("OPENINGBALANCE").unwrap_or("");
     let Some((opening_qty, _)) = tally_qty(raw_qty) else {
+        // "5 Box of 10 Nos" or "2 Box 5 Nos": a quantity in a compound unit.
+        let numbers = raw_qty.split_whitespace().filter(|w| w.trim_start_matches('-').starts_with(|c: char| c.is_ascii_digit())).count();
+        if let Some(unit) = node.text_of("BASEUNITS").filter(|_| numbers > 1) {
+            data.rejected.push(Skipped {
+                kind: ItemKind::StockItem,
+                name,
+                reason: SkipReason::CompoundItemUnit(unit.to_owned()),
+            });
+            return;
+        }
         return reject(data, name, raw_qty);
     };
     let raw_value = node.text_of("OPENINGVALUE").unwrap_or("");
@@ -524,7 +657,131 @@ fn read_stock_item(node: &Node, name: String, aliases: Vec<String>, data: &mut T
         godown_detail: node.godown_detail(),
         hsn: hsn_code(node),
         costing: node.text_of("COSTINGMETHOD").map(str::to_owned),
+        gst: gst_details(node),
     });
+}
+
+/// One row of a Trial Balance exported as XML: `DSPACCINFO` after the
+/// `DSPACCNAME` that names it. The closing debit and credit columns
+/// (`DSPCLDRAMTA`, `DSPCLCRAMTA`) are read by column, whatever their sign.
+fn read_report_row(node: &Node, data: &mut TallyData) {
+    let Some(name) = data.pending_balance.take() else { return };
+    let column = |outer: &str, inner: &str| {
+        node.child(outer).and_then(|c| c.text_of(inner)).and_then(tally_amount).map(|a| a.abs())
+    };
+    let (dr, cr) = (column("DSPCLDRAMT", "DSPCLDRAMTA"), column("DSPCLCRAMT", "DSPCLCRAMTA"));
+    if dr.is_none() && cr.is_none() {
+        return;
+    }
+    data.balances.push(TallyBalance { name, closing: dr.unwrap_or_default() - cr.unwrap_or_default() });
+}
+
+/// The child list element dated last by `APPLICABLEFROM` (the last one
+/// listed among equals; undated ones count as earliest).
+fn latest<'a>(node: &'a Node, list: &'a str) -> Option<&'a Node> {
+    node.children(list).max_by_key(|d| d.text_of("APPLICABLEFROM").and_then(tally_date))
+}
+
+/// GST details of a ledger or stock item, `None` when it has none.
+fn gst_details(node: &Node) -> Option<TallyGst> {
+    let details = latest(node, "GSTDETAILS.LIST");
+    let mut rates: Vec<(String, Amount)> = Vec::new();
+    for sw in details.into_iter().flat_map(|d| d.children("STATEWISEDETAILS.LIST")) {
+        for r in sw.children("RATEDETAILS.LIST") {
+            if let (Some(head), Some(rate)) = (r.text_of("GSTRATEDUTYHEAD"), r.text_of("GSTRATE").and_then(tally_amount)) {
+                rates.push((normalize(head), rate.abs()));
+            }
+        }
+    }
+    let rate_of = |heads: &[&str]| rates.iter().find(|(h, _)| heads.contains(&h.as_str())).map(|(_, r)| *r);
+    let igst = rate_of(&["integratedtax", "igst"]);
+    let split = rate_of(&["centraltax", "cgst"]).zip(rate_of(&["statetax", "sgst", "uttax", "utgst", "stateuttax"]));
+    let gst = TallyGst {
+        hsn: details.and_then(|d| d.text_of("HSNCODE")).map(str::to_owned).or_else(|| hsn_code(node)),
+        from: details.and_then(|d| d.text_of("APPLICABLEFROM")).and_then(tally_date),
+        rate: igst.or(split.map(|(c, s)| c + s)),
+        taxability: details.and_then(|d| d.text_of("TAXABILITY")).map(str::to_owned),
+        classification: details
+            .and_then(|d| d.text_of("GSTCLASSIFICATIONNAME"))
+            .or(node.text_of("GSTCLASSIFICATIONNAME"))
+            .filter(|c| normalize(c) != "notapplicable")
+            .map(str::to_owned),
+    };
+    (gst != TallyGst::default()).then_some(gst)
+}
+
+/// Party and tax details of a ledger master.
+fn party(node: &Node) -> TallyParty {
+    let reg = latest(node, "LEDGSTREGDETAILS.LIST");
+    let mail = latest(node, "LEDMAILINGDETAILS.LIST");
+    let first = |tags: &[&str], nodes: &[Option<&Node>]| -> Option<String> {
+        nodes.iter().flatten().find_map(|n| tags.iter().find_map(|t| n.text_of(t))).map(str::to_owned)
+    };
+    let me = Some(node);
+    let address = |n: &Node| -> Vec<String> {
+        n.children("ADDRESS.LIST")
+            .flat_map(|l| l.children("ADDRESS"))
+            .map(|a| a.text.trim().to_owned())
+            .filter(|a| !a.is_empty())
+            .collect()
+    };
+    let mut lines = address(node);
+    if lines.is_empty() {
+        lines = mail.map(address).unwrap_or_default();
+    }
+    let registration = first(&["GSTREGISTRATIONTYPE"], &[me, reg]);
+    let party_type = first(&["GSTPARTYTYPE", "PARTYTYPE", "GSTNATUREOFSUPPLY"], &[me, reg]);
+    let sez = [&registration, &party_type].into_iter().flatten().any(|t| normalize(t).contains("sez"))
+        || node.text_of("ISSEZPARTY").is_some_and(tally_bool);
+    TallyParty {
+        gstin: first(&["PARTYGSTIN", "GSTIN"], &[me, reg]),
+        registration,
+        state: first(&["LEDSTATENAME", "STATENAME", "STATE"], &[me, mail, reg]),
+        country: first(&["COUNTRYNAME", "COUNTRYOFRESIDENCE", "COUNTRY"], &[me, mail]),
+        address: lines,
+        pincode: first(&["PINCODE"], &[me, mail]),
+        pan: first(&["INCOMETAXNUMBER"], &[me]),
+        phone: first(&["LEDGERMOBILE", "LEDGERPHONE"], &[me]),
+        email: first(&["EMAIL"], &[me]),
+        sez,
+        tax_type: first(&["TAXTYPE"], &[me]),
+        duty_head: first(&["GSTDUTYHEAD"], &[me]),
+        credit_period: credit_period(node),
+    }
+}
+
+/// `BILLCREDITPERIOD`: its text, else the `P` attribute Tally also writes.
+fn credit_period(node: &Node) -> Option<String> {
+    let c = node.child("BILLCREDITPERIOD")?;
+    Some(c.text.trim()).filter(|t| !t.is_empty()).or(c.attr("P")).map(str::to_owned)
+}
+
+/// The `BILLALLOCATIONS.LIST` children of a voucher line or ledger master,
+/// with their amounts from `amount_tag`, and why any could not be read.
+fn bills(node: &Node, amount_tag: &str) -> (Vec<TallyBill>, Option<String>) {
+    let mut out = Vec::new();
+    let mut problem = None;
+    for b in node.children("BILLALLOCATIONS.LIST") {
+        let name = b.text_of("NAME").unwrap_or("").to_owned();
+        let kind = b.text_of("BILLTYPE").unwrap_or("").to_owned();
+        let raw = b.text_of(amount_tag).unwrap_or("");
+        if name.is_empty() && kind.is_empty() && raw.is_empty() {
+            continue;
+        }
+        let Some(amount) = tally_amount(raw) else {
+            problem.get_or_insert_with(|| format!("the amount {raw:?} of bill {name:?} is not a number"));
+            continue;
+        };
+        out.push(TallyBill {
+            kind,
+            name,
+            amount: -amount,
+            date: b.text_of("BILLDATE").and_then(tally_date),
+            credit_period: credit_period(b),
+            advance: b.text_of("ISADVANCE").is_some_and(tally_bool),
+        });
+    }
+    (out, problem)
 }
 
 /// The item's HSN/SAC code: `HSNCODE`, else the last one given in
@@ -628,7 +885,21 @@ fn entries_in<'a>(lists: impl Iterator<Item = &'a Node>) -> Result<Vec<TallyEntr
         let raw = e.text_of("AMOUNT").unwrap_or("");
         let amount = tally_amount(raw).ok_or_else(|| raw.to_owned())?;
         let deemed_positive = e.text_of("ISDEEMEDPOSITIVE").map(tally_bool);
-        out.push(TallyEntry { ledger: ledger.to_owned(), amount: -amount, deemed_positive });
+        let (bills, bill_problem) = bills(e, "AMOUNT");
+        let bank_date = e.children("BANKALLOCATIONS.LIST").find_map(|b| b.text_of("BANKERSDATE").and_then(tally_date));
+        let cost_centres = e
+            .children("CATEGORYALLOCATIONS.LIST")
+            .chain(e.children("COSTCENTREALLOCATIONS.LIST"))
+            .any(|c| !c.children.is_empty());
+        out.push(TallyEntry {
+            ledger: ledger.to_owned(),
+            amount: -amount,
+            deemed_positive,
+            bills,
+            bill_problem,
+            bank_date,
+            cost_centres,
+        });
     }
     Ok(out)
 }
@@ -704,6 +975,9 @@ fn read_voucher(node: &Node, data: &mut TallyData) {
         narration: node.text_of("NARRATION").unwrap_or("").to_owned(),
         cancelled: node.text_of("ISCANCELLED").is_some_and(tally_bool),
         optional: node.text_of("ISOPTIONAL").is_some_and(tally_bool),
+        post_dated: node.text_of("ISPOSTDATED").is_some_and(tally_bool),
+        deleted: node.attr("ACTION").is_some_and(|a| a.eq_ignore_ascii_case("delete"))
+            || node.text_of("ISDELETED").is_some_and(tally_bool),
         entries,
         inventory,
         inventory_problem,

@@ -538,7 +538,7 @@ pub(crate) fn group_dto(book: &Book, g: &Group) -> GroupDto {
         primary_name,
         nature: g.nature,
         aliases: g.aliases.clone(),
-        is_cash_or_bank: ancestors(book, Some(g.id)).any(|a| a.is_cash_or_bank),
+        is_cash_or_bank: book.group_is_cash_or_bank(g.id),
         is_party: group_is_party(book, g.id),
     }
 }
@@ -1073,6 +1073,7 @@ fn build_voucher(book: &Book, id: VoucherId, input: &VoucherInput) -> ApiResult<
         entries,
         narration: input.narration.trim().to_owned(),
         cancelled: false,
+        series: None,
         stock,
     })
 }
@@ -1171,6 +1172,9 @@ pub fn alter_voucher(slot: &mut Slot, id: &str, input: VoucherInput) -> ApiResul
         .filter_map(|e| Some((e.ledger, e.bank_date?)))
         .collect();
     let mut voucher = build_voucher(book, id, &input)?;
+    // A voucher keeps its number series (a custom type imported from Tally)
+    // while its type stays the same.
+    voucher.series = old.series.clone().filter(|_| old.kind == voucher.kind);
     // Altering a voucher keeps its bank reconciliation, unless the bank line
     // was removed or the new date is after the bank date.
     for e in &mut voucher.entries {

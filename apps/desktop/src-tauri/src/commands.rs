@@ -520,6 +520,21 @@ pub fn write_csv(app: AppHandle, path: String, contents: String) -> ApiResult<()
     export::write_csv(&path, &contents)
 }
 
+/// Save a Tally import report (full or shareable) as `.csv` or `.txt`.
+#[tauri::command(rename_all = "snake_case")]
+pub fn save_import_report(app: AppHandle, path: String, contents: String) -> ApiResult<()> {
+    // Phones: the save dialog returns a content:// or file:// URI.
+    #[cfg(mobile)]
+    if let Some(uri) = crate::phone_files::uri(&path) {
+        if !crate::phone_files::name_allowed(&uri, &["csv", "txt"]) {
+            return Err("save the report as a .csv or .txt file".into());
+        }
+        return crate::phone_files::write(&app, uri, &contents);
+    }
+    let _ = &app;
+    export::save_import_report(&path, &contents)
+}
+
 #[tauri::command(rename_all = "snake_case")]
 pub fn cancel_voucher(state: State<'_, AppState>, id: String) -> ApiResult<()> {
     api::cancel_voucher(&mut *lock(&state)?, &id)

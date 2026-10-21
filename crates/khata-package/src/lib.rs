@@ -247,7 +247,7 @@ mod tests {
                 date: NaiveDate::from_ymd_opt(2026, 4, 1).unwrap(),
                 entries: vec![Entry::dr(rent, amount), Entry::cr(bank, amount)],
                 narration: String::new(),
-                cancelled: false, stock: Vec::new(),
+                cancelled: false, series: None, stock: Vec::new(),
             },
         )
         .unwrap();
@@ -323,7 +323,7 @@ mod tests {
             date: NaiveDate::from_ymd_opt(2026, 4, 2).unwrap(),
             entries: vec![Entry::dr(rent, dec!(500)), Entry::cr(bank, dec!(5))],
             narration: String::new(),
-            cancelled: false, stock: Vec::new(),
+            cancelled: false, series: None, stock: Vec::new(),
         };
         let mut log = forged.audit().clone();
         log.record(now(), "x", AuditAction::Create, format!("voucher:{}", bad.id.0), None, Some(serde_json::json!(bad)));

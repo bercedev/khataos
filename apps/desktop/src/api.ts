@@ -117,6 +117,8 @@ export const api = {
   printWindow: () => call<void>("print_window"),
   reportCsv: (spec: ReportSpec) => call<string>("report_csv", { spec }),
   writeCsv: (path: string, contents: string) => call<void>("write_csv", { path, contents }),
+  /** Save a Tally import report (full or counts only) as .csv or .txt. */
+  saveImportReport: (path: string, contents: string) => call<void>("save_import_report", { path, contents }),
 
   // Alter / delete masters
   getGroup: (id: string) => call<Group>("get_group", { id }),

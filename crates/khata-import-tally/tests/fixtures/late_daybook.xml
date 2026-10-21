@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written sample in the shape of a TallyPrime "Export > Transactions > Day Book > XML (Data Interchange)" file.
+     Only the second half of the year: vouchers from April to September were not exported.
+     Import together with gst_masters.xml. All names are invented. -->
+<ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>Vouchers</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Saffron Lane Traders</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <!-- The first voucher in the file: the export started in October. -->
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER VCHTYPE="Payment" ACTION="Create">
+      <DATE>20241015</DATE>
+      <VOUCHERTYPENAME>Payment</VOUCHERTYPENAME>
+      <VOUCHERNUMBER>21</VOUCHERNUMBER>
+      <ALLLEDGERENTRIES.LIST>
+       <LEDGERNAME>Bank Charges</LEDGERNAME>
+       <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+       <AMOUNT>-250.00</AMOUNT>
+      </ALLLEDGERENTRIES.LIST>
+      <ALLLEDGERENTRIES.LIST>
+       <LEDGERNAME>Cash</LEDGERNAME>
+       <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+       <AMOUNT>250.00</AMOUNT>
+      </ALLLEDGERENTRIES.LIST>
+     </VOUCHER>
+    </TALLYMESSAGE>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER VCHTYPE="Receipt" ACTION="Create">
+      <DATE>20241102</DATE>
+      <VOUCHERTYPENAME>Receipt</VOUCHERTYPENAME>
+      <VOUCHERNUMBER>30</VOUCHERNUMBER>
+      <ALLLEDGERENTRIES.LIST>
+       <LEDGERNAME>Cash</LEDGERNAME>
+       <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+       <AMOUNT>-5000.00</AMOUNT>
+      </ALLLEDGERENTRIES.LIST>
+      <ALLLEDGERENTRIES.LIST>
+       <LEDGERNAME>Kavya Fabrics</LEDGERNAME>
+       <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+       <AMOUNT>5000.00</AMOUNT>
+       <BILLALLOCATIONS.LIST>
+        <NAME>OB/102</NAME><BILLTYPE>Agst Ref</BILLTYPE><AMOUNT>5000.00</AMOUNT>
+       </BILLALLOCATIONS.LIST>
+      </ALLLEDGERENTRIES.LIST>
+     </VOUCHER>
+    </TALLYMESSAGE>
+   </REQUESTDATA>
+  </IMPORTDATA>
+ </BODY>
+</ENVELOPE>

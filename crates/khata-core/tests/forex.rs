@@ -18,7 +18,7 @@ fn d(m: u32, day: u32) -> NaiveDate {
 }
 
 fn voucher(kind: VoucherKind, number: &str, date: NaiveDate, entries: Vec<Entry>) -> Voucher {
-    Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, stock: Vec::new() }
+    Voucher { id: VoucherId::new(), kind, number: number.into(), date, entries, narration: String::new(), cancelled: false, series: None, stock: Vec::new() }
 }
 
 struct Co {

@@ -156,6 +156,13 @@ pub struct Voucher {
     /// and their lines for the record, but affect no balance or report.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub cancelled: bool,
+    /// A named number series within the voucher type, such as a custom
+    /// voucher type brought over from Tally ("Sales GST", "Cash Sales"),
+    /// each numbered on its own. A number is unique per type, series and
+    /// series period, so two series of one type can each have a "1".
+    /// `None`: the type's own series.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub series: Option<String>,
     /// Stock Journal lines: stock out of (consumed, transferred from) and
     /// into (produced, transferred to) a location, without a ledger.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -206,6 +213,11 @@ impl Voucher {
 
     /// Structural double-entry checks that hold in every country.
     pub fn validate(&self) -> Result<(), VoucherError> {
+        // A cancelled voucher may keep its number without any lines, as
+        // Tally keeps one (its lines are dropped when it is cancelled).
+        if self.cancelled && self.entries.is_empty() && self.stock.is_empty() {
+            return Ok(());
+        }
         if (self.kind == VoucherKind::StockJournal) == self.stock.is_empty() {
             return Err(VoucherError::StockLines);
         }

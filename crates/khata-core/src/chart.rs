@@ -115,6 +115,33 @@ pub struct Ledger {
     /// base currency. `None`: the base currency.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
+    /// The bills the opening balance is made of (invoices and advances from
+    /// before the books begin), so outstandings and ageing start from real
+    /// bills that later vouchers settle by reference. Whatever part of the
+    /// opening balance they don't cover shows as "Opening Balance".
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub opening_bills: Vec<OpeningBill>,
+}
+
+/// Longest reference of an opening bill.
+pub const MAX_BILL_REFERENCE: usize = 100;
+
+/// One bill in a party's opening balance.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OpeningBill {
+    /// The bill's name, usually the invoice number; vouchers settle it with
+    /// an against-reference allocation of the same name.
+    pub reference: String,
+    /// Date the bill was raised, when known.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub date: Option<chrono::NaiveDate>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub due: Option<chrono::NaiveDate>,
+    /// Signed like the opening balance: debit positive (receivable).
+    pub amount: crate::Amount,
+    /// Money received or paid ahead of a bill, rather than a bill.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub advance: bool,
 }
 
 /// Longest PAN-like identifier the core stores.

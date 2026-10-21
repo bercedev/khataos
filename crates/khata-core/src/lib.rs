@@ -22,7 +22,7 @@ pub mod words;
 pub use audit::{AuditAction, AuditEntry, AuditLog};
 pub use book::{Book, BookError, TrialBalanceRow};
 pub use forex::{Currency, Forex};
-pub use chart::{DeducteeKind, Group, GroupId, Ledger, LedgerId, LedgerTax, LedgerTds, Mailing, Nature, TaxSide, TdsTerms};
+pub use chart::{DeducteeKind, Group, GroupId, Ledger, LedgerId, LedgerTax, LedgerTds, Mailing, Nature, OpeningBill, TaxSide, TdsTerms};
 pub use inventory::{Godown, GodownId, Quantity, StockGroup, StockGroupId, StockItem, StockItemId, StockLine, Unit, UnitId};
 pub use numbering::{NumberSeries, Restart};
 pub use profile::{CompanyUser, Profile, UserRole};

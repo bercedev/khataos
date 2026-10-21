@@ -64,7 +64,7 @@ Ranked by the pain a Tally user feels in the first week, then by value for the e
 ### First: protect the data, and make migration complete
 
 1. ~~**Backup and restore**, then **scheduled backups** that keep several versions (D1, D2, D3).~~ Done: see [Backup](guide/backup.md). Next: make the Tally import ready for real company data ([readiness review](research/tally-import-readiness.md)).
-2. **Opening bills on party ledgers, and importing bill allocations from Tally** (M5). Without them, outstandings and ageing are empty after a migration.
+2. **Opening bills on party ledgers, and importing bill allocations from Tally** (M5). The import part is done: bill allocations and opening bills come across from Tally, and Outstandings and Ageing use them (see the [readiness review](research/tally-import-readiness.md)). Next: a screen to enter and edit opening bills on a party ledger by hand.
 3. **Edit-log viewer** (`Alt+Q`) with a version diff, then edit-log summaries (Y7, Y8, S5). The data is already in the trail; auditors need to see it.
 
 ### Daily entry and reports

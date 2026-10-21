@@ -910,4 +910,21 @@ mod tests {
         assert!(r.warnings.iter().any(|w| w.contains("without an HSN/SAC code")), "{:?}", r.warnings);
         assert!(!r.warnings.iter().any(|w| w.contains("party's side")), "round-off is not an adjustment: {:?}", r.warnings);
     }
+
+    /// GST reports see the tax lines of vouchers imported from Tally: the
+    /// importer tags Tally's duty ledgers with their tax and side.
+    #[test]
+    fn gstr3b_counts_tax_on_vouchers_imported_from_tally() {
+        let (_f, mut slot) = indian_company("gst-tally-import");
+        set_company_tax(&mut slot, "27AAJFS2468L1ZM", "").unwrap();
+        let fixtures = concat!(env!("CARGO_MANIFEST_DIR"), "/../../../crates/khata-import-tally/tests/fixtures");
+        let files = [format!("{fixtures}/gst_masters.xml"), format!("{fixtures}/billwise_daybook.xml")];
+        let summary = crate::export::import_tally(&mut slot, &files).unwrap();
+        assert_eq!(summary.vouchers_posted, 8);
+        let r = gstr3b(&slot, "2024-04-01", "2024-05-31").unwrap();
+        // Sales GST 1: CGST and SGST of 600 each; Sales Export 1: IGST of 1,800.
+        assert_eq!((r.output.cgst, r.output.sgst, r.output.igst), (dec!(600), dec!(600), dec!(1800)));
+        // Purchase 1: CGST and SGST of 1,200 each, through a CGST ledger used on both sides.
+        assert_eq!((r.ret.itc.cgst, r.ret.itc.sgst), (dec!(1200), dec!(1200)));
+    }
 }

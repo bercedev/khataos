@@ -1,4 +1,4 @@
-/* KhataOS docs site: brand colours and the download page.
+/* KhataOS docs site: brand colours and the home page hero.
    Colours come from branding/README.md (the app's Ledger theme). */
 
 /* Brand palette for Material (primary: custom, accent: custom). */
@@ -23,199 +23,22 @@
   --md-accent-fg-color: #f2a65a;
 }
 
-/* Download page and home page pieces. */
+/* Home page hero, and the short download page that points to the website. */
 :root {
-  --kd-marigold: #c76a12;
-  --kd-card-bg: #ffffff;
-  --kd-card-border: #d6d3ca;
   --kd-pick-bg: #f5f3ee;
-  --kd-muted: #4f5368;
   --kd-btn-bg: #2b2f77;
   --kd-btn-fg: #ffffff;
   --kd-btn-hover: #3f45a8;
   --kd-focus: #c76a12;
 }
 [data-md-color-scheme="slate"] {
-  --kd-marigold: #f2a65a;
-  --kd-card-bg: #1d1f2b;
-  --kd-card-border: #3b3e55;
   --kd-pick-bg: #23263b;
-  --kd-muted: #b9bccb;
   --kd-btn-bg: #8f96ff;
   --kd-btn-fg: #14151c;
   --kd-btn-hover: #aab0ff;
   --kd-focus: #f2a65a;
 }
 
-.kd-logo p {
-  margin: 0 0 0.5em;
-}
-.kd-logo img {
-  display: block;
-  width: 13em;
-  max-width: 70%;
-  height: auto;
-}
-
-.md-typeset .kd-logo + h1 {
-  margin: 0.2em 0 0.3em;
-  color: var(--md-default-fg-color);
-  font-size: 1.8em;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-.md-typeset .kd-lead {
-  font-size: 1.1em;
-  line-height: 1.5;
-  margin-top: 0;
-}
-@media screen and (max-width: 30em) {
-  .kd-logo img {
-    width: 11em;
-  }
-  .md-typeset .kd-logo + h1 {
-    font-size: 1.5em;
-  }
-}
-
-/* The big buttons. Real links, so they work with scripts off. */
-.md-typeset a.kd-btn {
-  display: block;
-  box-sizing: border-box;
-  min-height: 3rem;
-  padding: 0.8em 1em;
-  border-radius: 0.5em;
-  background: var(--kd-btn-bg);
-  color: var(--kd-btn-fg);
-  font-size: 1.05em;
-  font-weight: 700;
-  line-height: 1.3;
-  text-align: center;
-  text-decoration: none;
-}
-.md-typeset a.kd-btn:hover,
-.md-typeset a.kd-btn:focus {
-  background: var(--kd-btn-hover);
-  color: var(--kd-btn-fg);
-}
-.md-typeset a.kd-btn:focus-visible,
-.md-typeset .kd-card a:focus-visible,
-.md-typeset .kd-hero a:focus-visible {
-  outline: 3px solid var(--kd-focus);
-  outline-offset: 3px;
-}
-
-/* System cards. */
-.md-typeset ul.kd-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15em), 1fr));
-  gap: 1em;
-  margin: 0 0 1em;
-  padding: 0;
-  list-style: none;
-}
-.md-typeset ul.kd-grid > li.kd-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6em;
-  margin: 0;
-  padding: 1em 1.1em 1.1em;
-  border: 1px solid var(--kd-card-border);
-  border-radius: 0.6em;
-  background: var(--kd-card-bg);
-}
-.md-typeset .kd-card p {
-  margin: 0;
-}
-.md-typeset .kd-card .kd-card__title {
-  margin: 0;
-  font-size: 1.2em;
-  font-weight: 700;
-  line-height: 1.3;
-}
-.md-typeset .kd-card__note {
-  flex-grow: 1;
-}
-.md-typeset .kd-card__more,
-.md-typeset .kd-card__alt,
-.md-typeset .kd-small {
-  color: var(--kd-muted);
-  font-size: 0.9em;
-  line-height: 1.5;
-}
-.md-typeset .kd-card__more code {
-  font-size: 0.85em;
-  word-break: break-all;
-}
-.md-typeset .kd-soon {
-  padding: 0.8em 1em;
-  border: 2px dashed var(--kd-card-border);
-  border-radius: 0.5em;
-  color: var(--kd-muted);
-  font-weight: 700;
-  text-align: center;
-}
-
-/* The card for the visitor's device, moved here by download.js. */
-.kd-pick {
-  margin: 1.5em 0 0.5em;
-}
-.md-typeset .kd-pick__label {
-  margin: 0 0 0.4em;
-  font-weight: 700;
-  font-size: 0.95em;
-  letter-spacing: 0.02em;
-  color: var(--kd-muted);
-}
-.md-typeset ul.kd-grid--pick {
-  grid-template-columns: 1fr;
-  max-width: 34em;
-}
-.md-typeset ul.kd-grid > li.kd-card--primary {
-  border: 3px solid var(--kd-marigold);
-  background: var(--kd-pick-bg);
-  padding: 1.2em 1.3em 1.3em;
-}
-.md-typeset .kd-card--primary .kd-card__title {
-  font-size: 1.4em;
-}
-.md-typeset .kd-card--primary a.kd-btn {
-  font-size: 1.25em;
-  padding: 1em;
-}
-.md-typeset h2.kd-others {
-  margin-top: 1.2em;
-}
-
-/* QR code: always dark on white, so phones can read it in dark mode too. */
-.kd-qr {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1em 1.5em;
-  margin: 1.5em 0;
-  padding: 1em;
-  border: 1px solid var(--kd-card-border);
-  border-radius: 0.6em;
-}
-.kd-qr p {
-  margin: 0;
-}
-.md-typeset .kd-qr__img {
-  display: block;
-  width: 164px;
-  height: 164px;
-  background: #ffffff;
-  border-radius: 0.3em;
-}
-.kd-qr__text {
-  flex: 1 1 14em;
-}
-.kd-qr__text p + p {
-  margin-top: 0.4em;
-}
-
-/* Home page hero. */
 .md-typeset .kd-hero {
   margin: 0 0 2em;
   padding: 1.6em 1.2em;
@@ -254,4 +77,21 @@
 .md-typeset .kd-hero a:focus {
   background: var(--kd-btn-hover);
   color: var(--kd-btn-fg);
+}
+
+.md-typeset .kd-hero a:focus-visible {
+  outline: 3px solid var(--kd-focus);
+  outline-offset: 3px;
+}
+/* The second link in the hero: an outlined button. */
+.md-typeset .kd-hero a.kd-alt {
+  margin-left: 0.4em;
+  background: transparent;
+  color: var(--md-typeset-a-color);
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.md-typeset .kd-hero a.kd-alt:hover,
+.md-typeset .kd-hero a.kd-alt:focus {
+  background: var(--md-accent-fg-color--transparent);
+  color: var(--md-typeset-a-color);
 }

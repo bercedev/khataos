@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KhataOS: free, open source accounting that works offline</title>
+<meta name="description" content="Free, open source accounting software that works offline and is built for the keyboard. GST for India, VAT and ZATCA for the Gulf, UK Making Tax Digital. A Tally alternative for Windows, macOS, Linux and Android.">
+<link rel="canonical" href="https://khataos.github.io/khataos/">
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14151c" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KhataOS">
+<meta property="og:title" content="KhataOS: free, open source accounting that works offline">
+<meta property="og:description" content="Accounting at the speed of your keyboard. Your books stay on your device, and the keys Tally users know work here too.">
+<meta property="og:url" content="https://khataos.github.io/khataos/">
+<meta property="og:image" content="https://khataos.github.io/khataos/assets/brand/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="KhataOS: free, open source accounting software that works offline">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KhataOS: free, open source accounting that works offline">
+<meta name="twitter:description" content="Accounting at the speed of your keyboard. Your books stay on your device, and the keys Tally users know work here too.">
+<meta name="twitter:image" content="https://khataos.github.io/khataos/assets/brand/social-preview.png">
+<meta name="twitter:image:alt" content="KhataOS: free, open source accounting software that works offline">
+<link rel="icon" href="assets/brand/favicon-auto.svg" type="image/svg+xml">
+<link rel="icon" href="assets/brand/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="assets/brand/icon-512.png">
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("khataos-theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t)}catch(e){}})();</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "KhataOS",
+  "description": "Free, open source accounting software that works offline and is built for the keyboard: GST for India, VAT and ZATCA e-invoicing for the Gulf, and UK Making Tax Digital.",
+  "url": "https://khataos.github.io/khataos/",
+  "downloadUrl": "https://khataos.github.io/khataos/download/",
+  "image": "https://khataos.github.io/khataos/assets/brand/social-preview.png",
+  "screenshot": "https://khataos.github.io/khataos/images/shots/ledger-light-dashboard.webp",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "Accounting software",
+  "operatingSystem": "Windows 10, Windows 11, macOS, Linux, Android 7.0 or later",
+  "isAccessibleForFree": true,
+  "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+  "codeRepository": "https://github.com/khataos/khataos",
+  "inLanguage": ["en", "ar"],
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "The KhataOS contributors", "url": "https://github.com/khataos/khataos" }
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="./" aria-label="KhataOS home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path class="logo-spine" d="M13,4H17A4,4 0 0 1 21,8V56A4,4 0 0 1 17,60H13A4,4 0 0 1 9,56V8A4,4 0 0 1 13,4Z"/><path class="logo-cover" fill-rule="evenodd" d="M24,8H51A4,4 0 0 1 55,12V52A4,4 0 0 1 51,56H24A1,1 0 0 1 23,55V9A1,1 0 0 1 24,8ZM29.5,41H48.5A0.5,0.5 0 0 1 49,41.5V43.5A0.5,0.5 0 0 1 48.5,44H29.5A0.5,0.5 0 0 1 29,43.5V41.5A0.5,0.5 0 0 1 29.5,41ZM29.5,47H48.5A0.5,0.5 0 0 1 49,47.5V49.5A0.5,0.5 0 0 1 48.5,50H29.5A0.5,0.5 0 0 1 29,49.5V47.5A0.5,0.5 0 0 1 29.5,47Z"/></svg>
+      <span class="wm">Khata<b>OS</b></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <ul>
+        <li><a href="download/">Download</a></li>
+        <li><a href="themes/">Themes</a></li>
+        <li><a href="docs/guide/">Guide</a></li>
+        <li><a href="docs/">Docs</a></li>
+        <li><a href="https://github.com/khataos/khataos"><svg aria-hidden="true"><use href="assets/icons.svg#github"/></svg>GitHub</a></li>
+      </ul>
+    </nav>
+    <div class="header-end">
+      <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme">
+        <svg class="i-moon" aria-hidden="true"><use href="assets/icons.svg#moon"/></svg>
+        <svg class="i-sun" aria-hidden="true"><use href="assets/icons.svg#sun"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm" href="download/">Download</a>
+      <details class="menu">
+        <summary class="icon-btn" aria-label="Menu"><svg aria-hidden="true"><use href="assets/icons.svg#menu"/></svg></summary>
+        <nav class="menu-panel" aria-label="Main">
+          <ul>
+            <li><a href="download/">Download</a></li>
+            <li><a href="themes/">Themes</a></li>
+            <li><a href="docs/guide/">User guide</a></li>
+            <li><a href="docs/">Documentation</a></li>
+            <li><a href="https://github.com/khataos/khataos">GitHub</a></li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================================================ hero -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tags">
+          <span class="tag tag-brand">Free and open source</span>
+          <span class="tag">Alpha</span>
+          <span class="tag">Built in Rust</span>
+          <span class="tag">9 MB on Windows, 25 MB on Mac</span>
+        </div>
+        <h1 id="hero-h" class="display">Accounting at the speed of your <em>keyboard</em>.</h1>
+        <p class="lede">KhataOS is free, open source accounting software that works offline. Your books stay on your device, and the keys Tally users know work here too.</p>
+        <div class="actions">
+          <a class="btn btn-primary btn-lg" href="download/">
+            <svg aria-hidden="true"><use href="assets/icons.svg#download"/></svg>
+            <span data-os-label>Download</span>
+          </a>
+          <a class="btn btn-secondary btn-lg" href="https://github.com/khataos/khataos">
+            <svg aria-hidden="true"><use href="assets/icons.svg#github"/></svg>View on GitHub
+          </a>
+          <a class="btn btn-secondary btn-lg" href="docs/guide/">
+            <svg aria-hidden="true"><use href="assets/icons.svg#book"/></svg>Read the guide
+          </a>
+        </div>
+        <p class="hero-note">For Windows, macOS, Linux and Android. KhataOS is in alpha, so try it on a test company first.</p>
+      </div>
+
+      <div class="keys-card" role="group" aria-labelledby="keys-h">
+        <span class="label" id="keys-h">Keys you already know</span>
+        <ul class="keys-list">
+          <li><kbd>F4</kbd> Contra</li>
+          <li><kbd>F5</kbd> Payment</li>
+          <li><kbd>F6</kbd> Receipt</li>
+          <li><kbd>F7</kbd> Journal</li>
+          <li><kbd>F8</kbd> Sales</li>
+          <li><kbd>F9</kbd> Purchase</li>
+          <li><kbd>Alt+G</kbd> Go To</li>
+          <li><kbd>Ctrl+A</kbd> Save</li>
+        </ul>
+        <p>The same letters on the home menu, too. <a href="docs/guide/keyboard/">See every key</a></p>
+      </div>
+    </div>
+
+    <figure class="showcase">
+      <div class="stage">
+      <div class="frame frame-lg">
+        <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>KhataOS</span></div>
+        <picture>
+          <source data-scheme="dark" media="(prefers-color-scheme: dark)" srcset="images/shots/ledger-dark-dashboard.webp" width="1360" height="820">
+          <img src="images/shots/ledger-light-dashboard.webp" width="1360" height="820" fetchpriority="high" alt="The KhataOS dashboard: cash in hand, bank balance, receivables and payables at the top, with charts of sales and purchases and of money in and out by month">
+        </picture>
+      </div>
+      </div>
+      <figcaption class="caption">The dashboard of an invented demo company, in the default Ledger theme.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================ 01 -->
+<section class="sec" id="why" aria-labelledby="why-h">
+  <div class="wrap">
+    <p class="sec-label eyebrow"><span><span class="num">01</span><span class="sep">/</span>Why KhataOS</span><span class="aside">For small businesses and their accountants</span></p>
+    <div class="sec-head">
+      <h2 id="why-h" class="h2">Accounting that stays <em>yours</em>.</h2>
+      <p class="lede">No subscription, no server you have to trust, no new keys to learn. Open the app and enter your first voucher.</p>
+    </div>
+    <div class="ruled why-grid">
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#offline"/></svg>Works offline</h3>
+        <p>KhataOS is an app on your computer or phone, not a website. Your daily work needs no internet connection.</p>
+      </article>
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#file"/></svg>Your books stay on your device</h3>
+        <p>Each company is one file on your own disk. Nothing leaves it unless you choose to share it.</p>
+      </article>
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#code"/></svg>Free and open source</h3>
+        <p>Licensed under the AGPL. Read every line on GitHub, build it yourself, or help make it better.</p>
+      </article>
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#keyboard"/></svg>Keys Tally users know</h3>
+        <p>Voucher keys, Go To, the home menu letters. Every action has a key, and the mouse and touch work too.</p>
+        <div class="keys-inline" aria-hidden="true"><kbd>F8</kbd><kbd>Alt+G</kbd><kbd>Ctrl+A</kbd><kbd>Esc</kbd></div>
+      </article>
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#chain"/></svg>A history that shows tampering</h3>
+        <p>Every change is a linked entry in a chain of hashes. The trail can't be switched off, and KhataOS checks it each time a company opens.</p>
+      </article>
+      <article class="feature">
+        <h3 class="h3"><svg aria-hidden="true"><use href="assets/icons.svg#share"/></svg>Share without pen drives</h3>
+        <p>Work over the office network, through a relay that only you and your accountant can read, or with a sealed file.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 02 -->
+<section class="sec" id="countries" aria-labelledby="countries-h">
+  <div class="wrap">
+    <p class="sec-label eyebrow"><span><span class="num">02</span><span class="sep">/</span>Built for your country</span><span class="aside">Country packs</span></p>
+    <div class="sec-head">
+      <h2 id="countries-h" class="h2">Tax rules for where you <em>work</em>.</h2>
+      <p class="lede">Each country's rules live in their own pack, and each pack says plainly how far it has been tested.</p>
+    </div>
+
+    <div class="legend" aria-label="What the status tags mean">
+      <div>
+        <span class="tag tag-live"><svg aria-hidden="true"><use href="assets/icons.svg#s-live"/></svg>Tested live</span>
+        <p>Run from start to finish against the authority's official test service.</p>
+      </div>
+      <div>
+        <span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span>
+        <p>The connection is built, and so far tried only against our own server that imitates the published API.</p>
+      </div>
+      <div>
+        <span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span>
+        <p>The app makes the file or return, but it hasn't been checked with the official validator yet.</p>
+      </div>
+    </div>
+
+    <div class="ruled country-grid three">
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">IN</span><h3>India</h3></div>
+        <p>GST with CGST, SGST and IGST from the place of supply. GSTR-1, GSTR-3B and GSTR-2B reconciliation, TDS and TCS, Schedule III, and e-invoice and e-way bill JSON.</p>
+        <ul class="status-list">
+          <li><span>e-Invoice through an IRP</span><span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span></li>
+          <li><span>GSTR-1, e-invoice, e-way bill and TDS files</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/gst-india/">GST, TDS and TCS guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">AE</span><h3>United Arab Emirates</h3></div>
+        <p>TRN checks, 5% VAT, the VAT 201 return and PINT AE e-invoices.</p>
+        <ul class="status-list">
+          <li><span>Peppol Access Point</span><span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span></li>
+          <li><span>PINT AE XML</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/vat-gulf/">UAE and Saudi VAT guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">SA</span><h3>Saudi Arabia</h3></div>
+        <p>15% VAT, the VAT return, invoices in English and Arabic, and ZATCA Phase 2 e-invoices with the hash chain, QR code and stamp.</p>
+        <ul class="status-list">
+          <li><span>ZATCA onboarding, clearance and reporting</span><span class="tag tag-live"><svg aria-hidden="true"><use href="assets/icons.svg#s-live"/></svg>Tested live</span>
+            <span class="note">On the sandbox in ZATCA's developer portal. Simulation and production need a real taxpayer's OTP.</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/vat-gulf/">UAE and Saudi VAT guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">GB</span><h3>United Kingdom</h3></div>
+        <p>VAT at 20%, 5% and 0%, reverse charge, VAT schemes and the 9 box VAT return.</p>
+        <ul class="status-list">
+          <li><span>Making Tax Digital submission</span><span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span>
+            <span class="note">A live test needs a registered HMRC developer application.</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/uk/">UK VAT guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">SG</span><h3>Singapore</h3></div>
+        <p>GST with its rate history, the GST F5 return and PINT SG e-invoices for InvoiceNow.</p>
+        <ul class="status-list">
+          <li><span>InvoiceNow Access Point</span><span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span></li>
+          <li><span>PINT SG XML</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/singapore/">Singapore GST guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">EU</span><h3>Germany, France, Netherlands, Spain</h3></div>
+        <p>Tax ID checks, rates and reverse charge. UStVA, CA3, the aangifte and modelo 303, with XRechnung, Factur-X and VeriFactu records. Nothing is sent to the tax office.</p>
+        <ul class="status-list">
+          <li><span>Returns and e-invoice files</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/europe/">Europe guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">US</span><h3>United States</h3></div>
+        <p>Sales tax from the jurisdictions you set up, a nexus warning, use tax, exemption certificates and the Form 1099 list.</p>
+        <ul class="status-list">
+          <li><span>Sales tax figures</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/us/">US guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">MX</span><h3>Mexico</h3></div>
+        <p>IVA and withholdings, CFDI 4.0 with the CSD seal, payment receipts and a monthly IVA summary.</p>
+        <ul class="status-list">
+          <li><span>PAC stamping</span><span class="tag tag-test"><svg aria-hidden="true"><use href="assets/icons.svg#s-test"/></svg>Test server only</span></li>
+          <li><span>CFDI XML</span><span class="tag tag-val"><svg aria-hidden="true"><use href="assets/icons.svg#s-val"/></svg>Needs official validation</span></li>
+        </ul>
+        <a class="link-arrow" href="docs/guide/mexico/">Mexico guide</a>
+      </article>
+      <article class="country">
+        <div class="country-head"><span class="cc" aria-hidden="true">+</span><h3>Your country next</h3></div>
+        <p>India, the UAE, Saudi Arabia, Singapore and the UK are the launch markets. The other packs are less mature. Every tax rule cites an official source, and you can help check them.</p>
+        <a class="link-arrow" href="https://github.com/khataos/khataos/issues/new/choose">Report a wrong tax rule</a>
+      </article>
+    </div>
+    <p class="disclaimer">All figures are a preparation aid. Check them with your accountant before you file.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 03 -->
+<section class="sec" id="themes" aria-labelledby="themes-h">
+  <div class="wrap">
+    <p class="sec-label eyebrow"><span><span class="num">03</span><span class="sep">/</span>Themes</span><span class="aside">Seven themes, light and dark</span></p>
+    <div class="sec-head">
+      <h2 id="themes-h" class="h2">A look for every <em>desk</em>.</h2>
+      <p class="lede">Pick a theme in the app with <span class="nw"><kbd>Ctrl+K</kbd>, then</span> Theme. Every one comes in light and dark, and every one meets WCAG 2.2 AA contrast.</p>
+    </div>
+
+    <div class="tswitch" data-switcher>
+      <ul class="tlist" aria-label="Themes">
+        <li><a class="tbtn" href="themes/#ledger" aria-pressed="true" data-t="ledger" data-file="ledger" data-name="Ledger" data-aud="For everyone" data-why="Indigo and marigold on warm paper: the brand palette, and the theme KhataOS starts with."><span class="swatch" aria-hidden="true"><i style="background:#2b2f77"></i><i style="background:#c76a12"></i><i style="background:#f5f3ee"></i></span><span class="tb-text">Ledger<small>For everyone</small></span></a></li>
+        <li><a class="tbtn" href="themes/#chartered" data-t="chartered" data-file="chartered" data-name="Chartered" data-aud="For chartered accountants and auditors" data-why="Navy ink, red ink accents, serif report titles and hairline rules, so a Trial Balance reads like a signed statement."><span class="swatch" aria-hidden="true"><i style="background:#1b2a4a"></i><i style="background:#9b2226"></i><i style="background:#fbfaf7"></i></span><span class="tb-text">Chartered<small>For accountants and auditors</small></span></a></li>
+        <li><a class="tbtn" href="themes/#executive" data-t="executive" data-file="executive" data-name="Executive" data-aud="For owners and directors" data-why="Graphite with a quiet brass accent and larger key figures. Numbers first, less chrome."><span class="swatch" aria-hidden="true"><i style="background:#1e2125"></i><i style="background:#9c7b3c"></i><i style="background:#f4f4f2"></i></span><span class="tb-text">Executive<small>For owners and directors</small></span></a></li>
+        <li><a class="tbtn" href="themes/#terminal" data-t="terminal" data-file="terminal" data-name="Terminal" data-aud="For finance and tech enthusiasts" data-why="Dense, with monospace figures that line up digit for digit. Blue for up and orange for down."><span class="swatch" aria-hidden="true"><i style="background:#11151a"></i><i style="background:#0e7c74"></i><i style="background:#f6f7f8"></i></span><span class="tb-text">Terminal<small>For finance and tech enthusiasts</small></span></a></li>
+        <li><a class="tbtn" href="themes/#fresh" data-t="fresh" data-file="fresh" data-name="Fresh" data-aud="For young people and first businesses" data-why="Violet with a coral accent and rounder corners. Friendly, and still smart enough to show a client."><span class="swatch" aria-hidden="true"><i style="background:#4b2fd6"></i><i style="background:#e8466f"></i><i style="background:#f8f6ff"></i></span><span class="tb-text">Fresh<small>For first businesses</small></span></a></li>
+        <li><a class="tbtn" href="themes/#comfort" data-t="comfort" data-file="comfort" data-name="Comfort" data-aud="For long days and low vision" data-why="Text and rows 20% larger, AAA contrast for body text, a thicker focus ring and a pale yellow cursor row."><span class="swatch" aria-hidden="true"><i style="background:#17357f"></i><i style="background:#a84600"></i><i style="background:#fff0c2"></i></span><span class="tb-text">Comfort<small>For long days and low vision</small></span></a></li>
+        <li><a class="tbtn" href="themes/#regional" data-t="regional" data-file="regional-in" data-name="Regional" data-aud="For companies that want local colours" data-why="Four palettes drawn from local materials, not flags: India, the Gulf, the UK, and East Asia with Singapore. This is India."><span class="swatch" aria-hidden="true"><i style="background:#1a2f6e"></i><i style="background:#0a4a38"></i><i style="background:#b07a00"></i></span><span class="tb-text">Regional<small>India, Gulf, UK, East Asia</small></span></a></li>
+      </ul>
+
+      <div class="tview" data-modes>
+        <div class="tview-top">
+          <div>
+            <h3 data-tv-name>Ledger</h3>
+            <span class="aud" data-tv-aud>For everyone</span>
+          </div>
+          <div class="seg js-only" role="group" aria-label="Colour mode of the screenshot">
+            <button type="button" data-mode="light" aria-pressed="true"><svg aria-hidden="true"><use href="assets/icons.svg#sun"/></svg>Light</button>
+            <button type="button" data-mode="dark" aria-pressed="false"><svg aria-hidden="true"><use href="assets/icons.svg#moon"/></svg>Dark</button>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <picture>
+            <source data-scheme="dark" media="(prefers-color-scheme: dark)" srcset="images/shots/ledger-dark-home.webp" width="1360" height="820">
+            <img class="fade-swap" data-tv-img src="images/shots/ledger-light-home.webp" width="1360" height="820" loading="lazy" decoding="async"
+                 data-light="images/shots/ledger-light-home.webp" data-dark="images/shots/ledger-dark-home.webp"
+                 data-alt-light="KhataOS home screen in the Ledger theme, light mode, with the company summary and the keyboard menu"
+                 data-alt-dark="KhataOS home screen in the Ledger theme, dark mode, with the company summary and the keyboard menu"
+                 alt="KhataOS home screen in the Ledger theme, with the company summary and the keyboard menu">
+          </picture>
+        </div>
+        <p class="tview-why" data-tv-why aria-live="polite">Indigo and marigold on warm paper: the brand palette, and the theme KhataOS starts with.</p>
+        <p><a class="link-arrow" data-tv-link href="themes/">See every theme up close</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 04 -->
+<section class="sec" id="everywhere" aria-labelledby="every-h">
+  <div class="wrap">
+    <p class="sec-label eyebrow"><span><span class="num">04</span><span class="sep">/</span>Everywhere</span><span class="aside">Rust inside, small on disk</span></p>
+    <div class="every">
+      <div>
+        <div class="sec-head">
+          <h2 id="every-h" class="h2">One small app on every <em>device</em>.</h2>
+          <p class="lede">KhataOS is written in Rust and uses the web view your system already has, so it ships no browser of its own. That keeps it small and quick to start. The same books and the same keys work on your computer and your phone; on a phone you get a touch layout with a drawer of function keys.</p>
+        </div>
+        <ul class="ruled platforms" aria-label="Platforms">
+          <li class="platform"><svg aria-hidden="true"><use href="assets/icons.svg#windows"/></svg><div><strong>Windows</strong><span>Windows 10 or 11 · 8.6 MB installer</span></div></li>
+          <li class="platform"><svg aria-hidden="true"><use href="assets/icons.svg#apple"/></svg><div><strong>macOS</strong><span>Apple silicon and Intel · 25 MB, one file for both</span></div></li>
+          <li class="platform"><svg aria-hidden="true"><use href="assets/icons.svg#linux"/></svg><div><strong>Linux</strong><span>AppImage, .deb or .rpm · 13 MB package</span></div></li>
+          <li class="platform"><svg aria-hidden="true"><use href="assets/icons.svg#android"/></svg><div><strong>Android</strong><span>Android 7 or later</span></div></li>
+          <li class="platform later"><svg aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><div><strong>iPhone and iPad</strong><span>Developers can build it from source today</span><span class="tag">Coming later</span></div></li>
+        </ul>
+        <dl class="stats" aria-label="Size and speed">
+          <div><dt>8.6 MB</dt><dd>Windows installer</dd></div>
+          <div><dt>25 MB</dt><dd>Mac app, Apple silicon and Intel in one</dd></div>
+          <div><dt>0.5 s</dt><dd>to open a company with 50,000 vouchers</dd></div>
+          <div><dt>Rust</dt><dd>engine, with Tauri for the window</dd></div>
+        </dl>
+        <p class="stats-note">Sizes are for v0.1.0 alpha. Speed measured on an Apple silicon Mac.</p>
+        <p style="margin-top:24px"><a class="link-arrow" href="download/">Get KhataOS for your device</a></p>
+      </div>
+      <figure class="phone-pair">
+        <div>
+          <div class="phone">
+            <picture>
+              <source data-scheme="dark" media="(prefers-color-scheme: dark)" srcset="images/shots/ledger-dark-phone-home.webp" width="780" height="1688">
+              <img src="images/shots/ledger-light-phone-home.webp" width="780" height="1688" loading="lazy" decoding="async" alt="KhataOS on a phone: the company summary with the keyboard menu below it, and Back, calculator and function key buttons along the top">
+            </picture>
+          </div>
+          <figcaption class="caption">KhataOS on an Android phone.</figcaption>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 05 -->
+<section class="sec" id="principles" aria-labelledby="principles-h">
+  <div class="wrap">
+    <p class="sec-label eyebrow"><span><span class="num">05</span><span class="sep">/</span>Principles</span><span class="aside">What we hold to</span></p>
+    <div class="sec-head">
+      <h2 id="principles-h" class="h2">Plain rules, kept in the <em>open</em>.</h2>
+    </div>
+    <div class="ruled principles">
+      <article class="principle">
+        <h3>Your data is yours</h3>
+        <p>Your books live in a file on your device. Nothing is sent anywhere unless you choose to share your books or send a report.</p>
+      </article>
+      <article class="principle">
+        <h3>Honest about status</h3>
+        <p>We say what is tested live, what isn't, and what's missing. The roadmap lists all of it.</p>
+      </article>
+      <article class="principle">
+        <h3>Rules from the source</h3>
+        <p>Each country's rules live in their own pack, and every tax rule cites an official source.</p>
+      </article>
+      <article class="principle">
+        <h3>Built in a clean room</h3>
+        <p>KhataOS reproduces the behaviour accountants rely on, like the keys and the workflow. It copies no code, screens or text.</p>
+      </article>
+      <article class="principle">
+        <h3>Readable by everyone</h3>
+        <p>Every theme meets WCAG 2.2 AA contrast in light and dark, and a script checks every colour pair.</p>
+      </article>
+      <article class="principle">
+        <h3>Free for good</h3>
+        <p>The AGPL lets you use, study, change and share KhataOS. Anyone who runs a changed version as a service must share the changes.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ Tally -->
+<section class="sec" id="tally" aria-labelledby="tally-h">
+  <div class="wrap">
+    <div class="band">
+      <div>
+        <h2 id="tally-h" class="h2">Coming from Tally?</h2>
+        <p><strong>Your habits come with you.</strong> Most everyday keys work as you expect. Import your masters and vouchers from Tally's XML export, and read what works differently, and what isn't there yet, before your first week.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="docs/guide/coming-from-tally/">Read Coming from Tally</a>
+          <a class="btn btn-secondary" href="docs/guide/import-from-tally/">Import your data</a>
+        </div>
+      </div>
+      <div class="band-keys" aria-label="Keys that work the same">
+        <div><kbd>F8</kbd><span>Sales</span></div>
+        <div><kbd>F9</kbd><span>Purchase</span></div>
+        <div><kbd>Ctrl+H</kbd><span>Change mode</span></div>
+        <div><kbd>Alt+G</kbd><span>Go To</span></div>
+        <div><kbd>Alt+X</kbd><span>Cancel voucher</span></div>
+        <div><kbd>Alt+F2</kbd><span>Period</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ closing -->
+<section class="sec" aria-labelledby="try-h">
+  <div class="wrap closing">
+    <h2 id="try-h" class="h2">Try it on a test company.</h2>
+    <p class="lede">KhataOS is in alpha. Enter a few days of vouchers, compare the reports, and tell us what breaks.</p>
+    <div class="actions">
+      <a class="btn btn-primary btn-lg" href="download/"><svg aria-hidden="true"><use href="assets/icons.svg#download"/></svg><span data-os-label>Download</span></a>
+      <a class="btn btn-secondary btn-lg" href="https://github.com/khataos/khataos/issues/new/choose">Report a problem</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="./" aria-label="KhataOS home">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path class="logo-spine" d="M13,4H17A4,4 0 0 1 21,8V56A4,4 0 0 1 17,60H13A4,4 0 0 1 9,56V8A4,4 0 0 1 13,4Z"/><path class="logo-cover" fill-rule="evenodd" d="M24,8H51A4,4 0 0 1 55,12V52A4,4 0 0 1 51,56H24A1,1 0 0 1 23,55V9A1,1 0 0 1 24,8ZM29.5,41H48.5A0.5,0.5 0 0 1 49,41.5V43.5A0.5,0.5 0 0 1 48.5,44H29.5A0.5,0.5 0 0 1 29,43.5V41.5A0.5,0.5 0 0 1 29.5,41ZM29.5,47H48.5A0.5,0.5 0 0 1 49,47.5V49.5A0.5,0.5 0 0 1 48.5,50H29.5A0.5,0.5 0 0 1 29,49.5V47.5A0.5,0.5 0 0 1 29.5,47Z"/></svg>
+          <span class="wm">Khata<b>OS</b></span>
+        </a>
+        <p>Free, open source accounting that works offline. Built in the open by its contributors.</p>
+      </div>
+      <nav class="foot-col" aria-labelledby="f-product">
+        <h2 id="f-product">Product</h2>
+        <ul>
+          <li><a href="download/">Download</a></li>
+          <li><a href="themes/">Themes</a></li>
+          <li><a href="docs/roadmap/">Roadmap</a></li>
+          <li><a href="https://github.com/khataos/khataos/releases">Releases</a></li>
+          <li><a href="https://github.com/khataos/khataos">Source code</a></li>
+        </ul>
+      </nav>
+      <nav class="foot-col" aria-labelledby="f-docs">
+        <h2 id="f-docs">Docs</h2>
+        <ul>
+          <li><a href="docs/guide/">User guide</a></li>
+          <li><a href="docs/guide/install/">Install</a></li>
+          <li><a href="docs/guide/coming-from-tally/">Coming from Tally</a></li>
+          <li><a href="docs/guide/keyboard/">Keyboard</a></li>
+          <li><a href="docs/guide/faq/">FAQ</a></li>
+        </ul>
+      </nav>
+      <nav class="foot-col" aria-labelledby="f-community">
+        <h2 id="f-community">Community</h2>
+        <ul>
+          <li><a href="https://github.com/khataos/khataos/issues/new/choose">Report a problem</a></li>
+          <li><a href="docs/testing/">Tester guide</a></li>
+          <li><a href="https://github.com/khataos/khataos/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          <li><a href="https://github.com/khataos/khataos/blob/main/CODE_OF_CONDUCT.md">Code of conduct</a></li>
+          <li><a href="https://github.com/khataos/khataos/blob/main/SECURITY.md">Security</a></li>
+        </ul>
+      </nav>
+      <nav class="foot-col" aria-labelledby="f-legal">
+        <h2 id="f-legal">Legal</h2>
+        <ul>
+          <li><a href="https://github.com/khataos/khataos/blob/main/LICENSE">Licence: AGPL-3.0</a></li>
+          <li><a href="#trademarks">Trademarks</a></li>
+          <li><a href="assets/fonts/OFL.txt">Font licence</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="foot-legal">
+      <p>Copyright © 2026 the KhataOS contributors. KhataOS is free software under the GNU Affero General Public License v3.0 or later. This site sets no cookies and uses no trackers.</p>
+      <p id="trademarks">"Tally", "TallyPrime" and "Tally.ERP 9" are trademarks of Tally Solutions Pvt. Ltd. KhataOS is an independent project, not affiliated with, endorsed by or sponsored by Tally Solutions. The names are used only to describe compatibility, such as the key map and data import. Other product and authority names belong to their owners.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>

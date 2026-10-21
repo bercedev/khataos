@@ -9,7 +9,7 @@ description: "Documentation for KhataOS, free open source accounting software fo
 
 **Open source accounting that works offline.**
 
-[Download KhataOS](download.md)
+[Download KhataOS](https://khataos.github.io/khataos/download/) [Visit the website](https://khataos.github.io/khataos/){ .kd-alt }
 
 </div>
 
@@ -23,7 +23,7 @@ KhataOS is free, open source accounting software. It works offline, keeps your b
 
 The **[user guide](guide/README.md)** has short pages, one for each task, with the exact keys:
 
-- Getting started: [Download](download.md) · [Install](guide/install.md) · [Your first company](guide/first-company.md) · [Coming from Tally](guide/coming-from-tally.md) · [Keyboard](guide/keyboard.md)
+- Getting started: [Download](https://khataos.github.io/khataos/download/) · [Install](guide/install.md) · [Your first company](guide/first-company.md) · [Coming from Tally](guide/coming-from-tally.md) · [Keyboard](guide/keyboard.md)
 - Everyday work: [Masters](guide/masters.md) · [Vouchers](guide/vouchers.md) · [Reports](guide/reports.md) · [Invoices](guide/invoices.md) · [Desk](guide/desk.md) · [Calculator](guide/calculator.md)
 - Countries: [India](guide/gst-india.md) · [UAE and Saudi Arabia](guide/vat-gulf.md) · [UK](guide/uk.md) · [Singapore](guide/singapore.md) · [Germany, France, Netherlands, Spain](guide/europe.md) · [US](guide/us.md) · [Mexico](guide/mexico.md)
 - Working with others: [Sharing](guide/sharing.md) · [Import from Tally](guide/import-from-tally.md)
@@ -81,7 +81,7 @@ Background studies in `docs/research/`. They are planning inputs, written at a p
 
 ## The docs site
 
-The docs can be published as a website with [MkDocs](https://www.mkdocs.org) and the Material theme. The configuration is [`mkdocs.yml`](../mkdocs.yml) at the repository root, and [`.github/workflows/docs.yml`](../.github/workflows/docs.yml) builds the site on every push to `main` that touches the docs, and on pull requests.
+The docs are published with [MkDocs](https://www.mkdocs.org) and the Material theme, under `/docs/` of the KhataOS website. The configuration is [`mkdocs.yml`](../mkdocs.yml) at the repository root. The website itself (the home page, the download page and the themes gallery) is plain HTML in [`website/`](https://github.com/khataos/khataos/tree/main/website). [`.github/workflows/docs.yml`](../.github/workflows/docs.yml) builds both on every push to `main` that touches them, and on pull requests: MkDocs goes into `docs/` of the Pages artifact, and `website/` is copied to its root.
 
 **Publishing is off until a maintainer enables it in the repository settings:**
 
@@ -98,4 +98,15 @@ python3 -m venv .venv
 .venv/bin/mkdocs serve
 ```
 
-Then open http://127.0.0.1:8000. Links to source files outside `docs/` work on GitHub but not on the site.
+Then open http://127.0.0.1:8000/khataos/docs/. Links to source files outside `docs/` work on GitHub but not on the site.
+
+To preview the whole site as GitHub Pages serves it, with the website at the root and the docs under `/docs/`:
+
+```sh
+.venv/bin/mkdocs build --strict
+cp -R website/. site/
+mkdir -p /tmp/pages && rm -rf /tmp/pages/khataos && cp -R site /tmp/pages/khataos
+python3 -m http.server -d /tmp/pages 8000
+```
+
+Then open http://127.0.0.1:8000/khataos/.

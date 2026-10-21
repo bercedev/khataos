@@ -1,17 +1,25 @@
 name: docs
 
-# Builds the docs site (mkdocs.yml) on every push to main and on pull
-# requests that touch the docs. Publishing to GitHub Pages is off until a
-# maintainer turns it on (see docs/README.md, "The docs site"):
+# Builds the GitHub Pages site on every push to main and on pull requests that
+# touch it:
+#   website/          the home page, download page and themes gallery (plain
+#                     HTML, copied as it is) at the root of the site;
+#   docs/, mkdocs.yml the MkDocs documentation, built into docs/ of the site.
+# So https://khataos.github.io/khataos/ is the website,
+# https://khataos.github.io/khataos/download/ the download page (the QR code
+# and README.md link to it), and https://khataos.github.io/khataos/docs/ the docs.
+#
+# Publishing to GitHub Pages is off until a maintainer turns it on (see
+# docs/README.md, "The docs site"):
 #   1. Settings → Pages → Build and deployment → Source: GitHub Actions.
 #   2. Settings → Secrets and variables → Actions → Variables: DOCS_PAGES = true.
 
 on:
   push:
     branches: [main]
-    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+    paths: ["docs/**", "website/**", "mkdocs.yml", ".github/workflows/docs.yml"]
   pull_request:
-    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+    paths: ["docs/**", "website/**", "mkdocs.yml", ".github/workflows/docs.yml"]
   workflow_dispatch:
 
 permissions:
@@ -30,7 +38,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install mkdocs-material==9.5.49
-      - run: mkdocs build
+      # mkdocs.yml sets site_dir: site/docs.
+      - name: Build the docs into site/docs
+        run: mkdocs build --strict
+      - name: Copy the website to the root of the site
+        run: |
+          set -euo pipefail
+          test -f site/docs/index.html
+          cp -R website/. site/
+          # The website's own pages must be in place.
+          for f in index.html download/index.html themes/index.html sitemap.xml robots.txt 404.html; do
+            test -f "site/$f" || { echo "::error::website/$f is missing"; exit 1; }
+          done
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request' && vars.DOCS_PAGES == 'true'
         with:

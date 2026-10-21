@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sitemap index: the website pages, and the docs sitemap that MkDocs writes. -->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://khataos.github.io/khataos/sitemap-pages.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://khataos.github.io/khataos/docs/sitemap.xml</loc>
+  </sitemap>
+</sitemapindex>

@@ -11,6 +11,8 @@ It works like TallyPrime and uses the same keys, so it makes an easy Tally alter
 
 > **Status: alpha.** Don't use it for your only set of books yet. Try it on a test company and [tell us what breaks](#try-it-and-report-issues).
 
+**Website:** [khataos.github.io/khataos](https://khataos.github.io/khataos/), with the [download page](https://khataos.github.io/khataos/download/), the [themes](https://khataos.github.io/khataos/themes/) and the [documentation](https://khataos.github.io/khataos/docs/).
+
 **New here?** Read the [user guide](docs/guide/README.md): [install](docs/guide/install.md), [create your first company](docs/guide/first-company.md), and, if you use Tally today, [coming from Tally](docs/guide/coming-from-tally.md).
 
 ## Download
@@ -177,7 +179,7 @@ Please don't report vulnerabilities in public issues. Use [GitHub's private vuln
 
 ## Docs
 
-All the documentation is listed in [`docs/README.md`](docs/README.md).
+All the documentation is listed in [`docs/README.md`](docs/README.md), and published at [khataos.github.io/khataos/docs](https://khataos.github.io/khataos/docs/).
 
 - [User guide](docs/guide/README.md): short pages for every screen and task, with the exact keys. Start with [Coming from Tally](docs/guide/coming-from-tally.md) if you know TallyPrime.
 - [Key reference](docs/guide/keyboard.md): every key, generated from the key map.

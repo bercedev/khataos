@@ -20,6 +20,33 @@
         ],
         "createdAt": "2026-10-20T14:34:05.772Z",
         "reason": "Claude (agent) decided: .pick-row / .home-item inline-start 3px bar is the keyboard list-cursor marker on the selected row (same sanctioned exception as sharing.css .cfg-row.cur); now written with logical border-inline-start for RTL; functional, not a decorative card side-tab"
+      },
+      {
+        "rule": "overused-font",
+        "value": "*",
+        "files": [
+          "website/**"
+        ],
+        "createdAt": "2026-10-21T10:35:59.152Z",
+        "reason": "Claude (agent) decided: Inter is the KhataOS brand typeface (branding/README.md: wordmark and UI text use Inter, OFL), required by the brief"
+      },
+      {
+        "rule": "numbered-section-labels",
+        "value": "*",
+        "files": [
+          "website/**"
+        ],
+        "createdAt": "2026-10-21T10:35:59.195Z",
+        "reason": "Claude (agent) decided: the 01/02/03 numbered section rhythm was explicitly requested by the user for the website"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "website/**"
+        ],
+        "createdAt": "2026-10-21T10:59:33.549Z",
+        "reason": "Claude (agent) decided: paper #f5f3ee is the KhataOS brand background (branding/README.md palette, the app's Ledger --bg), required by the brief"
       }
     ]
   }

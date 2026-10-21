@@ -1,0 +1,7 @@
+# KhataOS website and docs (GitHub Pages). Crawlers read robots.txt only at the
+# root of a host, so this file takes effect once the site has its own domain.
+User-agent: *
+Allow: /
+
+Sitemap: https://khataos.github.io/khataos/sitemap.xml
+Sitemap: https://khataos.github.io/khataos/docs/sitemap.xml

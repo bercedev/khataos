@@ -797,6 +797,15 @@ pub fn last_rate(
 }
 
 #[tauri::command(rename_all = "snake_case")]
+pub fn last_narration(
+    state: State<'_, AppState>,
+    kind: Option<khata_core::VoucherKind>,
+    ledger_id: String,
+) -> ApiResult<String> {
+    insights::last_narration(&*lock(&state)?, kind, &ledger_id)
+}
+
+#[tauri::command(rename_all = "snake_case")]
 pub fn company_tax(
     state: State<'_, AppState>,
 ) -> ApiResult<tax::CompanyTaxDto> {

@@ -188,6 +188,7 @@ pub fn run() {
             commands::delete_godown,
             commands::stock_by_location,
             commands::last_rate,
+            commands::last_narration,
             commands::company_tax,
             commands::set_company_tax,
             commands::list_tax_rates,

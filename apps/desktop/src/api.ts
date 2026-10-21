@@ -167,6 +167,7 @@ export const api = {
   stockByLocation: (as_at: string) => call<LocationRow[]>("stock_by_location", { as_at }),
   /** Last sale (or purchase) rate of an item, same party first; "" when never traded. */
   lastRate: (item_id: string, kind: VoucherKind, party_id: string) => call<string>("last_rate", { item_id, kind, party_id }),
+  lastNarration: (kind: VoucherKind | null, ledger_id: string) => call<string>("last_narration", { kind, ledger_id }),
 
   // Tax: company registration, rate list, duty ledgers, invoice tax
   companyTax: () => call<CompanyTax>("company_tax"),
